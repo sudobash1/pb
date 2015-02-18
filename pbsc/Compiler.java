@@ -5,6 +5,11 @@ import java.lang.*;
 
 public class Compiler {
 
+    //This magicNumber is not found anywhere in the program input.
+    //It is used to make labels for compiler use that will not interfere.
+    private static int magicNumber;
+
+
     public static String readFile(String path) {
 
         File file = new File(path);
@@ -40,6 +45,12 @@ public class Compiler {
         if (args.length < 1) {
             System.err.println("Requires more arguments.");
         }
+
+        input = readFile(args[0]);
+
+        do {
+            magicNumber = (int)(Math.random() * 100000);
+        } while ( input.contains((String) magicNumber) );
 
     }
 
