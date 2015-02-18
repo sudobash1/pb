@@ -9,6 +9,26 @@ public class Compiler {
     //It is used to make labels for compiler use that will not interfere.
     private static int magicNumber;
 
+    static static int ifCounter = 0;
+    static static int whileCounter = 0;
+    static static int forCounter = 0;
+
+    public static String ifLabel() {
+        return "IF" + (ifCounter++) + "ID" + magicNumber;
+    }
+
+    public static String whileLabel() {
+        return "WHILE" + (whileCounter++) + "ID" + magicNumber;
+    }
+
+    public static String forLabel() {
+        return "WHILE" + (forCounter++) + "ID" + magicNumber;
+    }
+
+    public static String Label(String label) {
+        return label + "ID" + magicNumber;
+    }
+
 
     public static String readFile(String path) {
 
