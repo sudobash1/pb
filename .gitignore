@@ -1,5 +1,10 @@
 *.class
 
+#For vim
+tags
+*~
+.*.sw*
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
