@@ -17,6 +17,6 @@ clean :
 	echo "Compiling" $<; \
 	CLASSPATH=${CLASSPATH} $(JAVAC) $<; \
 	else \
-	echo "Skipping file" $@; \
+	echo "Skipping file" $<; \
 	touch $@; \
 	fi
