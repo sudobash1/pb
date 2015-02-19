@@ -18,7 +18,11 @@ public class PbscCompiler {
     private int m_whileCounter = 0;
     private int m_forCounter = 0;
 
+    //The String is the If/While/For/Sub block id.
+    private ArrayList<String> m_namespaceStack = null;
+
     public PbscCompiler() {
+        m_namespaceStack = new ArrayList<String>();
     }
 
     /**
@@ -44,30 +48,82 @@ public class PbscCompiler {
         System.out.println(message);
     }
 
+    /**
+     * Generates a new, unique if block id.
+     * @return The new if block id.
+     */
     public String ifID() {
         return "IF" + (m_ifCounter++) + "ID" + m_magicNumber;
     }
 
+    /**
+     * Generates a new, unique while block id.
+     * @return The new if block id.
+     */
     public String whileID() {
         return "WHILE" + (m_whileCounter++) + "ID" + m_magicNumber;
     }
 
+    /**
+     * Generates a new, unique for block id.
+     * @return The new if block id.
+     */
     public String forID() {
         return "WHILE" + (m_forCounter++) + "ID" + m_magicNumber;
     }
 
+    /**
+     * Returns the passed in label with scope mangling applied.
+     * @return The new if block id.
+     */
     public String id(String label) {
-        return label + "ID" + m_magicNumber;
-    }
-
-    public String id(String[] namespace, String label) {
-        String ns = "";
-        for (int i = 0; i < namespace.length; ++i) {
-            ns += namespace[i];
+        String namespace = "";
+        for (String s : m_namespaceStack) {
+            namespace += s;
         }
-        return ns + label + "ID" + m_magicNumber;
+        return namespace + label + "ID" + m_magicNumber;
     }
 
+    /**
+     * Returns a list of all namespace magled ids which the passed in label
+     * could represent. Used for determining what to link a label to.
+     * @return The ArrayList of all possible ids.
+     */
+    private ArrayList<String> allId(String label) {
+        ArrayList<String> ret = new ArrayList<String>();
+
+        ret.add(label + "ID" + m_magicNumber);
+
+        String namespace = "";
+        for (String s : m_namespaceStack) {
+            namespace += s;
+            ret.add( namespace + label + "ID" + m_magicNumber );
+        }
+
+        return ret;
+    }
+
+    /**
+     * Pushes a id to the scope stack. The id is the id of the if/while/for/sub
+     * block just entered.
+     * @param scope The scope id.
+     */
+    public void pushScope(String scope) {
+        m_namespaceStack.add(scope);
+    }
+
+    /**
+     * Pops a id from the scope stack.
+     */
+    public void popScope(String scope) {
+        m_namespaceStack.remove(m_namespaceStack.size() - 1);
+    }
+
+    /**
+     * Find how many newlines there are in the passed string. Used to advance
+     * the line counter when going through the file statment by statement.
+     * @return The number of newlines counted.
+     */
     public static int countNewlines(String s) {
         Matcher m = Pattern.compile("(\n)").matcher(s);
         int lines = 0;
@@ -75,6 +131,15 @@ public class PbscCompiler {
         return lines;
     }
 
+    /**
+     * Reads the file and returns the contents. If there are errors reading the
+     * file, then they are printed and System.exit(1) is called.
+     *
+     * Note: for now '\n' are always used to denote the end of a line.
+     *
+     * @param path The path to the file to read.
+     * @return The contents of the file with \n endings.
+     */
     public String readFile(String path) {
 
         File file = new File(path);
@@ -103,6 +168,17 @@ public class PbscCompiler {
         return sb.toString();
     }
 
+    /**
+     * Run the compiler with passed in args.
+     *
+     * The exit codes are:
+     *
+     * 0 - success
+     * 1 - IO error
+     * 2 - compile error
+     *
+     * @return the exit code.
+     */
     public int run(String[] args) {
         String input;
 
@@ -113,6 +189,7 @@ public class PbscCompiler {
 
         input = readFile(args[0]);
 
+        //Generate a magic number not found anywhere in the input.
         do {
             m_magicNumber = (int)(Math.random() * 100000);
         } while ( input.contains(String.valueOf(m_magicNumber)) );
@@ -121,9 +198,12 @@ public class PbscCompiler {
 
         CommandFactory cmdFactory = new CommandFactory(this);
 
+        //Statements are always delimited by ;
         ArrayList<String> str_commands = new ArrayList<String>(Arrays.asList(input.split(";")));
         ArrayList<Command> program = new ArrayList<Command>();
 
+        //Go through the list of statements found in the file and generate
+        //the command for each one.
         for(String str_command: str_commands) {
             line += countNewlines(str_command);
 
@@ -132,6 +212,10 @@ public class PbscCompiler {
             if (newCommand != null) {
                 program.add(newCommand);
             }
+        }
+
+        if (m_hasError) {
+            return 2;
         }
 
         return 0;
