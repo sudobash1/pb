@@ -107,14 +107,13 @@ public class PbscCompiler {
         ArrayList<Command> program = new ArrayList<Command>();
 
         for(String str_command: str_commands) {
+            line += countNewlines(str_command);
 
             Command newCommand = cmdFactory.GenerateCommand(str_command, line);
 
             if (newCommand != null) {
                 program.add(newCommand);
             }
-            
-            line += countNewlines(str_command);
         }
 
         return 0;

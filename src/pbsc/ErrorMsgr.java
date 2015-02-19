@@ -7,13 +7,13 @@ public class ErrorMsgr {
     public boolean hasError() { return m_hasError; }
 
     public void error(int line, String message) {
-        System.out.println("ERROR: line " + line);
+        System.out.print("ERROR: line " + line + ": ");
         System.out.println(message);
         m_hasError = true;
     }
 
     public void warning(int line, String message) {
-        System.out.println("Warning: line " + line);
+        System.out.print("Warning: line " + line + ": ");
         System.out.println(message);
     }
 
