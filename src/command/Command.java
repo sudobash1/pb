@@ -1,7 +1,5 @@
 package command;
 
-import pbsc.*;
-
 public abstract class Command {
 
     /**

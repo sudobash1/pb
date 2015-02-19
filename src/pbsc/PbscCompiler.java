@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.regex.*;
 import command.*;
 
-public class Compiler {
+public class PbscCompiler {
 
     private ErrorMsgr m_errorMsgr;
 
@@ -18,7 +18,7 @@ public class Compiler {
     private int m_whileCounter = 0;
     private int m_forCounter = 0;
 
-    public Compiler() {
+    public PbscCompiler() {
         m_errorMsgr = new ErrorMsgr();
     }
 
@@ -101,7 +101,7 @@ public class Compiler {
 
         int line = 1; //What line number are we on?
 
-        cmdFactory = new CommandFactory(this);
+        CommandFactory cmdFactory = new CommandFactory(this);
 
         ArrayList<String> str_commands = new ArrayList<String>(Arrays.asList(input.split(";")));
         ArrayList<Command> program = new ArrayList<Command>();
@@ -111,10 +111,10 @@ public class Compiler {
             Command newCommand = cmdFactory.GenerateCommand(str_command, line);
 
             if (newCommand != null) {
-                program.add(newCommand)
+                program.add(newCommand);
             }
             
-            line += countNewlines(str_command)
+            line += countNewlines(str_command);
         }
 
         return 0;
