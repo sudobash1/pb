@@ -1,15 +1,15 @@
-
+CLASSPATH="src"
 JAVAC=javac
-sources = $(wildcard pbsc/*.java)
+sources = $(wildcard src/*/*.java)
 classes = $(sources:.java=.class)
 
 all: $(classes)
 
 run: all
-	java pbsc.Compiler ${FILE}
+	CLASSPATH=${CLASSPATH} java pbsc.Compiler ${FILE}
 
 clean :
 	rm -f src/*.class
 
 %.class : %.java
-	$(JAVAC) $<
+	CLASSPATH=${CLASSPATH} $(JAVAC) $<
