@@ -6,8 +6,8 @@ public class Rem extends Command {
 
     private String m_comment;
 
-    public Rem(PbscCompiler compiler, String arguments) {
-        super(compiler);
+    public Rem(PbscCompiler compiler, int line, String arguments) {
+        super(compiler, line);
         m_comment = arguments;
     }
 

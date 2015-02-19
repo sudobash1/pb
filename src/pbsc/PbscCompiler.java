@@ -18,10 +18,15 @@ public class PbscCompiler {
     private int m_whileCounter = 0;
     private int m_forCounter = 0;
 
+    //Maps constants defined in the program to their values.
+    //The String is the constant name with scope mangling.
+    private Hashtable<String, Integer> m_definesTable = null;
+
     //The String is the If/While/For/Sub block id.
     private ArrayList<String> m_namespaceStack = null;
 
     public PbscCompiler() {
+        m_definesTable = new Hashtable<String,Integer>();
         m_namespaceStack = new ArrayList<String>();
     }
 
@@ -46,6 +51,46 @@ public class PbscCompiler {
     public void warning(int line, String message) {
         System.out.print("Warning: line " + line + ": ");
         System.out.println(message);
+    }
+
+    /**
+     * Register a new constant. Checks if constant exists before adding.
+     * If the constant already exists, prints out an error.
+     * This method is scope aware.
+     * @param constName the constant name (without scope mangling).
+     * @param value the value of the constant.
+     * @param int the line the const is being declaired.
+     * @return False if constant already exists.
+     */
+    public boolean registerNewConstant(String constName, Integer value, int line) {
+        //Check if constant exists in this scope.
+        for (String id : allId(constName)) {
+            if (m_definesTable.containsKey(id)) {
+                error(line, "Constant `" + constName + "' already exists.");
+                return false;
+            }
+        }
+        m_definesTable.put(id(constName), value);
+        return true;
+    }
+
+    /**
+     * Get the value of a constant.
+     * If the constant doesn't exist in this scope, prints out an error.
+     * This method is scope aware.
+     * @param constName the name of the constant
+     * @param int the line the const is being referenced from.
+     * @return the Integer value of the constant if it exists, else null.
+     */
+    public Integer getConstantValue(String constName, int line) {
+        //Check if constant exists in this scope.
+        for (String id : allId(constName)) {
+            if (m_definesTable.containsKey(id)) {
+                return m_definesTable.get(id);
+            }
+        }
+        error(line, "Undefined constant `" + constName + "'");
+        return null;
     }
 
     /**

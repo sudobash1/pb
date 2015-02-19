@@ -4,10 +4,14 @@ import pbsc.*;
 
 public abstract class Command {
 
-    private PbscCompiler m_compiler = null;
+    protected PbscCompiler m_compiler = null;
 
-    public Command(PbscCompiler compiler) {
+    protected final String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
+    protected int m_line;
+
+    public Command(PbscCompiler compiler, int line) {
         m_compiler = compiler;
+        m_line = line;
     }
 
     /**

@@ -42,10 +42,13 @@ public class CommandFactory {
 
         String commandName = commandMatcher.group(1).toLowerCase();
         String commandArgs = argsMatcher.group(1);
+        String cleanCommandArgs = commandArgs.toLowerCase().trim();
 
         switch (commandName) {
+            case "define":
+                return new Define(m_compiler, line, cleanCommandArgs);
             case "rem":
-                return new Rem(m_compiler, commandArgs);
+                return new Rem(m_compiler, line, commandArgs);
             default: 
                 m_compiler.error(line, "Invalid command `" + commandName + "'");
                 return null;
