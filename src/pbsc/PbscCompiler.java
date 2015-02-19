@@ -121,7 +121,7 @@ public class PbscCompiler {
     }
 
     public static void main(String[] args) {
-        System.exit(new Compiler().run(args));
+        System.exit(new PbscCompiler().run(args));
     }
 
 }
