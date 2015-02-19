@@ -36,7 +36,7 @@ public class CommandFactory {
         Matcher argsMatcher = m_commandArgsRe.matcher(s);
 
         if (! commandMatcher.find() || ! argsMatcher.find()) {
-            m_compiler.errorMsgr().error(line, "Malformed line.");
+            m_compiler.error(line, "Malformed line.");
             return null;
         }
 
@@ -47,10 +47,7 @@ public class CommandFactory {
             case "rem":
                 return new Rem(m_compiler, commandArgs);
             default: 
-                m_compiler.errorMsgr().error(
-                    line,
-                    "Invalid command `" + commandName + "'"
-                );
+                m_compiler.error(line, "Invalid command `" + commandName + "'");
                 return null;
         }
     }

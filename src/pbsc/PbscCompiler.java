@@ -8,7 +8,7 @@ import command.*;
 
 public class PbscCompiler {
 
-    private ErrorMsgr m_errorMsgr;
+    private boolean m_hasError = false;
 
     //This magicNumber is not found anywhere in the program input.
     //It is used to make labels for compiler use that will not interfere.
@@ -19,11 +19,29 @@ public class PbscCompiler {
     private int m_forCounter = 0;
 
     public PbscCompiler() {
-        m_errorMsgr = new ErrorMsgr();
     }
 
-    public ErrorMsgr errorMsgr() {
-        return m_errorMsgr;
+    /**
+     * Prints an error message to the screen and flags the compilation
+     * as failed.
+     * @param line Line where the error occured.
+     * @param message Error message to display.
+     */
+    public void error(int line, String message) {
+        System.out.print("ERROR: line " + line + ": ");
+        System.out.println(message);
+        m_hasError = true;
+    }
+
+    /**
+     * Prints a warning message to the screen but does not flag the compilation
+     * as failed.
+     * @param line Line where the warning was generated.
+     * @param message Warning message to display.
+     */
+    public void warning(int line, String message) {
+        System.out.print("Warning: line " + line + ": ");
+        System.out.println(message);
     }
 
     public String ifID() {
