@@ -47,12 +47,12 @@ public abstract class Expression extends Command {
 
         Matcher m;
 
-        m = Pattern.compile(constLitReStr).matcher(expStr);
+        m = Pattern.compile("^"+constLitReStr+"$").matcher(expStr);
         if ( m.find()) {
             return new ConstLit(compiler, line, expStr);
         }
 
-        m = Pattern.compile(idReStr).matcher(expStr);
+        m = Pattern.compile("^"+idReStr+"$").matcher(expStr);
         if ( m.find()) {
             return new IntVariable(compiler, line, expStr);
         }
