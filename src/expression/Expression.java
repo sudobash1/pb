@@ -45,15 +45,19 @@ public abstract class Expression extends Command {
 
         expStr = expStr.trim();
 
-        //For now we are just going to worry about constLit expressions.
-        Matcher m = Pattern.compile(constLitReStr).matcher(expStr);
+        Matcher m;
 
-        if (! m.find()) {
-            compiler.error(line ,"Malformed expression.");
-            return null;
+        m = Pattern.compile(constLitReStr).matcher(expStr);
+        if ( m.find()) {
+            return new ConstLit(compiler, line, expStr);
         }
 
-        return new ConstLit(compiler, line, expStr);
+        m = Pattern.compile(idReStr).matcher(expStr);
+        if ( m.find()) {
+            return new IntVariable(compiler, line, expStr);
+        }
 
+        compiler.error(line ,"Malformed expression.");
+        return null;
     }
 }
