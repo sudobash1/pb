@@ -59,6 +59,13 @@ public class PbscCompiler {
     }
 
     /**
+     * Returns the line ending used for the generated pidgen file. For now
+     * it is just hardcoded to "\n".
+     * @return the line ending string.
+     */
+    public String lineEnding() { return "\n"; };
+
+    /**
      * Register a new constant. Checks if constant exists before adding.
      * If the constant already exists, prints out an error.
      * This method is scope aware.

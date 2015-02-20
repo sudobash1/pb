@@ -45,4 +45,9 @@ public class ListDefinition extends VariableDefinition {
     public int getSize() {
         return m_size;
     }
+
+    @Override
+    public int stackReq() {
+        return 0;
+    }
 }

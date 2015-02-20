@@ -37,4 +37,9 @@ public class IntDefinition extends VariableDefinition {
     public int getSize() {
         return 1;
     }
+
+    @Override
+    public int stackReq() {
+        return 0;
+    }
 }

@@ -6,8 +6,38 @@ public abstract class Command {
 
     protected PbscCompiler m_compiler = null;
 
-    protected final String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
-    protected final String constLitReStr = "(#"+idReStr+"|[1-9][0-9]*)";
+    /**Matches all valid identifiers. Prefix with a `#' to make it a constant*/
+    public final static String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
+
+    /**Matches any valid operator to use in a lisp expression.
+     * Only group is entire match
+     */
+    public final static String operatorReStr = "(and|or|=|<|>|<=|>=|!=|\\+|-|\\*|/|^|mod)";
+
+    /**Matches any valid lisp-style expression.
+     * May match lisp-style expressions with invalid operands expressions.
+     * Two groups are 1) the operator and 2) the operands.
+     */
+    public final static String lispExpReStr = "\\(\\s*("+operatorReStr+")\\s+(.*)\\)";
+
+    /**Matches any valid list expression.
+     * May match list expressions with invalid index expressions.
+     * Two groups are 1) the list name and 2) the index expression.
+     */
+    public final static String listVarReStr = "(" + idReStr +")\\s*\\[(.*)\\]";
+
+    /**Matches any valid constant or integer literal.
+     * Only group is entire match.
+     */
+    public final static String constLitReStr = "(#"+idReStr+"|[1-9][0-9]*)";
+
+    /**Matches any valid expression.
+     * May match invalid expressions as well.
+     * Only group is entire match.
+     */
+    public final static String expressionReStr =
+        "(" + lispExpReStr + "|" + listVarReStr + "|" + idReStr + "|" + constLitReStr + ")";
+
     protected int m_line;
 
     public Command(PbscCompiler compiler, int line) {
@@ -26,5 +56,12 @@ public abstract class Command {
      * @return The number of pidgen instructions needed for this command.
      */
     public abstract int pidgenInstructionsNeeded();
+
+    /**
+     * Determine the amount of minimum free stack space required to evaluate
+     * this command.
+     * @return The number of bytes minimum needed free on the stack.
+     */
+    public abstract int stackReq();
 
 }

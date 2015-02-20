@@ -8,6 +8,11 @@ public class Define extends Command {
     public Define(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
 
+        if (! arguments.startsWith("#")) {
+            compiler.error(line, "define constants must start with `#'.");
+            return;
+        }
+
         String reStr = "^(#" + idReStr + ")\\s*=\\s*([1-9][0-9]*)$";
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
@@ -40,6 +45,11 @@ public class Define extends Command {
 
     @Override
     public int pidgenInstructionsNeeded() {
+        return 0;
+    }
+
+    @Override
+    public int stackReq() {
         return 0;
     }
 }

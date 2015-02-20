@@ -53,6 +53,8 @@ public class CommandFactory {
                 return new ListDefinition(m_compiler, line, cleanCommandArgs);
             case "rem":
                 return new Rem(m_compiler, line, commandArgs);
+            case "set":
+                return new Set(m_compiler, line, cleanCommandArgs);
             default: 
                 m_compiler.error(line, "Invalid command `" + commandName + "'");
                 return null;

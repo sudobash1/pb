@@ -21,4 +21,9 @@ public class Rem extends Command {
     public int pidgenInstructionsNeeded() {
         return 0;
     }
+
+    @Override
+    public int stackReq() {
+        return 0;
+    }
 }
