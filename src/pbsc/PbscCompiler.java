@@ -22,10 +22,15 @@ public class PbscCompiler {
     //The String is the constant name with scope mangling.
     private Hashtable<String, Integer> m_definesTable = null;
 
+    //Maps integers to their definition class.
+    //The String is the variable name with scope mangling.
+    private Hashtable<String, VariableDefinition> m_varTable = null;
+
     //The String is the If/While/For/Sub block id.
     private ArrayList<String> m_namespaceStack = null;
 
     public PbscCompiler() {
+        m_varTable = new Hashtable<String, VariableDefinition>();
         m_definesTable = new Hashtable<String,Integer>();
         m_namespaceStack = new ArrayList<String>();
     }
@@ -90,6 +95,46 @@ public class PbscCompiler {
             }
         }
         error(line, "Undefined constant `" + constName + "'");
+        return null;
+    }
+
+    /**
+     * Register a new varable. Checks if variable exists before adding.
+     * If the variables already exists, prints out an error.
+     * This method is scope aware.
+     * @param varName the variable name (without scope mangling).
+     * @param varDefn the VariableDefinition
+     * @param int the line the variable is being declaired.
+     * @return False if variable already exists.
+     */
+    public boolean registerNewVariable(String varName, VariableDefinition varDefn, int line) {
+        //Check if variable exists in this scope.
+        for (String id : allId(varName)) {
+            if (m_varTable.containsKey(id)) {
+                error(line, "Variable `" + varName + "' has already been declared.");
+                return false;
+            }
+        }
+        m_varTable.put(id(varName), varDefn);
+        return true;
+    }
+
+    /**
+     * Gets the definition class of a variable.
+     * If the variable doesn't exist in this scope, prints out an error.
+     * This method is scope aware.
+     * @param varName the name of the variable
+     * @param int the line the variable is being referenced from.
+     * @return the VariableDefinition if it exists else null.
+     */
+    public VariableDefinition getVarableDefinition(String varName, int line) {
+        //Check if variable exists in this scope.
+        for (String id : allId(varName)) {
+            if (m_varTable.containsKey(id)) {
+                return m_varTable.get(id);
+            }
+        }
+        error(line, "Undefined varable `" + varName + "'");
         return null;
     }
 

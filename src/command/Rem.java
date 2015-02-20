@@ -17,4 +17,8 @@ public class Rem extends Command {
         return "#" + m_comment + "\n";
     }
 
+    @Override
+    public int pidgenInstructionsNeeded() {
+        return 0;
+    }
 }

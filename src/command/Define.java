@@ -5,12 +5,10 @@ import pbsc.*;
 
 public class Define extends Command {
 
-    private String m_comment;
-
     public Define(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
 
-        String reStr = "(#" + idReStr + ")\\s*=\\s*([1-9][0-9]*)";
+        String reStr = "^(#" + idReStr + ")\\s*=\\s*([1-9][0-9]*)$";
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
@@ -40,4 +38,8 @@ public class Define extends Command {
         return "";
     }
 
+    @Override
+    public int pidgenInstructionsNeeded() {
+        return 0;
+    }
 }
