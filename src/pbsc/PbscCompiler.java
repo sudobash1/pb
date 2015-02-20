@@ -94,6 +94,39 @@ public class PbscCompiler {
     }
 
     /**
+     * Returns the value of the constant or integer literal passed.
+     * Handles all error chcking.
+     * This method is scope aware.
+     * @param constLit the string representation of the constant or literal.
+     * @param int the line the constLit is being referenced from.
+     * @return the Integer value the constLit represents or null on error.
+     */
+    public Integer constLit2Integer(String constLit, int line) {
+        constLit = constLit.trim().toLowerCase();
+        if (constLit.equals("")) {
+            error(line, "Integer constant or literal expected");
+            return null;
+        }
+
+        if (constLit.charAt(0) == '#') {
+            //This is a constant
+            return getConstantValue(constLit, line);
+        } else {
+            if (constLit.matches("[1-9][0-9]*")) {
+                try {
+                    return Integer.valueOf(constLit);
+                } catch (NumberFormatException e) {
+                    error(line, "Integer literal out of range, `" + constLit + "'.");
+                    return null;
+                }
+            } else {
+                error(line, "Integer constant or literal expected. Found `'" + constLit + "'");
+                return null;
+            }
+        }
+    }
+
+    /**
      * Generates a new, unique if block id.
      * @return The new if block id.
      */
