@@ -24,11 +24,6 @@ public class IntVariablePointer extends Expression {
     }
 
     @Override
-    public int pidgenInstructionsNeeded() {
-        return m_register >= 0 ? 0 : 2;
-    }
-
-    @Override
     public int stackReq() {
         return m_register >= 0 ? 0 : 1;
     }

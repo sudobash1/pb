@@ -44,11 +44,6 @@ public class Define extends Command {
     }
 
     @Override
-    public int pidgenInstructionsNeeded() {
-        return 0;
-    }
-
-    @Override
     public int stackReq() {
         return 0;
     }

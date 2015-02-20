@@ -37,11 +37,6 @@ public class ListDefinition extends VariableDefinition {
     }
 
     @Override
-    public int pidgenInstructionsNeeded() {
-        return 0;
-    }
-
-    @Override
     public int getSize() {
         return m_size;
     }

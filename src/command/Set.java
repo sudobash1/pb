@@ -37,11 +37,6 @@ public class Set extends Command {
     }
 
     @Override
-    public int pidgenInstructionsNeeded() {
-        return 0; //XXX
-    }
-
-    @Override
     public int stackReq() {
         return 0; //XXX
     }

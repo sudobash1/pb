@@ -52,12 +52,6 @@ public abstract class Command {
     public abstract String generateCode();
 
     /**
-     * Returns how many pidgen instructions this command will take.
-     * @return The number of pidgen instructions needed for this command.
-     */
-    public abstract int pidgenInstructionsNeeded();
-
-    /**
      * Determine the amount of minimum free stack space required to evaluate
      * this command.
      * @return The number of bytes minimum needed free on the stack.

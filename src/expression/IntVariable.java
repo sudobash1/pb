@@ -26,11 +26,6 @@ public class IntVariable extends Expression {
     }
 
     @Override
-    public int pidgenInstructionsNeeded() {
-        return 0; //XXX
-    }
-
-    @Override
     public int stackReq() {
         return m_register >= 0 ? 0 : 1;
     }
