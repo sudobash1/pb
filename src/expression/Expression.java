@@ -64,11 +64,10 @@ public abstract class Expression extends Command {
 
         m = Pattern.compile("^"+lispExpReStr+"$").matcher(expStr);
         if ( m.find()) {
-            /*switch (m.group(1)) {
-            }*/
+            return LispExpression.create(compiler, line, m.group(1), m.group(2));
         }
 
-        compiler.error(line ,"Malformed expression.");
+        compiler.error(line ,"Malformed expression. " + expStr);
         return null;
     }
 

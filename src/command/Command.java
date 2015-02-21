@@ -10,15 +10,15 @@ public abstract class Command {
     public final static String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
 
     /**Matches any valid operator to use in a lisp expression.
-     * Only group is entire match
+     * Only group is entire match.
      */
-    public final static String operatorReStr = "(and|or|=|<|>|<=|>=|!=|\\+|-|\\*|/|^|mod)";
+    public final static String operatorReStr = "(and\\s|or\\s|=|<|>|<=|>=|!=|\\+|-|\\*|/|^|mod\\s)";
 
     /**Matches any valid lisp-style expression.
      * May match lisp-style expressions with invalid operands expressions.
      * Two groups are 1) the operator and 2) the operands.
      */
-    public final static String lispExpReStr = "\\(\\s*("+operatorReStr+")\\s+(.*)\\)";
+    public final static String lispExpReStr = "\\(\\s*"+operatorReStr+"\\s*(.*)\\)";
 
     /**Matches any valid list expression.
      * May match list expressions with invalid index expressions.
