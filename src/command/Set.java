@@ -14,21 +14,40 @@ public class Set extends Command {
 
     public Set(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
+        String reStr;
+        Matcher m;
 
-        //For now we are just going to worry about Int vars and const/lit values.
-        String reStr = "^(" + idReStr + ")\\s*=\\s*" + expressionReStr + "$";
-        Matcher m = Pattern.compile(reStr).matcher(arguments);
+        //Assign to simple variable
+        reStr = "^(" + idReStr + ")\\s*=\\s*" + expressionReStr + "$";
+        m = Pattern.compile(reStr).matcher(arguments);
 
-        if (! m.find()) {
-            compiler.error(line ,"Malformed arguments to set.");
+        if (m.find()) {
+            String name = m.group(1);
+            String setExp = m.group(2);
+
+            m_pointerExp = new IntVariablePointer(compiler, line, name);
+            m_valueExp = Expression.create(compiler, line, setExp);
+
             return;
         }
 
-        String name = m.group(1);
-        String setExp = m.group(2);
+        //Assign to list variable
+        reStr = "^" + listVarReStr + "\\s*=\\s*" + expressionReStr + "$";
+        m = Pattern.compile(reStr).matcher(arguments);
 
-        m_pointerExp = new IntVariablePointer(compiler, line, name);
-        m_valueExp = Expression.create(compiler, line, setExp);
+        if (m.find()) {
+            String name = m.group(1);
+            String indexExpr = m.group(2);
+            String setExp = m.group(3);
+
+            m_pointerExp = new ListVariablePointer(compiler, line, name, indexExpr);
+            m_valueExp = Expression.create(compiler, line, setExp);
+
+            return;
+        }
+
+        compiler.error(line ,"Malformed arguments to set.");
+        return;
     }
 
     @Override

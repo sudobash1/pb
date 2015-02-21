@@ -57,7 +57,19 @@ public abstract class Expression extends Command {
             return new IntVariable(compiler, line, expStr);
         }
 
+        m = Pattern.compile("^"+listVarReStr+"$").matcher(expStr);
+        if ( m.find()) {
+            return new ListVariable(compiler, line, m.group(1), m.group(2));
+        }
+
+        m = Pattern.compile("^"+lispExpReStr+"$").matcher(expStr);
+        if ( m.find()) {
+            /*switch (m.group(1)) {
+            }*/
+        }
+
         compiler.error(line ,"Malformed expression.");
         return null;
     }
+
 }
