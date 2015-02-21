@@ -8,6 +8,10 @@ import command.*;
 
 public class PbscCompiler {
 
+    //Maximum number of errors to report before aborting the compilation.
+    private final int MAX_ERROR = 5;
+    private int m_errorCount = 0;
+    
     private boolean m_hasError = false;
 
     //This magicNumber is not found anywhere in the program input.
@@ -42,9 +46,16 @@ public class PbscCompiler {
      * @param message Error message to display.
      */
     public void error(int line, String message) {
-        System.out.print("ERROR: line " + line + ": ");
-        System.out.println(message);
+        System.err.print("ERROR: line " + line + ": ");
+        System.err.println(message);
         m_hasError = true;
+        if (++m_errorCount >= MAX_ERROR) {
+            System.err.println(
+                "Aborting compilation attempt. No more errors will be reported"
+            );
+            System.err.println("Compilation failed.");
+            System.exit(2);
+        }
     }
 
     /**
@@ -54,8 +65,8 @@ public class PbscCompiler {
      * @param message Warning message to display.
      */
     public void warning(int line, String message) {
-        System.out.print("Warning: line " + line + ": ");
-        System.out.println(message);
+        System.err.print("Warning: line " + line + ": ");
+        System.err.println(message);
     }
 
     /**
@@ -314,7 +325,7 @@ public class PbscCompiler {
 
         if (args.length < 1) {
             System.err.println("Requires more arguments.");
-            return 1;
+            System.exit(1);
         }
 
         input = readFile(args[0]);
@@ -326,8 +337,6 @@ public class PbscCompiler {
 
         int line = 1; //What line number are we on?
 
-        CommandFactory cmdFactory = new CommandFactory(this);
-
         //Statements are always delimited by ;
         ArrayList<String> str_commands = new ArrayList<String>(Arrays.asList(input.split(";")));
         ArrayList<Command> program = new ArrayList<Command>();
@@ -337,7 +346,7 @@ public class PbscCompiler {
         for(String str_command: str_commands) {
             line += countNewlines(str_command);
 
-            Command newCommand = cmdFactory.GenerateCommand(str_command, line);
+            Command newCommand = Command.create(this, line, str_command);
 
             if (newCommand != null) {
                 program.add(newCommand);
@@ -345,14 +354,15 @@ public class PbscCompiler {
         }
 
         if (m_hasError) {
-            return 2;
+            System.err.println("Compilation failed.");
+            System.exit(2);
         }
 
         return 0;
     }
 
     public static void main(String[] args) {
-        System.exit(new PbscCompiler().run(args));
+        new PbscCompiler().run(args);
     }
 
 }

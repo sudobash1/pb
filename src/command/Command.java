@@ -1,5 +1,6 @@
 package command;
 
+import java.util.regex.*;
 import pbsc.*;
 
 public abstract class Command {
@@ -16,6 +17,8 @@ public abstract class Command {
     /**The destination register for the RValue*/
     public final static int RRegister = 4;
 
+    /**Extract the command name and arguments from a string*/
+    private final static String m_commandArgsReStr = "^([a-zA-Z]+)\\s(.*)$";
 
     /**Matches all valid identifiers. Prefix with a `#' to make it a constant*/
     public final static String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
@@ -68,5 +71,51 @@ public abstract class Command {
      * @return The number of bytes minimum needed free on the stack.
      */
     public abstract int stackReq();
+
+    /**
+     * Creates a command from a given string.
+     * The `;' must be removed from end of the string.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the command was found on (line of the `;' char)
+     * @param s The string containing the command.
+     * @return The generated command, or null on error.
+     */
+    public static Command create(PbscCompiler compiler, int line, String s) {
+
+        //Check if this line is empty
+        if (s.equals("")) { return null; }
+
+        Matcher commandMatcher = Pattern.compile(m_commandArgsReStr).matcher(s);
+        Matcher argsMatcher = Pattern.compile(m_commandArgsReStr).matcher(s);
+
+        if (! commandMatcher.find() || ! argsMatcher.find()) {
+            compiler.error(line, "Malformed line.");
+            return null;
+        }
+
+        String commandName = commandMatcher.group(1).toLowerCase();
+        String commandArgs = argsMatcher.group(1);
+
+        //Make lower case, remove newlines and tabs, and trim
+        String cleanCommandArgs = commandArgs.toLowerCase();
+        cleanCommandArgs = cleanCommandArgs .replaceAll("\\s" , " ").trim();
+
+        switch (commandName) {
+            case "define":
+                return new Define(compiler, line, cleanCommandArgs);
+            case "int":
+                return new IntDefinition(compiler, line, cleanCommandArgs);
+            case "list":
+                return new ListDefinition(compiler, line, cleanCommandArgs);
+            case "rem":
+                return new Rem(compiler, line, commandArgs);
+            case "set":
+                return new Set(compiler, line, cleanCommandArgs);
+            default: 
+                compiler.error(line, "Invalid command `" + commandName + "'");
+                return null;
+        }
+    }
+
 
 }

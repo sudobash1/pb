@@ -25,7 +25,7 @@ public class IntVariablePointer extends Expression {
 
     @Override
     public int stackReq() {
-        return m_register 0;
+        return 0;
     }
 
 }
