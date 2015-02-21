@@ -8,8 +8,8 @@ public class IntVariable extends Expression {
     /**The variable definition of the variable we are getting data from.*/
     private VariableDefinition m_vd;
 
-    public IntVariable(PbscCompiler compiler, int line, String variable) {
-        super(compiler, line);
+    public IntVariable(PbscCompiler compiler, int line, int register, String variable) {
+        super(compiler, line, register);
         m_vd = compiler.getVarableDefinition(variable, line);
     }
 
@@ -27,9 +27,7 @@ public class IntVariable extends Expression {
 
     @Override
     public int stackReq() {
-        return m_register >= 0 ? 0 : 1;
+        return 0;
     }
 
-    @Override
-    public boolean canPlaceInRegister() { return true; }
 }

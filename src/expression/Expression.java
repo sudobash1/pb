@@ -9,28 +9,12 @@ public abstract class Expression extends Command {
     /**If this expression can place the result in a register, then this is
      * the register it will be placed in.
      * If it is negative, then it will be pushed to the stack.*/
-    protected int m_register = -1;
+    protected int m_register;
     
-    public Expression(PbscCompiler compiler, int line) {
+    public Expression(PbscCompiler compiler, int line, int register) {
         super(compiler, line);
-    }
-
-    /**
-     * Select the register to place the value in.
-     * If it is negative then the stack is used.
-     * Only useful if canPlaceInRegister returns true.
-     * @param register The register to place the result in.
-     */
-    public final void setRegister(int register) {
         m_register = register;
     }
-
-    /**
-     * Returns if this expression can place the result in a register without
-     * clobbering any other registers.
-     * @return Can a the result be placed in a register without clobbering.
-     */
-    public abstract boolean canPlaceInRegister();
 
     /**Creates an Expression instance which will evaluate the passed in
      * expression.
@@ -41,7 +25,9 @@ public abstract class Expression extends Command {
      * @param expStrin The expression strin.
      * @return The proper expression class or null if error.
      */
-    public static Expression create(PbscCompiler compiler, int line, String expStr) {
+    public static Expression create(
+            PbscCompiler compiler, int line, int register, String expStr
+    ) {
 
         expStr = expStr.trim();
 
@@ -49,22 +35,26 @@ public abstract class Expression extends Command {
 
         m = Pattern.compile("^"+constLitReStr+"$").matcher(expStr);
         if ( m.find()) {
-            return new ConstLit(compiler, line, expStr);
+            return new ConstLit(compiler, line, register, expStr);
         }
 
         m = Pattern.compile("^"+idReStr+"$").matcher(expStr);
         if ( m.find()) {
-            return new IntVariable(compiler, line, expStr);
+            return new IntVariable(compiler, line, register, expStr);
         }
 
         m = Pattern.compile("^"+listVarReStr+"$").matcher(expStr);
         if ( m.find()) {
-            return new ListVariable(compiler, line, m.group(1), m.group(2));
+            return new ListVariable(
+                compiler, line, register, m.group(1), m.group(2)
+            );
         }
 
         m = Pattern.compile("^"+lispExpReStr+"$").matcher(expStr);
         if ( m.find()) {
-            return LispExpression.create(compiler, line, m.group(1), m.group(2));
+            return LispExpression.create(
+                compiler, line, register, m.group(1), m.group(2)
+            );
         }
 
         compiler.error(line ,"Malformed expression. " + expStr);

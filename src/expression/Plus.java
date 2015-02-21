@@ -5,8 +5,10 @@ import pbsc.*;
 
 public class Plus extends LispExpression {
 
-    public Plus(PbscCompiler compiler, int line, ArrayList<Expression> operands) {
-        super(compiler, line, operands);
+    public Plus(PbscCompiler compiler, int line, int register,
+                ArrayList<Expression> operands) {
+
+        super(compiler, line, register, operands);
         
         if (operands.size() != 2) {
             compiler.error(
@@ -19,17 +21,12 @@ public class Plus extends LispExpression {
 
     @Override
     public String generateCode() {
-        return ""; //XX
+        return ""; //XXX
     }
 
     @Override
     public int stackReq() {
-        return 0; //XXX
-    }
-
-    @Override
-    public boolean canPlaceInRegister() {
-        return false;
+        return 0;
     }
 
 }

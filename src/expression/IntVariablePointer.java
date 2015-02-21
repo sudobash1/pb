@@ -8,8 +8,8 @@ public class IntVariablePointer extends Expression {
     /**The variable definition of the variable we are pointing to.*/
     private VariableDefinition m_vd;
 
-    public IntVariablePointer(PbscCompiler compiler, int line, String variable) {
-        super(compiler, line);
+    public IntVariablePointer(PbscCompiler compiler, int line, int register, String variable) {
+        super(compiler, line, register);
         m_vd = compiler.getVarableDefinition(variable, line);
     }
 
@@ -25,9 +25,7 @@ public class IntVariablePointer extends Expression {
 
     @Override
     public int stackReq() {
-        return m_register >= 0 ? 0 : 1;
+        return m_register 0;
     }
 
-    @Override
-    public boolean canPlaceInRegister() { return true; }
 }

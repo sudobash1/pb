@@ -6,6 +6,17 @@ public abstract class Command {
 
     protected PbscCompiler m_compiler = null;
 
+    /* The below registers must not be clobbered by any expression evaluation.
+     * They may only be modified if the expression is initialized to save to
+     * on of them.
+     */
+
+    /**The destination register for the LValue*/
+    public final static int LRegister = 3;
+    /**The destination register for the RValue*/
+    public final static int RRegister = 4;
+
+
     /**Matches all valid identifiers. Prefix with a `#' to make it a constant*/
     public final static String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
 

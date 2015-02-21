@@ -25,8 +25,10 @@ public class Set extends Command {
             String name = m.group(1);
             String setExp = m.group(2);
 
-            m_pointerExp = new IntVariablePointer(compiler, line, name);
-            m_valueExp = Expression.create(compiler, line, setExp);
+            m_pointerExp = new IntVariablePointer(
+                compiler, line, LRegister, name
+            );
+            m_valueExp = Expression.create(compiler, line, RRegister, setExp);
 
             return;
         }
@@ -40,8 +42,12 @@ public class Set extends Command {
             String indexExpr = m.group(2);
             String setExp = m.group(3);
 
-            m_pointerExp = new ListVariablePointer(compiler, line, name, indexExpr);
-            m_valueExp = Expression.create(compiler, line, setExp);
+            m_pointerExp = new ListVariablePointer(
+                compiler, line, LRegister, name, indexExpr
+            );
+            m_valueExp = Expression.create(
+                compiler, line, RRegister, setExp
+            );
 
             return;
         }

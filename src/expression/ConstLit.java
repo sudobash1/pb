@@ -7,8 +7,10 @@ public class ConstLit extends Expression {
     /**The value of this ConstLit expression.*/
     private int m_value;
 
-    public ConstLit(PbscCompiler compiler, int line, String constLitStr) {
-        super(compiler, line);
+    public ConstLit(PbscCompiler compiler, int line, int register, 
+                    String constLitStr) {
+
+        super(compiler, line, register);
 
         Integer val = compiler.constLit2Integer(constLitStr, line);
 
@@ -32,6 +34,4 @@ public class ConstLit extends Expression {
         return m_register >= 0 ? 0 : 1;
     }
 
-    @Override
-    public boolean canPlaceInRegister() { return true; }
 }

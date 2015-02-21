@@ -11,10 +11,13 @@ public class ListVariable extends Expression {
     /**The expression to generate the index from.*/
     private Expression m_indexExp;
 
-    public ListVariable(PbscCompiler compiler, int line, String variable, String index) {
-        super(compiler, line);
+    public ListVariable(
+        PbscCompiler compiler, int line, int register, String variable,
+        String index
+    ) {
+        super(compiler, line, register);
         m_vd = compiler.getVarableDefinition(variable, line);
-        m_indexExp = Expression.create(compiler, line, index);
+        m_indexExp = Expression.create(compiler, line, register, index);
     }
 
     @Override
@@ -24,9 +27,7 @@ public class ListVariable extends Expression {
 
     @Override
     public int stackReq() {
-        return m_register >= 0 ? 0 : 1;
+        return 0;
     }
 
-    @Override
-    public boolean canPlaceInRegister() { return false; }
 }

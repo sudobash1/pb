@@ -11,11 +11,14 @@ public class ListVariablePointer extends Expression {
     /**The expression to generate the index from.*/
     private Expression m_indexExp;
 
-    public ListVariablePointer(PbscCompiler compiler, int line, String variable, String indexExpr) {
-        super(compiler, line);
+    public ListVariablePointer(
+        PbscCompiler compiler, int line, int register,
+        String variable, String indexExpr
+    ) {
+        super(compiler, line, register);
 
         m_vd = compiler.getVarableDefinition(variable, line);
-        m_indexExp = Expression.create(compiler, line, indexExpr);
+        m_indexExp = Expression.create(compiler, line, register, indexExpr);
     }
 
     @Override
@@ -25,9 +28,7 @@ public class ListVariablePointer extends Expression {
 
     @Override
     public int stackReq() {
-        return m_register >= 0 ? 0 : 1;
+        return 0;
     }
 
-    @Override
-    public boolean canPlaceInRegister() { return true; }
 }
