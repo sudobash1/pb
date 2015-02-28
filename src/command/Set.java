@@ -68,7 +68,12 @@ public class Set extends Command {
 
     @Override
     public String generateCode() {
-        return ""; //XXX
+        String getLValue = m_pointerExp.generateCode();
+        String getRValue = m_valueExp.generateCode();
+        return super.generateCode() + 
+               getLValue + getRValue +
+               "SAVE R" + RRegister + " R" + LRegister + 
+               m_compiler.lineEnding();
     }
 
     @Override

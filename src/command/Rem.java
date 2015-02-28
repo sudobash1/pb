@@ -20,12 +20,6 @@ public class Rem extends Command {
     }
 
     @Override
-    public String generateCode() {
-        //We have no code for a comment
-        return "";
-    }
-
-    @Override
     public int stackReq() {
         return 0;
     }

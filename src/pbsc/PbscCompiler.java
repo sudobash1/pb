@@ -8,6 +8,9 @@ import command.*;
 
 public class PbscCompiler {
 
+    /**Turns on debugging output*/
+    private final boolean m_debug = true;
+
     /**Maximum number of errors to report before aborting the compilation.*/
     private final int MAX_ERROR = 5;
     /**Number of errors found so far.*/
@@ -48,9 +51,17 @@ public class PbscCompiler {
     }
 
     /**
+     * Returns if debugging is on.
+     * @return true if debugging is enabled.
+     */
+    public boolean debugging() {
+        return m_debug;
+    }
+
+    /**
      * Prints an error message to the screen and flags the compilation
      * as failed.
-     * @param line Line where the error occured.
+     * @param line Line where the error occurred.
      * @param message Error message to display.
      */
     public void error(int line, String message) {
@@ -315,6 +326,40 @@ public class PbscCompiler {
     }
 
     /**
+     * Generates a string containing the addresses variables bound to as
+     * Pidgen comments. Used for debugging.
+     * @return A pidgen comment
+     */
+    private String generateSymTabComment() {
+
+        if (! m_debug) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("#VARIABLE TABLE##########################################");
+        sb.append(lineEnding());
+        sb.append("#");
+        sb.append(lineEnding());
+        if (m_debug) {
+            for (String key : m_varTable.keySet()) {
+                sb.append("# ");
+                sb.append(key);
+                sb.append(" @ ");
+                sb.append(""+m_varTable.get(key).getAddress());
+                sb.append(lineEnding());
+            }
+        }
+        sb.append("#");
+        sb.append(lineEnding());
+        sb.append("#########################################################");
+        sb.append(lineEnding());
+        sb.append(lineEnding());
+
+        return sb.toString();
+    }
+
+    /**
      * Run the compiler with passed in args.
      *
      * The exit codes are:
@@ -351,7 +396,6 @@ public class PbscCompiler {
         //Go through the list of statements found in the file and generate
         //the command for each one.
         for(String str_command: str_commands) {
-            System.out.println("parsing line: " + str_command);
             line += countNewlines(str_command);
 
             Command newCommand = Command.create(this, line, str_command);
@@ -387,7 +431,7 @@ public class PbscCompiler {
 
         //Bind the variables to addresses.
         
-        /* XXX For now we are assuming that the variables go immediatly after
+        /* XXX For now we are assuming that the variables go immediately after
          * the program statements at the top of memory.
          */
         
@@ -408,8 +452,13 @@ public class PbscCompiler {
 
         pidgenString = pidgenStringBuilder.toString();
 
+        //Generate the symbole table comment string.
+        String symTabComment = generateSymTabComment();
+
         //Save the output to the output file.
-        writeFile(args[0], pidgenString);
+        writeFile(args[1], symTabComment + pidgenString);
+
+        System.out.println("Compilation successful");
 
         return 0;
     }

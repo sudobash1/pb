@@ -21,6 +21,9 @@ public abstract class Command {
      */
     protected int m_line;
 
+    /**The string the command was created from*/
+    private String m_commandString = "";
+
     /* The below registers must not be clobbered by any expression evaluation.
      * They may only be modified if the expression is initialized to save to
      * on of them.
@@ -83,7 +86,12 @@ public abstract class Command {
      * Generate the pidgen code for this command.
      * @return Returns the pidgen code as a String.
      */
-    public abstract String generateCode();
+    public String generateCode() {
+        if (m_compiler.debugging() && !m_commandString.equals("")) {
+            return "# " + m_commandString + m_compiler.lineEnding();
+        }
+        return "";
+    }
 
     /**
      * Determine the amount of minimum free stack space required to evaluate
@@ -102,6 +110,9 @@ public abstract class Command {
      */
     public static Command create(PbscCompiler compiler, int line, String s) {
 
+        //Make lower case, remove newlines and tabs, and trim
+        s = s.toLowerCase().replaceAll("\\s" , " ").trim();
+
         //Check if this line is empty
         if (s.equals("")) { return null; }
 
@@ -114,27 +125,34 @@ public abstract class Command {
         }
 
         String commandName = commandMatcher.group(1).toLowerCase();
-        String commandArgs = argsMatcher.group(1);
+        String commandArgs = argsMatcher.group(2);
 
-        //Make lower case, remove newlines and tabs, and trim
-        String cleanCommandArgs = commandArgs.toLowerCase();
-        cleanCommandArgs = cleanCommandArgs .replaceAll("\\s" , " ").trim();
+        Command cmd = null;
 
         switch (commandName) {
             case "define":
-                return new Define(compiler, line, cleanCommandArgs);
+                cmd = new Define(compiler, line, commandArgs);
+                break;
             case "int":
-                return new IntDefinition(compiler, line, cleanCommandArgs);
+                cmd = new IntDefinition(compiler, line, commandArgs);
+                break;
             case "list":
-                return new ListDefinition(compiler, line, cleanCommandArgs);
+                cmd = new ListDefinition(compiler, line, commandArgs);
+                break;
             case "rem":
-                return new Rem(compiler, line);
+                cmd = new Rem(compiler, line);
+                break;
             case "set":
-                return new Set(compiler, line, cleanCommandArgs);
+                cmd = new Set(compiler, line, commandArgs);
+                break;
             default: 
                 compiler.error(line, "Invalid command `" + commandName + "'");
                 return null;
         }
+
+        cmd.m_commandString = s;
+
+        return cmd;
     }
 
 

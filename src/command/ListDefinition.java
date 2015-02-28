@@ -44,13 +44,6 @@ public class ListDefinition extends VariableDefinition {
     }
 
     @Override
-    public String generateCode() {
-        //No code needs to be executed in actual Pidgin.
-        //The variable is bound at compile time.
-        return "";
-    }
-
-    @Override
     public int getSize() {
         return m_size;
     }
