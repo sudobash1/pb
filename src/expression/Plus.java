@@ -5,6 +5,9 @@ import pbsc.*;
 
 public class Plus extends LispExpression {
 
+    /**The register the first value to add test stored.*/
+    private final int m_tmpRegister;
+
     /**
      * Create a Plus LispExpression instance.
      * @param compiler The main instance of the PbscCompiler.
@@ -18,6 +21,8 @@ public class Plus extends LispExpression {
                 ArrayList<Expression> operands) {
 
         super(compiler, line, register, operands);
+
+        m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
         
         if (operands.size() != 2) {
             compiler.error(
@@ -30,7 +35,12 @@ public class Plus extends LispExpression {
 
     @Override
     public String generateCode() {
-        return ""; //XXX
+        return m_operands.get(0).generateCode() +
+               "COPY R" + m_tmpRegister + " R" + m_register +
+               m_compiler.lineEnding() +
+               m_operands.get(1).generateCode() +
+               "ADD R" + m_register + " R" + m_register + " R" + m_tmpRegister +
+               m_compiler.lineEnding();
     }
 
     @Override

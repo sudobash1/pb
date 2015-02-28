@@ -34,6 +34,11 @@ public abstract class Command {
     /**The destination register for the RValue*/
     public final static int RRegister = 4;
 
+    /**A temp register. Clobber at will.*/
+    public final static int tmpRegister1 = 1;
+    /**A temp register. Clobber at will.*/
+    public final static int tmpRegister2 = 2;
+
     /**Extract the command name and arguments from a string*/
     private final static String m_commandArgsReStr = "^([a-zA-Z]+)\\s(.*)$";
 
