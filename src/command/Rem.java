@@ -2,19 +2,27 @@ package command;
 
 import pbsc.*;
 
+/**
+ * A command to generate a comment.
+ * This command does nothing. All input is ignored.
+ */
 public class Rem extends Command {
 
     private String m_comment;
 
-    public Rem(PbscCompiler compiler, int line, String arguments) {
+    /**
+     * Create a ConstLit expression instance.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the command was found on.
+     */
+    public Rem(PbscCompiler compiler, int line) {
         super(compiler, line);
-        m_comment = arguments;
     }
 
     @Override
     public String generateCode() {
-        //We will insert the commint into the pidgen file
-        return "#" + m_comment + "\n";
+        //We have no code for a comment
+        return "";
     }
 
     @Override

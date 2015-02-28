@@ -11,6 +11,14 @@ public class ListVariable extends Expression {
     /**The expression to generate the index from.*/
     private Expression m_indexExp;
 
+    /**
+     * Create a list variable expression instance.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the expression was found on.
+     * @param register The register to save the value to when the expression
+     * is evaluated at runtime.
+     * @param variable The name of the list variable.
+     */
     public ListVariable(
         PbscCompiler compiler, int line, int register, String variable,
         String index

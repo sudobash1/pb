@@ -4,6 +4,10 @@ import java.util.regex.*;
 import pbsc.*;
 import expression.*;
 
+/**
+ * Assigns a value to a variable.
+ * Works with both LISTs and INTs.
+ */
 public class Set extends Command {
 
     /**An expression to generate a pointer to the location in memory to set.*/
@@ -11,7 +15,13 @@ public class Set extends Command {
 
     /**An expression to generate the value to save.*/
     private Expression m_valueExp = null;
-
+ 
+    /**
+     * Create a new Set command.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the command was found on.
+     * @param arguments The arguments to the SET command.
+     */
     public Set(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
         String reStr;

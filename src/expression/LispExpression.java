@@ -22,6 +22,15 @@ public abstract class LispExpression extends Expression {
         } 
     } 
 
+    /**
+     * Create a LispExpression instance.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the expression was found on.
+     * @param register The register to save the value to when the expression
+     * is evaluated at runtime.
+     * @param operands A string containing whitespace separated expressions
+     * which the LispExpression will operate on.
+     */
     public LispExpression(
         PbscCompiler compiler, int line, int register,
         ArrayList<Expression> operands
@@ -168,13 +177,14 @@ public abstract class LispExpression extends Expression {
 
 
     /**
-     * Takes a string and separates it into two separate Expressions.
-     * These expressions in the string must be separated by a whitespace.
+     * A LispExpression factory.
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the expression was found on.
-     * @param op The lisp expression operator
-     * @param operands The string containing the operands to the lisp expression.
-     * @return The LispExpression instance, or null on error.
+     * @param register The register to save the value to when the expression
+     * is evaluated at runtime.
+     * @param op The operator for the LispExpression.
+     * @param operands A string containing whitespace separated expressions
+     * which the LispExpression will operate on.
      */
     public static LispExpression create(
         PbscCompiler compiler, int line, int register, String op,

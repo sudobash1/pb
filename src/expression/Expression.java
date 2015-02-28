@@ -17,7 +17,7 @@ public abstract class Expression extends Command {
     }
 
     /**Creates an Expression instance which will evaluate the passed in
-     * expression.
+     * expression. An expression factory.
      * The expression may contain nested expressions.
      * If there is an error then it will be automatically reported.
      * @param compiler The main instance of the PbscCompiler.

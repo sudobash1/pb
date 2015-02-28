@@ -3,14 +3,28 @@ package command;
 import java.util.regex.*;
 import pbsc.*;
 
+/**
+ * A command to generate a LIST variable.
+ * This command generates no pidgen code, but it registers a new LIST variable
+ * with the PbscCompiler instance.
+ * @see PbscCompiler.registerNewVariable
+ */
 public class ListDefinition extends VariableDefinition {
 
-    int m_size = 1;
+    /**The number of elements this list can hold.*/
+    private int m_size = 1;
 
+    /**
+     * Register the list.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the command was found on.
+     * @param arguments The arguments given the LIST command.
+     */
     public ListDefinition(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
 
-        String reStr = "^(" + idReStr + ")\\s*\\[\\s*" + constLitReStr + "\\s*\\]$";
+        String reStr =
+            "^(" + idReStr + ")\\s*\\[\\s*" + constLitReStr + "\\s*\\]$";
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {

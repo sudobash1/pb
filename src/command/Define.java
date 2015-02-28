@@ -3,8 +3,20 @@ package command;
 import java.util.regex.*;
 import pbsc.*;
 
+/**
+ * A command to generate a constant.
+ * This command generates no pidgen code, but it registers a constant with the
+ * PbscCompiler instance.
+ * @see PbscCompiler.registerNewConstant
+ */
 public class Define extends Command {
 
+    /**
+     * Register the constant.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the command was found on.
+     * @param arguments The arguments given the DEFINE command.
+     */
     public Define(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
 
@@ -29,7 +41,10 @@ public class Define extends Command {
         try {
             i = Integer.valueOf(intStr);
         } catch (NumberFormatException e) {
-            compiler.error(line, "Integer literal out of range, `" + intStr + "'.");
+            compiler.error(
+                line,
+                "Integer literal out of range, `" + intStr + "'."
+            );
             return;
         }
 

@@ -8,29 +8,37 @@ import command.*;
 
 public class PbscCompiler {
 
-    //Maximum number of errors to report before aborting the compilation.
+    /**Maximum number of errors to report before aborting the compilation.*/
     private final int MAX_ERROR = 5;
+    /**Number of errors found so far.*/
     private int m_errorCount = 0;
     
+    /**Set to true when there has been an error reported.*/
     private boolean m_hasError = false;
 
-    //This magicNumber is not found anywhere in the program input.
-    //It is used to make labels for compiler use that will not interfere.
+    /**
+     * A number not found anywhere in the program input.
+     * It is used to make labels for compiler use that will not interfere with
+     * user made labels.
+     */
     private int m_magicNumber;
 
-    private int m_ifCounter = 0;
-    private int m_whileCounter = 0;
-    private int m_forCounter = 0;
-
-    //Maps constants defined in the program to their values.
-    //The String is the constant name with scope mangling.
+    /**
+     * Maps constants defined in the program to their values.
+     * The String is the constant name with scope mangling.
+     */
     private Hashtable<String, Integer> m_definesTable = null;
 
-    //Maps integers to their definition class.
-    //The String is the variable name with scope mangling.
+    /**
+     * Maps integers to their definition class.
+     * The String is the variable name with scope mangling.
+     */
     private Hashtable<String, VariableDefinition> m_varTable = null;
 
-    //The String is the If/While/For/Sub block id.
+    /**
+     * Every time another scope is entered, the block id gets pushed here.
+     * The String is the If/While/For/Sub block id.
+     */
     private ArrayList<String> m_namespaceStack = null;
 
     public PbscCompiler() {
@@ -190,30 +198,6 @@ public class PbscCompiler {
     }
 
     /**
-     * Generates a new, unique if block id.
-     * @return The new if block id.
-     */
-    public String ifID() {
-        return "IF" + (m_ifCounter++) + "ID" + m_magicNumber;
-    }
-
-    /**
-     * Generates a new, unique while block id.
-     * @return The new if block id.
-     */
-    public String whileID() {
-        return "WHILE" + (m_whileCounter++) + "ID" + m_magicNumber;
-    }
-
-    /**
-     * Generates a new, unique for block id.
-     * @return The new if block id.
-     */
-    public String forID() {
-        return "WHILE" + (m_forCounter++) + "ID" + m_magicNumber;
-    }
-
-    /**
      * Returns the passed in label with scope mangling applied.
      * @return The new if block id.
      */
@@ -323,7 +307,7 @@ public class PbscCompiler {
     public int run(String[] args) {
         String input;
 
-        if (args.length < 1) {
+        if (args.length < 2) {
             System.err.println("Requires more arguments.");
             System.exit(1);
         }
@@ -338,7 +322,9 @@ public class PbscCompiler {
         int line = 1; //What line number are we on?
 
         //Statements are always delimited by ;
-        ArrayList<String> str_commands = new ArrayList<String>(Arrays.asList(input.split(";")));
+        ArrayList<String> str_commands = new ArrayList<String>(
+            Arrays.asList(input.split(";"))
+        );
         ArrayList<Command> program = new ArrayList<Command>();
 
         //Go through the list of statements found in the file and generate
@@ -357,6 +343,13 @@ public class PbscCompiler {
             System.err.println("Compilation failed.");
             System.exit(2);
         }
+
+        //Bind the variables to addresses.
+        
+        /* XXX For now we are assuming that the variables go immediatly after
+         * the program statements at the top of memory.
+         */
+        int programInstSize;
 
         return 0;
     }

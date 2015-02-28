@@ -3,9 +3,23 @@ package command;
 import java.util.regex.*;
 import pbsc.*;
 
+/**
+ * The base class for all sections of the program.
+ * Each command class is able to create its own pidgen code. Commands may also
+ * contain other commands (expressions) which they subcall to create their
+ * code.
+ * @see Expression
+ */
 public abstract class Command {
 
+    /**The main instance of the PbscCompiler.*/
     protected PbscCompiler m_compiler = null;
+
+    /**
+     * The line the command was found on.
+     * (This is the line the ; is on.)
+     */
+    protected int m_line;
 
     /* The below registers must not be clobbered by any expression evaluation.
      * They may only be modified if the expression is initialized to save to
@@ -26,13 +40,15 @@ public abstract class Command {
     /**Matches any valid operator to use in a lisp expression.
      * Only group is entire match.
      */
-    public final static String operatorReStr = "(and\\s|or\\s|=|<|>|<=|>=|!=|\\+|-|\\*|/|^|mod\\s)";
+    public final static String operatorReStr =
+        "(and\\s|or\\s|=|<|>|<=|>=|!=|\\+|-|\\*|/|^|mod\\s)";
 
     /**Matches any valid lisp-style expression.
      * May match lisp-style expressions with invalid operands expressions.
      * Two groups are 1) the operator and 2) the operands.
      */
-    public final static String lispExpReStr = "\\(\\s*"+operatorReStr+"\\s*(.*)\\)";
+    public final static String lispExpReStr =
+        "\\(\\s*"+operatorReStr+"\\s*(.*)\\)";
 
     /**Matches any valid list expression.
      * May match list expressions with invalid index expressions.
@@ -50,10 +66,14 @@ public abstract class Command {
      * Only group is entire match.
      */
     public final static String expressionReStr =
-        "(" + lispExpReStr + "|" + listVarReStr + "|" + idReStr + "|" + constLitReStr + ")";
+        "(" + lispExpReStr + "|" + listVarReStr + "|" + idReStr + "|" +
+        constLitReStr + ")";
 
-    protected int m_line;
-
+    /**
+     * Create a command.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the expression was found on.
+     */
     public Command(PbscCompiler compiler, int line) {
         m_compiler = compiler;
         m_line = line;
@@ -73,7 +93,7 @@ public abstract class Command {
     public abstract int stackReq();
 
     /**
-     * Creates a command from a given string.
+     * Creates a command from a given string. A command factory.
      * The `;' must be removed from end of the string.
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on (line of the `;' char)
@@ -108,7 +128,7 @@ public abstract class Command {
             case "list":
                 return new ListDefinition(compiler, line, cleanCommandArgs);
             case "rem":
-                return new Rem(compiler, line, commandArgs);
+                return new Rem(compiler, line);
             case "set":
                 return new Set(compiler, line, cleanCommandArgs);
             default: 
