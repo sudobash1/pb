@@ -59,7 +59,7 @@ public class PbscCompiler {
         m_hasError = true;
         if (++m_errorCount >= MAX_ERROR) {
             System.err.println(
-                "Aborting compilation attempt. No more errors will be reported"
+                "Aborting compilation attempt. No more errors will be reported."
             );
             System.err.println("Compilation failed.");
             System.exit(2);
@@ -294,6 +294,27 @@ public class PbscCompiler {
     }
 
     /**
+     * Writes the given string to a file.
+     *
+     * @param path The path to the file to written to.
+     * @param content The content to be placed in the file.
+     */
+    public void writeFile(String path, String content) {
+
+        PrintWriter fout = null;
+
+        try {
+            fout = new PrintWriter(path);
+            fout.print(content);
+        } catch (FileNotFoundException e) {
+            System.err.println("Cannot open file `" + path + "' for writing.");
+            System.exit(1);
+        } finally {
+            if (fout != null) fout.close();
+        }
+    }
+
+    /**
      * Run the compiler with passed in args.
      *
      * The exit codes are:
@@ -330,6 +351,7 @@ public class PbscCompiler {
         //Go through the list of statements found in the file and generate
         //the command for each one.
         for(String str_command: str_commands) {
+            System.out.println("parsing line: " + str_command);
             line += countNewlines(str_command);
 
             Command newCommand = Command.create(this, line, str_command);
@@ -344,12 +366,50 @@ public class PbscCompiler {
             System.exit(2);
         }
 
+        /*
+         * Front end complete. Now we compile the program to pidgen asm without
+         * bound variables. We need to figure out what the size of the program
+         * will be before we can bind variables to addresses.
+         *
+         * This is a bit of a hack and makes it so we must compile like this
+         * twice, but it will work for now. It is quite fast enough because
+         * compilation is simple.
+         */
+        StringBuilder pidgenStringBuilder = new StringBuilder();
+        for (Command c : program) {
+            pidgenStringBuilder.append(c.generateCode());
+        }
+
+        String pidgenString = pidgenStringBuilder.toString();
+
+        //The size taken up by program instructions. Assuming one a line.
+        final int programInstSize = countNewlines(pidgenString);
+
         //Bind the variables to addresses.
         
         /* XXX For now we are assuming that the variables go immediatly after
          * the program statements at the top of memory.
          */
-        int programInstSize;
+        
+        int variableLocation = programInstSize + 1;
+        for (VariableDefinition vd : m_varTable.values()) {
+            vd.setAddress(variableLocation);
+            variableLocation += vd.getSize();
+        }
+
+        //The last variable is where our staticly allocated memory ends.
+        final int endOfStaticMem = variableLocation;
+
+        //Recompile with bound variables
+        pidgenStringBuilder = new StringBuilder();
+        for (Command c : program) {
+            pidgenStringBuilder.append(c.generateCode());
+        }
+
+        pidgenString = pidgenStringBuilder.toString();
+
+        //Save the output to the output file.
+        writeFile(args[0], pidgenString);
 
         return 0;
     }
