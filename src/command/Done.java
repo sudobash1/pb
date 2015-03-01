@@ -18,7 +18,7 @@ public class Done extends Command {
     public Done(PbscCompiler compiler, int line) {
         super(compiler, line);
 
-        whileLink = While.currentWhile();
+        whileLink = While.currentWhile(true);
 
         if (whileLink == null) {
             compiler.error(line, "`done' with no `while' or `for'");

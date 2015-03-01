@@ -58,13 +58,14 @@ public class While extends Command {
 
     /**
      * Return the While instance for the current WHILE block and exit it.
+     * @param exit If exit is true, then exit the current WHILE block also.
      * @return Current if instance, or null if not in a WHILE block.
      */
-    public static While currentWhile() {
+    public static While currentWhile(boolean exit) {
         if (whileBlocks.empty()){
             return null;
         }
-        return whileBlocks.pop();
+        return exit ? whileBlocks.pop() : whileBlocks.peek();
     }
 
     /**
