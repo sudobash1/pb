@@ -5,11 +5,11 @@ import pbsc.*;
 import expression.*;
 
 /**
- * Starts an if block
+ * Starts an IF block
  */
 public class If extends Command {
 
-    /**The number of if blocks found so far.*/
+    /**The number of IF blocks found so far.*/
     private static int ifNumber = 0;
 
     /**The stack of IF block beginings.*/
@@ -27,7 +27,7 @@ public class If extends Command {
     protected final String endLabel;
 
     /**
-     * Create a new If block.
+     * Create a new IF block.
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on.
      * @param exp The expression to test.
@@ -37,19 +37,21 @@ public class If extends Command {
 
         m_exp = Expression.create(compiler, line, ifRegister, exp);
 
-        blockID = "IF"+(ifNumber++);
-        compiler.pushScope(blockID);
-        thenLabel = compiler.scopeID("THEN");
-        elseLabel = compiler.scopeID("ELSE");
-        endLabel = compiler.scopeID("END");
+        blockID = "IF"+ifNumber;
+        thenLabel = "THEN"+ifNumber;
+        elseLabel = "ELSE"+ifNumber;
+        endLabel = "FI"+ifNumber;
+        
+        ++ifNumber;
 
+        compiler.pushScope(blockID);
         ifBlocks.push(this);
     }
 
     /**
-     * Return the If instance for the current if block.
-     * @param exit If exit is true, then exit the current if block also.
-     * @return Current if instance, or null if not in an if block.
+     * Return the If instance for the current IF block.
+     * @param exit If exit is true, then exit the current IF block also.
+     * @return Current if instance, or null if not in an IF block.
      */
     public static If currentIf(boolean exit) {
         return exit ? ifBlocks.pop() : ifBlocks.peek();

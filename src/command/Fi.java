@@ -4,14 +4,14 @@ import pbsc.*;
 import expression.*;
 
 /**
- * Ends an if block
+ * Ends an IF block
  */
 public class Fi extends Command {
 
     private final If ifLink;
 
     /**
-     * End the if block
+     * End the IF block
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on.
      */

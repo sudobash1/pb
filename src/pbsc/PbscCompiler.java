@@ -13,6 +13,7 @@ public class PbscCompiler {
 
     /**Maximum number of errors to report before aborting the compilation.*/
     private final int MAX_ERROR = 5;
+
     /**Number of errors found so far.*/
     private int m_errorCount = 0;
     
@@ -39,6 +40,12 @@ public class PbscCompiler {
     private Hashtable<String, VariableDefinition> m_varTable = null;
 
     /**
+     * Contains all defined labels.
+     * The String is the label name with scope mangling.
+     */
+    private ArrayList<String> m_labels = null;
+
+    /**
      * Every time another scope is entered, the block id gets pushed here.
      * The String is the If/While/For/Sub block id.
      */
@@ -48,6 +55,7 @@ public class PbscCompiler {
         m_varTable = new Hashtable<String, VariableDefinition>();
         m_definesTable = new Hashtable<String,Integer>();
         m_namespaceStack = new ArrayList<String>();
+        m_labels  = new ArrayList<String>();
     }
 
     /**
@@ -96,12 +104,20 @@ public class PbscCompiler {
     public String lineEnding() { return "\n"; };
 
     /**
+     * Return a copy of the namespace stack
+     * @return the copy of the namespace stack.
+     */
+    public ArrayList<String> copyNamespace() {
+        return new ArrayList<String>(m_namespaceStack);
+    }
+
+    /**
      * Register a new constant. Checks if constant exists before adding.
      * If the constant already exists, prints out an error.
      * This method is scope aware.
      * @param constName the constant name (without scope mangling).
      * @param value the value of the constant.
-     * @param int the line the const is being declaired.
+     * @param line the line the const is being declaired.
      * @return False if constant already exists.
      */
     public boolean registerNewConstant(String constName, Integer value, int line) {
@@ -121,7 +137,7 @@ public class PbscCompiler {
      * If the constant doesn't exist in this scope, prints out an error.
      * This method is scope aware.
      * @param constName the name of the constant
-     * @param int the line the const is being referenced from.
+     * @param line the line the const is being referenced from.
      * @return the Integer value of the constant if it exists, else null.
      */
     public Integer getConstantValue(String constName, int line) {
@@ -141,7 +157,7 @@ public class PbscCompiler {
      * This method is scope aware.
      * @param varName the variable name (without scope mangling).
      * @param varDefn the VariableDefinition
-     * @param int the line the variable is being declaired.
+     * @param line the line the variable is being declaired.
      * @return False if variable already exists.
      */
     public boolean registerNewVariable(String varName, VariableDefinition varDefn, int line) {
@@ -161,7 +177,7 @@ public class PbscCompiler {
      * If the variable doesn't exist in this scope, prints out an error.
      * This method is scope aware.
      * @param varName the name of the variable
-     * @param int the line the variable is being referenced from.
+     * @param line the line the variable is being referenced from.
      * @return the VariableDefinition if it exists else null.
      */
     public VariableDefinition getVarableDefinition(String varName, int line) {
@@ -223,6 +239,8 @@ public class PbscCompiler {
     /**
      * Returns a list of all namespace magled ids which the passed in label
      * could represent. Used for determining what to link a label to.
+     * This method is scope aware.
+     * @param label the label to mangle.
      * @return The ArrayList of all possible ids.
      */
     private ArrayList<String> allId(String label) {
@@ -337,6 +355,7 @@ public class PbscCompiler {
         }
 
         StringBuilder sb = new StringBuilder();
+
         sb.append("#VARIABLE TABLE##########################################");
         sb.append(lineEnding());
         sb.append("#");
@@ -352,6 +371,24 @@ public class PbscCompiler {
         }
         sb.append("#");
         sb.append(lineEnding());
+
+        sb.append("#CONSTANT TABLE##########################################");
+        sb.append(lineEnding());
+        sb.append("#");
+        sb.append(lineEnding());
+        if (m_debug) {
+            for (String key : m_definesTable.keySet()) {
+                sb.append("# ");
+                sb.append(key);
+                sb.append(" = ");
+                sb.append(""+m_definesTable.get(key));
+                sb.append(lineEnding());
+            }
+        }
+        sb.append("#");
+        sb.append(lineEnding());
+
+
         sb.append("#########################################################");
         sb.append(lineEnding());
         sb.append(lineEnding());
@@ -403,6 +440,12 @@ public class PbscCompiler {
             if (newCommand != null) {
                 program.add(newCommand);
             }
+        }
+
+        // Now that all labels have been found, make sure that all commands
+        // that need labels can link to valid labels.
+        for (Command c: program) {
+            c.checkLabels();
         }
 
         if (m_hasError) {

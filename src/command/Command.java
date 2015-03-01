@@ -37,6 +37,9 @@ public abstract class Command {
     /**The destination where the value of an if statement gets evaluated.*/
     public final static int ifRegister = 4;
 
+    /**The destination where the value of an while statement gets evaluated.*/
+    public final static int whileRegister = 4;
+
     /**A temp register. Clobber at will.*/
     public final static int tmpRegister1 = 1;
     /**A temp register. Clobber at will.*/
@@ -109,6 +112,11 @@ public abstract class Command {
     public abstract int stackReq();
 
     /**
+     * Check that all required labels exist.
+     */
+    public void checkLabels() {}
+
+    /**
      * Creates a command from a given string. A command factory.
      * The `;' must be removed from end of the string.
      * @param compiler The main instance of the PbscCompiler.
@@ -140,17 +148,26 @@ public abstract class Command {
             case "define":
                 cmd = new Define(compiler, line, commandArgs);
                 break;
+            case "done":
+                cmd = new Done(compiler, line);
+                break;
             case "else":
                 cmd = new Else(compiler, line);
                 break;
             case "fi":
                 cmd = new Fi(compiler, line);
                 break;
+            case "goto":
+                cmd = new Goto(compiler, line, commandArgs);
+                break;
             case "if":
                 cmd = new If(compiler, line, commandArgs);
                 break;
             case "int":
                 cmd = new IntDefinition(compiler, line, commandArgs);
+                break;
+            case "label":
+                cmd = new Label(compiler, line, commandArgs);
                 break;
             case "list":
                 cmd = new ListDefinition(compiler, line, commandArgs);
@@ -163,6 +180,9 @@ public abstract class Command {
                 break;
             case "setl":
                 cmd = new Setl(compiler, line, commandArgs);
+                break;
+            case "while":
+                cmd = new While(compiler, line, commandArgs);
                 break;
             default: 
                 compiler.error(line, "Invalid command `" + commandName + "'");
