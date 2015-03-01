@@ -84,6 +84,7 @@ public class Setl extends Command {
         sb.append(m_pointerExp.generateCode());
 
         sb.append("SET R" + tmpRegister1 + " 1");
+        sb.append(m_compiler.lineEnding());
 
         for (int x = 0; x < m_values.size() - 1; ++x) {
             sb.append("SET R" + RRegister + " " + m_values.get(x));

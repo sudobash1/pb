@@ -28,7 +28,7 @@ public class ListDefinition extends VariableDefinition {
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
-            compiler.error(line ,"Malformed argument to List.");
+            compiler.error(line ,"Malformed argument to LIST.");
             return;
         }
 
