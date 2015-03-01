@@ -178,6 +178,9 @@ public abstract class Command {
             case "list":
                 cmd = new ListDefinition(compiler, line, commandArgs);
                 break;
+            case "p":
+                cmd = new P(compiler, line, commandArgs);
+                break;
             case "rem":
                 cmd = new Rem(compiler, line);
                 break;
