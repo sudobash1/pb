@@ -112,7 +112,7 @@ public class PbscCompiler {
                 return false;
             }
         }
-        m_definesTable.put(id(constName), value);
+        m_definesTable.put(scopeID(constName), value);
         return true;
     }
 
@@ -152,7 +152,7 @@ public class PbscCompiler {
                 return false;
             }
         }
-        m_varTable.put(id(varName), varDefn);
+        m_varTable.put(scopeID(varName), varDefn);
         return true;
     }
 
@@ -194,7 +194,7 @@ public class PbscCompiler {
             //This is a constant
             return getConstantValue(constLit, line);
         } else {
-            if (constLit.matches("[1-9][0-9]*")) {
+            if (constLit.matches("([1-9][0-9]*|0)")) {
                 try {
                     return Integer.valueOf(constLit);
                 } catch (NumberFormatException e) {
@@ -202,7 +202,7 @@ public class PbscCompiler {
                     return null;
                 }
             } else {
-                error(line, "Integer constant or literal expected. Found `'" + constLit + "'");
+                error(line, "Integer constant or literal expected. Found `" + constLit + "'");
                 return null;
             }
         }
@@ -210,9 +210,9 @@ public class PbscCompiler {
 
     /**
      * Returns the passed in label with scope mangling applied.
-     * @return The new if block id.
+     * @return The scope mangled label.
      */
-    public String id(String label) {
+    public String scopeID(String label) {
         String namespace = "";
         for (String s : m_namespaceStack) {
             namespace += s;
@@ -251,7 +251,7 @@ public class PbscCompiler {
     /**
      * Pops a id from the scope stack.
      */
-    public void popScope(String scope) {
+    public void popScope() {
         m_namespaceStack.remove(m_namespaceStack.size() - 1);
     }
 

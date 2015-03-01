@@ -33,6 +33,15 @@ public class ListVariablePointer extends Expression {
         m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
 
         m_vd = compiler.getVarableDefinition(variable, line);
+
+        if (m_vd == null) {
+            return;
+        }
+        if (! (m_vd instanceof ListDefinition)) {
+            compiler.error(line, "`" + variable + "' is not a list.");
+            return;
+        }
+
         m_indexExp = Expression.create(compiler, line, m_tmpRegister, indexExpr);
     }
 

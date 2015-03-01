@@ -34,13 +34,16 @@ public abstract class Command {
     /**The destination register for the RValue*/
     public final static int RRegister = 4;
 
+    /**The destination where the value of an if statement gets evaluated.*/
+    public final static int ifRegister = 4;
+
     /**A temp register. Clobber at will.*/
     public final static int tmpRegister1 = 1;
     /**A temp register. Clobber at will.*/
     public final static int tmpRegister2 = 2;
 
     /**Extract the command name and arguments from a string*/
-    private final static String m_commandArgsReStr = "^([a-zA-Z]+)\\s(.*)$";
+    private final static String m_commandArgsReStr = "^([a-zA-Z]+)\\s*(.*)$";
 
     /**Matches all valid identifiers. Prefix with a `#' to make it a constant*/
     public final static String idReStr = "[a-zA-Z_][a-zA-Z0-9_]*";
@@ -67,7 +70,7 @@ public abstract class Command {
     /**Matches any valid constant or integer literal.
      * Only group is entire match.
      */
-    public final static String constLitReStr = "(#"+idReStr+"|[1-9][0-9]*)";
+    public final static String constLitReStr = "(#"+idReStr+"|[1-9][0-9]*|0)";
 
     /**Matches any valid expression.
      * May match invalid expressions as well.
@@ -121,22 +124,30 @@ public abstract class Command {
         //Check if this line is empty
         if (s.equals("")) { return null; }
 
-        Matcher commandMatcher = Pattern.compile(m_commandArgsReStr).matcher(s);
-        Matcher argsMatcher = Pattern.compile(m_commandArgsReStr).matcher(s);
+        Matcher m = Pattern.compile(m_commandArgsReStr).matcher(s);
 
-        if (! commandMatcher.find() || ! argsMatcher.find()) {
+        if (! m.find()) {
             compiler.error(line, "Malformed line.");
             return null;
         }
 
-        String commandName = commandMatcher.group(1).toLowerCase();
-        String commandArgs = argsMatcher.group(2);
+        String commandName = m.group(1).toLowerCase();
+        String commandArgs = m.group(2);
 
         Command cmd = null;
 
         switch (commandName) {
             case "define":
                 cmd = new Define(compiler, line, commandArgs);
+                break;
+            case "else":
+                cmd = new Else(compiler, line);
+                break;
+            case "fi":
+                cmd = new Fi(compiler, line);
+                break;
+            case "if":
+                cmd = new If(compiler, line, commandArgs);
                 break;
             case "int":
                 cmd = new IntDefinition(compiler, line, commandArgs);
@@ -149,6 +160,9 @@ public abstract class Command {
                 break;
             case "set":
                 cmd = new Set(compiler, line, commandArgs);
+                break;
+            case "setl":
+                cmd = new Setl(compiler, line, commandArgs);
                 break;
             default: 
                 compiler.error(line, "Invalid command `" + commandName + "'");

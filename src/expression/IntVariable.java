@@ -18,7 +18,17 @@ public class IntVariable extends Expression {
      */
     public IntVariable(PbscCompiler compiler, int line, int register, String variable) {
         super(compiler, line, register);
+
         m_vd = compiler.getVarableDefinition(variable, line);
+
+        if (m_vd == null) {
+            return;
+        }
+        if (! (m_vd instanceof IntDefinition)) {
+            compiler.error(line, "`" + variable + "' is not an int.");
+            return;
+        }
+
     }
 
     @Override

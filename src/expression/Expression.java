@@ -57,7 +57,7 @@ public abstract class Expression extends Command {
             );
         }
 
-        compiler.error(line ,"Malformed expression. " + expStr);
+        compiler.error(line ,"Malformed expression `" + expStr + "'.");
         return null;
     }
 
