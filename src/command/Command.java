@@ -145,6 +145,9 @@ public abstract class Command {
         Command cmd = null;
 
         switch (commandName) {
+            case "break":
+                cmd = new Break(compiler, line);
+                break;
             case "define":
                 cmd = new Define(compiler, line, commandArgs);
                 break;
@@ -156,6 +159,9 @@ public abstract class Command {
                 break;
             case "fi":
                 cmd = new Fi(compiler, line);
+                break;
+            case "for":
+                cmd = new For(compiler, line, commandArgs);
                 break;
             case "goto":
                 cmd = new Goto(compiler, line, commandArgs);

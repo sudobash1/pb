@@ -32,7 +32,7 @@ public class ListVariablePointer extends Expression {
 
         m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
 
-        m_vd = compiler.getVarableDefinition(variable, line);
+        m_vd = compiler.getVarableDefinition(variable, line, true);
 
         if (m_vd == null) {
             return;

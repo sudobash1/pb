@@ -16,11 +16,21 @@ public class While extends Command {
     private static Stack<While> whileBlocks = new Stack<While>();
 
     /**The expression to test*/
-    private Expression m_exp = null;
+    protected Expression m_exp = null;
 
     protected final String blockID;
+    protected final String testLabel;
     protected final String startLabel;
     protected final String doneLabel;
+
+    /**
+     * This command gets run before the loop starts.
+     * It may be null.*/
+    protected Command m_preCommand = null;
+    /**
+     * This command gets run after every itteration.
+     * It may be null.*/
+    protected Command m_postCommand = null;
 
     /**
      * Create a new WHILE block.
@@ -31,11 +41,14 @@ public class While extends Command {
     public While(PbscCompiler compiler, int line, String exp) {
         super(compiler, line);
 
-        m_exp = Expression.create(compiler, line, whileRegister, exp);
+        if (! (this instanceof For)) {
+            m_exp = Expression.create(compiler, line, whileRegister, exp);
+        }
 
         blockID = "WHILE"+whileNumber;
-        startLabel = "START"+whileNumber;
-        doneLabel = "DONE"+whileNumber;
+        testLabel = compiler.applyMagic("WHILE"+whileNumber);
+        startLabel = compiler.applyMagic("START"+whileNumber);
+        doneLabel = compiler.applyMagic("DONE"+whileNumber);
 
         ++whileNumber;
 
@@ -48,21 +61,38 @@ public class While extends Command {
      * @return Current if instance, or null if not in a WHILE block.
      */
     public static While currentWhile() {
+        if (whileBlocks.empty()){
+            return null;
+        }
         return whileBlocks.pop();
+    }
+
+    /**
+     * Return the command to be run after every itteration.
+     * @return the command to be run right after every itteration.
+     */
+    public Command postCommand() {
+        return m_postCommand;
     }
 
     @Override
     public String generateCode() {
-        return super.generateCode() + 
+        String ret = super.generateCode();
+        if (m_preCommand != null) {
+            ret += m_preCommand.generateCode();
+        }
+        ret += ":" + testLabel +
+               m_compiler.lineEnding() +
                m_exp.generateCode() +
                "SET R" + tmpRegister1 + " 0" +
                m_compiler.lineEnding() +
-               "BNE R" + tmpRegister1 + " R" + whileRegister + startLabel +
+               "BNE R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
                m_compiler.lineEnding() +
                "BRANCH " + doneLabel +
                m_compiler.lineEnding() +
                ":" + startLabel +
                m_compiler.lineEnding();
+        return ret;
     }
 
     @Override

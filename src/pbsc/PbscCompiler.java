@@ -178,16 +178,20 @@ public class PbscCompiler {
      * This method is scope aware.
      * @param varName the name of the variable
      * @param line the line the variable is being referenced from.
+     * @param vital if vital is true, then throw an error if the
+     * VariableDefinition does not exist.
      * @return the VariableDefinition if it exists else null.
      */
-    public VariableDefinition getVarableDefinition(String varName, int line) {
+    public VariableDefinition getVarableDefinition(
+        String varName, int line, boolean vital
+    ) {
         //Check if variable exists in this scope.
         for (String id : allId(varName)) {
             if (m_varTable.containsKey(id)) {
                 return m_varTable.get(id);
             }
         }
-        error(line, "Undefined varable `" + varName + "'");
+        if (vital) { error(line, "Undefined varable `" + varName + "'"); }
         return null;
     }
 
@@ -234,6 +238,16 @@ public class PbscCompiler {
             namespace += s;
         }
         return namespace + label + "ID" + m_magicNumber;
+    }
+
+    /**
+     * Apply the magic number to the label to make sure it doesn't interfere
+     * with any of the users.
+     * @param label The label to apply the magic to.
+     * @return The label with magic applied.
+     */
+    public String applyMagic(String label) {
+        return label + "ID" + m_magicNumber; 
     }
 
     /**

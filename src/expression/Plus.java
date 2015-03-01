@@ -5,7 +5,7 @@ import pbsc.*;
 
 public class Plus extends LispExpression {
 
-    /**The register the first value to add test stored.*/
+    /**The register the first value to add stored.*/
     private final int m_tmpRegister;
 
     /**

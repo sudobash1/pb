@@ -63,7 +63,7 @@ public class Setl extends Command {
             return;
         }
 
-        VariableDefinition vd = compiler.getVarableDefinition(name, line);
+        VariableDefinition vd = compiler.getVarableDefinition(name, line, true);
         if (vd instanceof ListDefinition) {
             int size = ((ListDefinition)vd).getSize();
 

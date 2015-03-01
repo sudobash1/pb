@@ -4,7 +4,7 @@ import pbsc.*;
 import expression.*;
 
 /**
- * Ends a WHILE block
+ * Ends a WHILE or a FOR block
  */
 public class Done extends Command {
 
@@ -20,8 +20,9 @@ public class Done extends Command {
 
         whileLink = While.currentWhile();
 
-        if (whileLink  == null) {
-            compiler.error(line, "`done' with no `while'");
+        if (whileLink == null) {
+            compiler.error(line, "`done' with no `while' or `for'");
+            return;
         }
 
         compiler.popScope();
@@ -29,8 +30,13 @@ public class Done extends Command {
 
     @Override
     public String generateCode() {
-        return super.generateCode() +
-               ":" + whileLink.doneLabel + m_compiler.lineEnding();
+        String ret = super.generateCode();
+        if (whileLink.postCommand() != null) {
+            ret += whileLink.postCommand().generateCode();
+        }
+        ret += "BRANCH " + whileLink.testLabel;
+        ret += ":" + whileLink.doneLabel + m_compiler.lineEnding();
+        return ret;
     }
 
     @Override

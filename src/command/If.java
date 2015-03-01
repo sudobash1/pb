@@ -38,9 +38,9 @@ public class If extends Command {
         m_exp = Expression.create(compiler, line, ifRegister, exp);
 
         blockID = "IF"+ifNumber;
-        thenLabel = "THEN"+ifNumber;
-        elseLabel = "ELSE"+ifNumber;
-        endLabel = "FI"+ifNumber;
+        thenLabel = compiler.applyMagic("THEN"+ifNumber);
+        elseLabel = compiler.applyMagic("ELSE"+ifNumber);
+        endLabel = compiler.applyMagic("FI"+ifNumber);
         
         ++ifNumber;
 
@@ -54,6 +54,9 @@ public class If extends Command {
      * @return Current if instance, or null if not in an IF block.
      */
     public static If currentIf(boolean exit) {
+        if (ifBlocks.empty()){
+            return null;
+        }
         return exit ? ifBlocks.pop() : ifBlocks.peek();
     }
 

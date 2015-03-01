@@ -204,7 +204,12 @@ public abstract class LispExpression extends Expression {
 
         switch (op.trim()) {
             case "+": return new Plus(compiler, line, register, exprs);
+            case "!=": return new NotEquals(compiler, line, register, exprs);
         }
+
+        compiler.error(
+            line, "Invalid operator for lisp expression `" + op.trim() + "'"
+        );
 
         return null;
     }

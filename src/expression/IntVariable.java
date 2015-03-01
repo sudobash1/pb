@@ -19,7 +19,7 @@ public class IntVariable extends Expression {
     public IntVariable(PbscCompiler compiler, int line, int register, String variable) {
         super(compiler, line, register);
 
-        m_vd = compiler.getVarableDefinition(variable, line);
+        m_vd = compiler.getVarableDefinition(variable, line, true);
 
         if (m_vd == null) {
             return;

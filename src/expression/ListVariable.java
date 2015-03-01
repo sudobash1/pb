@@ -40,7 +40,7 @@ public class ListVariable extends Expression {
             return;
         }
 
-        m_vd = compiler.getVarableDefinition(variable, line);
+        m_vd = compiler.getVarableDefinition(variable, line, true);
         m_indexExp = Expression.create(compiler, line, m_tmpRegister, indexExpr);
     }
 

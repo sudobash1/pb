@@ -22,6 +22,7 @@ public class Fi extends Command {
 
         if (ifLink == null) {
             compiler.error(line, "`fi' with no `if'");
+            return;
         }
 
         compiler.popScope();
