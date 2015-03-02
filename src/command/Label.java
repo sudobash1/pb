@@ -26,6 +26,13 @@ public class Label extends Command {
     public Label(PbscCompiler compiler, int line, String name) {
         super(compiler, line);
         m_name = name.trim();
+
+        if (compiler.isReservedWord(m_name)) {
+            compiler.error(line, "Illegal name for label `" + m_name + "'.");
+            m_namespaceStack = null;
+            return;
+        }
+
         if (labels.contains(m_name)){
             compiler.error(line, "Label `" + m_name + "' alread exists.");
             m_namespaceStack = null;

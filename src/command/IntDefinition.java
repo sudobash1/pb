@@ -30,6 +30,11 @@ public class IntDefinition extends VariableDefinition {
 
         String name = m.group(1);
 
+        if (compiler.isReservedWord(name)) {
+            compiler.error(line, "Illegal name for int `" + name + "'.");
+            return;
+        }
+
         compiler.registerNewVariable(name, this, line);
     }
 

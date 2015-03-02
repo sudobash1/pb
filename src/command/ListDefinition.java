@@ -35,6 +35,11 @@ public class ListDefinition extends VariableDefinition {
         String name = m.group(1);
         String size = m.group(2);
 
+        if (compiler.isReservedWord(name)) {
+            compiler.error(line, "Illegal name for list `" + name + "'.");
+            return;
+        }
+
         compiler.registerNewVariable(name, this, line);
 
         Integer IntegerSize = compiler.constLit2Integer(size, line);

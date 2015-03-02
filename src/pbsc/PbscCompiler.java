@@ -8,6 +8,14 @@ import command.*;
 
 public class PbscCompiler {
 
+    /**These words may not be used as labels or variables.*/
+    private static final String[] reservedWords = {
+        "and", "break", "case", "define", "default", "done", "else", "end",
+        "fi", "for", "gosub", "goto", "if", "int", "lable", "list", "pow",
+        "on", "or", "p", "print", "printl", "read", "readl", "rem", "set",
+        "setl", "sub", "subr", "while", "write"
+    };
+
     /**Turns on debugging output*/
     private final boolean m_debug = true;
 
@@ -109,6 +117,20 @@ public class PbscCompiler {
      */
     public ArrayList<String> copyNamespace() {
         return new ArrayList<String>(m_namespaceStack);
+    }
+
+    /**
+     * Returns if the passed in identifier is a resurved word.
+     * @param id the identifier to check.
+     * @return true if id is a resurved word.
+     */
+    public boolean isReservedWord(String id) {
+        for (String rid : reservedWords) {
+            if (rid.equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -181,6 +181,9 @@ public abstract class Command {
             case "p":
                 cmd = new P(compiler, line, commandArgs);
                 break;
+            case "print":
+                cmd = new Print(compiler, line, commandArgs);
+                break;
             case "rem":
                 cmd = new Rem(compiler, line);
                 break;
