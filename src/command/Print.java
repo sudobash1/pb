@@ -10,9 +10,10 @@ import expression.*;
  */
 public class Print extends Writer {
 
-    //regex to extract and check arguments
+    /**regex to extract and check arguments*/
     private final String m_argumentsReStr = 
-        "^" + expressionReStr + "(" + m_onReStr + "|" + m_defaultReStr + ")*$";
+        "^" + expressionReStr +
+        "(" + m_onReStr + "|" + m_defaultReStr + ")*$";
 
     /**
      * Create a new Print instance. 

@@ -151,6 +151,9 @@ public abstract class Command {
             case "break":
                 cmd = new Break(compiler, line);
                 break;
+            case "close":
+                cmd = new Close(compiler, line, commandArgs);
+                break;
             case "define":
                 cmd = new Define(compiler, line, commandArgs);
                 break;
@@ -181,6 +184,9 @@ public abstract class Command {
             case "list":
                 cmd = new ListDefinition(compiler, line, commandArgs);
                 break;
+            case "open":
+                cmd = new Open(compiler, line, commandArgs);
+                break;
             case "p":
                 cmd = new P(compiler, line, commandArgs);
                 break;
@@ -198,6 +204,9 @@ public abstract class Command {
                 break;
             case "while":
                 cmd = new While(compiler, line, commandArgs);
+                break;
+            case "write":
+                cmd = new Write(compiler, line, commandArgs);
                 break;
             default: 
                 compiler.error(line, "Invalid command `" + commandName + "'");

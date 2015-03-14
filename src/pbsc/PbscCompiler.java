@@ -13,8 +13,19 @@ public class PbscCompiler {
         "and", "break", "case", "define", "default", "done", "else", "end",
         "fi", "for", "gosub", "goto", "if", "int", "lable", "list", "pow",
         "on", "or", "p", "print", "printl", "read", "readl", "rem", "set",
-        "setl", "sub", "subr", "while", "write"
+        "setl", "sub", "subr", "to", "while", "write"
     };
+
+    public static final int SYSCALL_EXIT     = 0;    /* exit the current program */
+    public static final int SYSCALL_OUTPUT   = 1;    /* outputs a number */
+    public static final int SYSCALL_GETPID   = 2;    /* get current process id */
+    public static final int SYSCALL_OPEN     = 3;    /* access a device */
+    public static final int SYSCALL_CLOSE    = 4;    /* release a device */
+    public static final int SYSCALL_READ     = 5;    /* get input from device */
+    public static final int SYSCALL_WRITE    = 6;    /* send output to device */
+    public static final int SYSCALL_EXEC     = 7;    /* spawn a new process */
+    public static final int SYSCALL_YIELD    = 8;    /* yield the CPU to another process */
+    public static final int SYSCALL_COREDUMP = 9;    /* print process state and exit */
 
     /**Turns on debugging output*/
     private final boolean m_debug = true;
