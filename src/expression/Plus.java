@@ -17,8 +17,10 @@ public class Plus extends LispExpression {
      * @param operands A string containing two space separated expressions to
      * add.
      */
-    public Plus(PbscCompiler compiler, int line, int register,
-                ArrayList<Expression> operands) {
+    public Plus(
+        PbscCompiler compiler, int line, int register,
+        ArrayList<Expression> operands
+    ) {
 
         super(compiler, line, register, operands);
 

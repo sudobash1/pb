@@ -216,6 +216,8 @@ public abstract class LispExpression extends Expression {
         switch (op.trim()) {
             case "+": return new Plus(compiler, line, register, exprs);
             case "!=": return new NotEquals(compiler, line, register, exprs);
+            case "and": return new And(compiler, line, register, exprs);
+            case "or": return new Or(compiler, line, register, exprs);
         }
 
         compiler.error(
