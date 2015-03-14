@@ -37,10 +37,10 @@ public class Plus extends LispExpression {
     public String generateCode() {
         return m_operands.get(0).generateCode() +
                "COPY R" + m_tmpRegister + " R" + m_register +
-               m_compiler.lineEnding() +
+               endl() +
                m_operands.get(1).generateCode() +
                "ADD R" + m_register + " R" + m_register + " R" + m_tmpRegister +
-               m_compiler.lineEnding();
+               endl();
     }
 
     @Override

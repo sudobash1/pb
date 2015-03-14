@@ -35,7 +35,7 @@ public class Goto extends Command {
     @Override
     public String generateCode() {
         return super.generateCode() +
-               "BRANCH " + m_label + m_compiler.lineEnding();
+               "BRANCH " + m_label + endl();
     }
 
     @Override

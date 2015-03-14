@@ -61,7 +61,7 @@ public class Label extends Command {
 
     @Override
     public String generateCode() {
-        return super.generateCode() + ":" + m_name + m_compiler.lineEnding();
+        return super.generateCode() + ":" + m_name + endl();
     }
 
     @Override

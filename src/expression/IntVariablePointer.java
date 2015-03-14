@@ -32,8 +32,7 @@ public class IntVariablePointer extends Expression {
 
     @Override
     public String generateCode() {
-        return "SET R" + m_register + " " + m_vd.getAddress() +
-               m_compiler.lineEnding();
+        return "SET R" + m_register + " " + m_vd.getAddress() + endl();
     }
 
     @Override

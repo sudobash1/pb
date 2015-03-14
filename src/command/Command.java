@@ -97,12 +97,19 @@ public abstract class Command {
     }
 
     /**
+     * Return the line ending.
+     */
+    public final String endl() {
+        return m_compiler.lineEnding();
+    }
+
+    /**
      * Generate the pidgen code for this command.
      * @return Returns the pidgen code as a String.
      */
     public String generateCode() {
         if (m_compiler.debugging() && !m_commandString.equals("")) {
-            return "#> " + m_commandString + m_compiler.lineEnding();
+            return "#> " + m_commandString + endl();
         }
         return "";
     }

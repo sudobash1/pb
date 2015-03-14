@@ -50,20 +50,20 @@ public class NotEquals extends LispExpression {
     public String generateCode() {
         return m_operands.get(0).generateCode() +
                "COPY R" + m_tmpRegister + " R" + m_register +
-               m_compiler.lineEnding() +
+               endl() +
                m_operands.get(1).generateCode() +
                "BNE R" + m_register + " R" + m_tmpRegister + " " + m_successLabel +
-               m_compiler.lineEnding() +
+               endl() +
                "SET R" + m_register + " 0" + //Failed
-               m_compiler.lineEnding() +
+               endl() +
                "BRANCH " + m_failLabel +
-               m_compiler.lineEnding() +
+               endl() +
                ":" + m_successLabel +
-               m_compiler.lineEnding() +
+               endl() +
                "SET R" + m_register + " 1" + //Success
-               m_compiler.lineEnding() +
+               endl() +
                ":" + m_failLabel +
-               m_compiler.lineEnding();
+               endl();
     }
 
     @Override

@@ -6,35 +6,35 @@ import pbsc.*;
 import expression.*;
 
 /**
- * A command to write a number to a device.
+ * A command to read a number to a device.
  */
-public abstract class Writer extends TrapCommand {
+public abstract class Reader extends TrapCommand {
 
-    /**Automatically open and close the device as well as write.*/
+    /**Automatically open and close the device as well as read.*/
     protected boolean m_autoOpen = true;
 
-    /**The expression which gives the device number to write to.
+    /**The expression which gives the device number to read from.
      * Must output to trapperRegister.
      */
     protected Expression m_deviceNum;
 
-    /**The expression which gives the device address to write to.
+    /**The expression which gives the device address to read from.
      * Must output to trapperRegister.
      */
     protected Expression m_deviceAddr;
 
-    /**The expression to write.
-     * Must output to trapperRegister.
+    /**An expression to generate a pointer to the location in memory to read
+     * to. Must output to LRegister.
      */
-    protected Expression m_output;
+    protected Expression m_pointerExp;
 
     /**
-     * Create a new Writer instance. 
+     * Create a new Reader instance. 
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on.
      * @param arguments The string which contains multiple ON statements.
      */
-    public Writer(PbscCompiler compiler, int line, String arguments) {
+    public Reader(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line, arguments);
     }
 
@@ -58,30 +58,28 @@ public abstract class Writer extends TrapCommand {
                 )
             );
 
-            ret += "#TRAP to open the device" + endl();
+            ret += "#TRAP to open the device" + m_compiler.lineEnding();
             ret += openTrapper.generateCode();
         }
 
-
-        //Generate the code to write to the device
-        Trapper writeTrapper = new Trapper(
+        //Generate the code to read from the device
+        Trapper readTrapper = new Trapper(
             m_compiler, m_defaultLabel, m_errorMap
         );
 
-        writeTrapper.addArgument(m_deviceNum);
-        writeTrapper.addArgument(m_deviceAddr);
-        writeTrapper.addArgument(m_output);
-        writeTrapper.addArgument(
+        readTrapper.addArgument(m_deviceNum);
+        readTrapper.addArgument(m_deviceAddr);
+        readTrapper.addArgument(
             Expression.create(
                 m_compiler, m_line, trapperRegister,
-                ""+m_compiler.SYSCALL_WRITE, "The WRITE syscall number"
+                ""+m_compiler.SYSCALL_READ, "The READ syscall number"
             )
         );
 
         if (m_autoOpen) {
-            ret += "#TRAP to write from the device" + endl();
+            ret += "#TRAP to read from the device" + m_compiler.lineEnding();
         }
-        ret += writeTrapper.generateCode();
+        ret += readTrapper.generateCode();
 
         if (m_autoOpen) {
             //Generate the code to close the device
@@ -98,9 +96,21 @@ public abstract class Writer extends TrapCommand {
                 )
             );
 
-            ret += "#TRAP to close the device" + endl();
+            ret += "#TRAP to open the device" + m_compiler.lineEnding();
             ret += closeTrapper.generateCode();
         }
+
+        //Save the read value to variable
+
+        if (m_compiler.debugging()) {
+            ret += "#Save the READ value" + m_compiler.lineEnding();
+        }
+
+        ret +=
+            m_pointerExp.generateCode() +
+            "POP R" + RRegister + m_compiler.lineEnding() +
+            "SAVE R" + RRegister + " R" + LRegister + 
+            endl();
 
         return ret;
     }

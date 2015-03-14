@@ -59,6 +59,13 @@ public class Trapper {
     }
 
     /**
+     * Return the line ending.
+     */
+    public final String endl() {
+        return m_compiler.lineEnding();
+    }
+
+    /**
      * Add argument.
      * Arguments will be pushed to the stack in the order that they were
      * added.
@@ -85,7 +92,7 @@ public class Trapper {
             if (m_compiler.debugging() && expr.m_comment != null) {
                 ret += "   #" + expr.m_comment;
             }
-            ret += m_compiler.lineEnding();
+            ret += endl();
         }
 
         //Execute and get error code
@@ -94,8 +101,8 @@ public class Trapper {
             ret += "   #Execute trap and examine return value";
         }
         ret +=
-            m_compiler.lineEnding() +
-            "POP R" + Command.tmpRegister1 + m_compiler.lineEnding();
+            endl() +
+            "POP R" + Command.tmpRegister1 + endl();
 
         //If we don't need to check the error code, then we are done.
         if (m_errorMap.size() == 0 && m_defaultLabel == null) {
@@ -106,20 +113,20 @@ public class Trapper {
         if (m_errorMap.size() == 0) {
             ret +=
                 //Branch to default if error code != 0
-                "SET R" + Command.tmpRegister2 + " 0" + m_compiler.lineEnding() +
+                "SET R" + Command.tmpRegister2 + " 0" + endl() +
                 "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 + " " + m_defaultLabel +
-                m_compiler.lineEnding();
+                endl();
             return ret;
         }
 
         //Check the error code
         ret +=
             //Branch to success if error code = 0
-            "SET R" + Command.tmpRegister2 + " 0" + m_compiler.lineEnding() +
+            "SET R" + Command.tmpRegister2 + " 0" + endl() +
             "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 + " " + m_errorLabel +
-            m_compiler.lineEnding() +
-            "BRANCH " + m_successLabel + m_compiler.lineEnding() +
-            ":" + m_errorLabel + m_compiler.lineEnding();
+            endl() +
+            "BRANCH " + m_successLabel + endl() +
+            ":" + m_errorLabel + endl();
 
         //Check all the errors.
         for (Map.Entry<Integer, String> error : m_errorMap.entrySet()) {
@@ -128,20 +135,20 @@ public class Trapper {
             );
             ret +=
                 "SET R" + Command.tmpRegister2 + " " + error.getKey() + 
-                m_compiler.lineEnding() +
+                endl() +
                 "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 + " " + skipErrorLabel +
-                m_compiler.lineEnding() +
-                "BRANCH " + error.getValue() + m_compiler.lineEnding() +
-                ":" + skipErrorLabel + m_compiler.lineEnding();
+                endl() +
+                "BRANCH " + error.getValue() + endl() +
+                ":" + skipErrorLabel + endl();
         }
 
         //Jump to the default label if there is on.
         if (m_defaultLabel != null) {
-            ret += "BRANCH " + m_defaultLabel + m_compiler.lineEnding();
+            ret += "BRANCH " + m_defaultLabel + endl();
         }
 
         //Jump here if there was no error.
-        ret += ":" + m_successLabel + m_compiler.lineEnding();
+        ret += ":" + m_successLabel + endl();
         
         return ret;
     }

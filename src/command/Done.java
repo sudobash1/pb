@@ -33,7 +33,7 @@ public class Done extends Command {
         String ret = super.generateCode();
         if (whileLink.postCommand() != null) {
             if (m_compiler.debugging()) {
-                ret += "#Incrementing loop" + m_compiler.lineEnding();
+                ret += "#Incrementing loop" + endl();
             }
             ret += whileLink.postCommand().generateCode();
         }
@@ -41,8 +41,8 @@ public class Done extends Command {
         if (m_compiler.debugging()) {
             ret += "   #Go back to start of loop";
         }
-        ret += m_compiler.lineEnding();
-        ret += ":" + whileLink.doneLabel + m_compiler.lineEnding();
+        ret += endl();
+        ret += ":" + whileLink.doneLabel + endl();
         return ret;
     }
 

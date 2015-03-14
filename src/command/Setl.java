@@ -84,21 +84,21 @@ public class Setl extends Command {
         sb.append(m_pointerExp.generateCode());
 
         sb.append("SET R" + tmpRegister1 + " 1");
-        sb.append(m_compiler.lineEnding());
+        sb.append(endl());
 
         for (int x = 0; x < m_values.size() - 1; ++x) {
             sb.append("SET R" + RRegister + " " + m_values.get(x));
-            sb.append(m_compiler.lineEnding());
+            sb.append(endl());
             sb.append("SAVE R" + RRegister + " R" + LRegister);
-            sb.append(m_compiler.lineEnding());
+            sb.append(endl());
             sb.append("ADD R" + LRegister + " R" + LRegister + " R" + tmpRegister1);
-            sb.append(m_compiler.lineEnding());
+            sb.append(endl());
         }
 
         sb.append("SET R" + RRegister + " " + m_values.get(m_values.size()-1));
-        sb.append(m_compiler.lineEnding());
+        sb.append(endl());
         sb.append("SAVE R" + RRegister + " R" + LRegister);
-        sb.append(m_compiler.lineEnding());
+        sb.append(endl());
 
         return sb.toString();
     }

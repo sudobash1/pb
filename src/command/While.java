@@ -83,33 +83,33 @@ public class While extends Command {
         //Initialize the loop
         if (m_preCommand != null) {
             if (m_compiler.debugging()) {
-                ret += "# Initializing loop" + m_compiler.lineEnding();
+                ret += "# Initializing loop" + endl();
             }
             ret += m_preCommand.generateCode();
             if (m_compiler.debugging()) {
-                ret += "# Start of loop" + m_compiler.lineEnding();
+                ret += "# Start of loop" + endl();
             }
         }
 
         if (m_compiler.debugging()) {
-            ret += "# Test if loop is finished" + m_compiler.lineEnding();
+            ret += "# Test if loop is finished" + endl();
         }
 
         //Label for start of loop
         ret += 
-            ":" + testLabel + m_compiler.lineEnding() +
+            ":" + testLabel + endl() +
             m_exp.generateCode() +
             "SET R" + tmpRegister1 + " 0" +
-            m_compiler.lineEnding() +
+            endl() +
             "BNE R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
-            m_compiler.lineEnding() +
+            endl() +
             "BRANCH " + doneLabel +
-            m_compiler.lineEnding() +
+            endl() +
             ":" + startLabel +
-            m_compiler.lineEnding();
+            endl();
 
         if (m_compiler.debugging()) {
-            ret += "# Loop body" + m_compiler.lineEnding();
+            ret += "# Loop body" + endl();
         }
 
         return ret;

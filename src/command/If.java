@@ -64,16 +64,15 @@ public class If extends Command {
     public String generateCode() {
         String ret = super.generateCode() + 
                      m_exp.generateCode() +
-                     "SET R" + tmpRegister1 + " 0" +
-                     m_compiler.lineEnding() +
+                     "SET R" + tmpRegister1 + " 0" + endl() +
                      "BNE R" + tmpRegister1 + " R" + ifRegister + thenLabel +
-                     m_compiler.lineEnding();
+                     endl();
         if (m_foundElse) {
-            ret += "BRANCH " + elseLabel + m_compiler.lineEnding();
+            ret += "BRANCH " + elseLabel + endl();
         } else {
-            ret += "BRANCH " + endLabel + m_compiler.lineEnding();
+            ret += "BRANCH " + endLabel + endl();
         }
-        ret += ":" + thenLabel + m_compiler.lineEnding();
+        ret += ":" + thenLabel + endl();
         return ret;
     }
 

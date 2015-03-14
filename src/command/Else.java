@@ -38,8 +38,8 @@ public class Else extends Command {
     @Override
     public String generateCode() {
         return super.generateCode() +
-               "BRANCH " + ifLink.endLabel + m_compiler.lineEnding() +
-               ":" + ifLink.elseLabel + m_compiler.lineEnding();
+               "BRANCH " + ifLink.endLabel + endl() +
+               ":" + ifLink.elseLabel + endl();
     }
 
     @Override

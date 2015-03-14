@@ -33,10 +33,8 @@ public class IntVariable extends Expression {
 
     @Override
     public String generateCode() {
-        return "SET R" +m_register + " " + m_vd.getAddress() +
-               m_compiler.lineEnding() +
-               "LOAD R" +m_register + " R" +m_register +
-               m_compiler.lineEnding();
+        return "SET R" +m_register + " " + m_vd.getAddress() + endl() +
+               "LOAD R" +m_register + " R" +m_register + endl();
     }
 
     @Override

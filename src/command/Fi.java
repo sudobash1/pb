@@ -31,7 +31,7 @@ public class Fi extends Command {
     @Override
     public String generateCode() {
         return super.generateCode() +
-               ":" + ifLink.endLabel + m_compiler.lineEnding();
+               ":" + ifLink.endLabel + endl();
     }
 
     @Override

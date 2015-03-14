@@ -33,11 +33,10 @@ public class ConstLit extends Expression {
     @Override
     public String generateCode() {
         if (m_register >= 0) {
-            return "SET R" + m_register + " " + m_value +
-                     m_compiler.lineEnding();
+            return "SET R" + m_register + " " + m_value + endl();
         } else {
-            return "SET R1 " + m_value + m_compiler.lineEnding() +
-                   "PUSH R1 " + m_compiler.lineEnding();
+            return "SET R1 " + m_value + endl() +
+                   "PUSH R1 " + endl();
         }
     }
 

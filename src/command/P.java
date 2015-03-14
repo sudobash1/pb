@@ -25,7 +25,7 @@ public class P extends Command {
     public String generateCode() {
         return super.generateCode() +
                m_command +
-               m_compiler.lineEnding();
+               endl();
     }
 
     @Override

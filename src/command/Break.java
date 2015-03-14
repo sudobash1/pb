@@ -28,8 +28,7 @@ public class Break extends Command {
     @Override
     public String generateCode() {
         return super.generateCode() +
-               "BRANCH " + whileLink.doneLabel +
-               m_compiler.lineEnding();
+               "BRANCH " + whileLink.doneLabel + endl();
     }
 
     @Override

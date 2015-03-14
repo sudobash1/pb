@@ -49,9 +49,9 @@ public class ListVariablePointer extends Expression {
     public String generateCode() {
         return m_indexExp.generateCode() +
                "SET R" +m_register + " " + m_vd.getAddress() +
-               m_compiler.lineEnding() +
+               endl() +
                "ADD R" + m_register + " R" +m_register + " R" + m_tmpRegister +
-               m_compiler.lineEnding();
+               endl();
     }
 
     @Override

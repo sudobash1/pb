@@ -73,7 +73,7 @@ public class Set extends Command {
         return super.generateCode() + 
                getLValue + getRValue +
                "SAVE R" + RRegister + " R" + LRegister + 
-               m_compiler.lineEnding();
+               endl();
     }
 
     @Override
