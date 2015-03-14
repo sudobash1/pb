@@ -76,8 +76,8 @@ public class If extends Command {
         String ret = super.generateCode() + 
                      m_exp.generateCode() +
                      "SET R" + tmpRegister1 + " 0" + endl() +
-                     "BNE R" + tmpRegister1 + " R" + ifRegister + thenLabel +
-                     endl();
+                     "BNE R" + tmpRegister1 + " R" + ifRegister + " " +
+                     thenLabel + endl();
         if (m_foundElse) {
             ret += "BRANCH " + elseLabel + endl();
         } else {
