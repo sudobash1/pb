@@ -147,15 +147,19 @@ public abstract class Command {
 
         Command cmd = null;
 
+        boolean usedArgs = false;
+
         switch (commandName) {
             case "break":
                 cmd = new Break(compiler, line);
                 break;
             case "close":
                 cmd = new Close(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "define":
                 cmd = new Define(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "done":
                 cmd = new Done(compiler, line);
@@ -168,52 +172,70 @@ public abstract class Command {
                 break;
             case "for":
                 cmd = new For(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "goto":
                 cmd = new Goto(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "if":
                 cmd = new If(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "int":
                 cmd = new IntDefinition(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "label":
                 cmd = new Label(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "list":
                 cmd = new ListDefinition(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "open":
                 cmd = new Open(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "p":
                 cmd = new P(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "print":
                 cmd = new Print(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "read":
                 cmd = new Read(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "rem":
                 cmd = new Rem(compiler, line);
                 break;
             case "set":
                 cmd = new Set(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "setl":
                 cmd = new Setl(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "while":
                 cmd = new While(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "write":
                 cmd = new Write(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             default: 
                 compiler.error(line, "Invalid command `" + commandName + "'");
                 return null;
+        }
+
+        if (!usedArgs && !commandArgs.trim().equals("")) {
+            compiler.error(line, "Expected ; after `" + commandName + "'");
         }
 
         cmd.m_commandString = s;

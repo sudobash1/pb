@@ -79,20 +79,39 @@ public class While extends Command {
     @Override
     public String generateCode() {
         String ret = super.generateCode();
+
+        //Initialize the loop
         if (m_preCommand != null) {
+            if (m_compiler.debugging()) {
+                ret += "# Initializing loop" + m_compiler.lineEnding();
+            }
             ret += m_preCommand.generateCode();
+            if (m_compiler.debugging()) {
+                ret += "# Start of loop" + m_compiler.lineEnding();
+            }
         }
-        ret += ":" + testLabel +
-               m_compiler.lineEnding() +
-               m_exp.generateCode() +
-               "SET R" + tmpRegister1 + " 0" +
-               m_compiler.lineEnding() +
-               "BNE R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
-               m_compiler.lineEnding() +
-               "BRANCH " + doneLabel +
-               m_compiler.lineEnding() +
-               ":" + startLabel +
-               m_compiler.lineEnding();
+
+        if (m_compiler.debugging()) {
+            ret += "# Test if loop is finished" + m_compiler.lineEnding();
+        }
+
+        //Label for start of loop
+        ret += 
+            ":" + testLabel + m_compiler.lineEnding() +
+            m_exp.generateCode() +
+            "SET R" + tmpRegister1 + " 0" +
+            m_compiler.lineEnding() +
+            "BNE R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
+            m_compiler.lineEnding() +
+            "BRANCH " + doneLabel +
+            m_compiler.lineEnding() +
+            ":" + startLabel +
+            m_compiler.lineEnding();
+
+        if (m_compiler.debugging()) {
+            ret += "# Loop body" + m_compiler.lineEnding();
+        }
+
         return ret;
     }
 

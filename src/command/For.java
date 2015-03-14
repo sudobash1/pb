@@ -35,9 +35,7 @@ public class For extends While {
 
         //Create the var if it does not exist.
         if (compiler.getVarableDefinition(var, line, false) == null) {
-            compiler.registerNewVariable(
-                var, new IntDefinition(compiler, line, var), line
-            );
+            new IntDefinition(compiler, line, var);
         }
 
         //Create the from command.
