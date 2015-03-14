@@ -76,7 +76,8 @@ public abstract class Command {
     /**Matches any valid constant or integer literal.
      * Only group is entire match.
      */
-    public final static String constLitReStr = "(#"+idReStr+"|[1-9][0-9]*|0)";
+    public final static String constLitReStr =
+        "(#"+idReStr+"|-?[1-9][0-9]*|0)";
 
     /**Matches any valid expression.
      * May match invalid expressions as well.

@@ -11,7 +11,7 @@ public class PbscCompiler {
     /**These words may not be used as labels or variables.*/
     private static final String[] reservedWords = {
         "and", "break", "case", "define", "default", "done", "else", "end",
-        "fi", "for", "gosub", "goto", "if", "int", "lable", "list", "pow",
+        "fi", "for", "gosub", "goto", "if", "int", "lable", "list", "mod",
         "on", "or", "p", "print", "printl", "read", "readl", "rem", "set",
         "setl", "sub", "subr", "to", "while", "write"
     };
@@ -274,7 +274,7 @@ public class PbscCompiler {
             //This is a constant
             return getConstantValue(constLit, line);
         } else {
-            if (constLit.matches("([1-9][0-9]*|0)")) {
+            if (constLit.matches("(-?[1-9][0-9]*|0)")) {
                 try {
                     return Integer.valueOf(constLit);
                 } catch (NumberFormatException e) {
