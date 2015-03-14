@@ -30,7 +30,7 @@ public class ListVariablePointer extends Expression {
     ) {
         super(compiler, line, register);
 
-        m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
+        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
 
         m_vd = compiler.getVarableDefinition(variable, line, true);
 
@@ -42,7 +42,9 @@ public class ListVariablePointer extends Expression {
             return;
         }
 
-        m_indexExp = Expression.create(compiler, line, m_tmpRegister, indexExpr);
+        m_indexExp = Expression.create(
+            compiler, line, m_tmpRegister, indexExpr
+        );
     }
 
     @Override

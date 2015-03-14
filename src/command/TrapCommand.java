@@ -27,7 +27,8 @@ public abstract class TrapCommand extends Command {
      * DEFAULT (error label)
      * statement from the arguments.
      */
-    protected final String m_defaultReStr = "\\s+default\\s+goto\\s+(" + idReStr + ")";
+    protected final String m_defaultReStr =
+        "\\s+default\\s+goto\\s+(" + idReStr + ")";
 
     /**
      * Create a new TrapCommand instance. 

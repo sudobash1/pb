@@ -30,7 +30,7 @@ public class NotEquals extends LispExpression {
 
         super(compiler, line, register, operands);
 
-        m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
+        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
         
         if (operands.size() != 2) {
             compiler.error(
@@ -52,7 +52,8 @@ public class NotEquals extends LispExpression {
                "COPY R" + m_tmpRegister + " R" + m_register +
                endl() +
                m_operands.get(1).generateCode() +
-               "BNE R" + m_register + " R" + m_tmpRegister + " " + m_successLabel +
+               "BNE R" + m_register + " R" + m_tmpRegister + " " +
+               m_successLabel +
                endl() +
                "SET R" + m_register + " 0" + //Failed
                endl() +

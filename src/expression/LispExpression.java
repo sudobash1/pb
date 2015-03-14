@@ -65,8 +65,9 @@ public abstract class LispExpression extends Expression {
         //Test if the first expression is a lisp expression.
         if (operands.charAt(0) == '(') {
 
-            //We must itterate through the operands chars to find where the end
-            //of this expression is because we may have nested lisp expressions.
+            //We must itterate through the operands chars to find where the
+            //end of this expression is because we may have nested lisp
+            //expressions.
 
             int nestLevel = 0;
             boolean buildOperand = true;
@@ -93,7 +94,9 @@ public abstract class LispExpression extends Expression {
 
             if (nestLevel != 0) {
                 //We never found the last closing paren. Bad expression.
-                compiler.error(line, "Malformed expression. Missing closing `)'.");
+                compiler.error(
+                    line, "Malformed expression. Missing closing `)'."
+                );
                 return null;
             }
 
@@ -105,13 +108,16 @@ public abstract class LispExpression extends Expression {
             Expression newExp = create(
                 compiler, line, register, m.group(1), m.group(2)
             );
-            ret = new ExpressionStringTuple(newExp, remainingBuilder.toString());
+            ret = new ExpressionStringTuple(
+                newExp, remainingBuilder.toString()
+            );
 
         } else if (operands.matches("^" + listVarReStr)) {
             //This is a list expression, and may be nested. Time to extract...
             
-            //We must itterate through the operands chars to find where the end
-            //of this expression is because we may have nested list expressions.
+            //We must itterate through the operands chars to find where the
+            //end of this expression is because we may have nested list
+            //expressions.
 
             int nestLevel = 0;
             boolean buildOperand = true;
@@ -138,20 +144,25 @@ public abstract class LispExpression extends Expression {
 
             if (nestLevel != 0) {
                 //We never found the last closing paren. Bad expression.
-                compiler.error(line, "Malformed expression. Missing closing `]'.");
+                compiler.error(
+                    line, "Malformed expression. Missing closing `]'."
+                );
                 return null;
             }
 
             Expression newExp = Expression.create(
                 compiler, line, register, operandBuilder.toString()
             );
-            ret = new ExpressionStringTuple(newExp, remainingBuilder.toString());
+            ret = new ExpressionStringTuple(
+                newExp, remainingBuilder.toString()
+            );
+
         } else {
 
             //This a simple, non-nestable expression, so we may use a regex
             //to extract the data
 
-            String reStr = "^" + expressionReStr + "(\\s*" + expressionReStr + ")*$";
+            String reStr = "^"+expressionReStr+"(\\s*"+expressionReStr+")*$";
             m = Pattern.compile(reStr).matcher(operands);
 
             if (!m.find()) {

@@ -22,7 +22,7 @@ public class Plus extends LispExpression {
 
         super(compiler, line, register, operands);
 
-        m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
+        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
         
         if (operands.size() != 2) {
             compiler.error(
@@ -39,7 +39,8 @@ public class Plus extends LispExpression {
                "COPY R" + m_tmpRegister + " R" + m_register +
                endl() +
                m_operands.get(1).generateCode() +
-               "ADD R" + m_register + " R" + m_register + " R" + m_tmpRegister +
+               "ADD R" + m_register + " R" + m_register + " R" +
+               m_tmpRegister +
                endl();
     }
 

@@ -16,7 +16,9 @@ public class IntVariable extends Expression {
      * is evaluated at runtime.
      * @param variable The name of the integer variable.
      */
-    public IntVariable(PbscCompiler compiler, int line, int register, String variable) {
+    public IntVariable(
+        PbscCompiler compiler, int line, int register, String variable
+    ) {
         super(compiler, line, register);
 
         m_vd = compiler.getVarableDefinition(variable, line, true);

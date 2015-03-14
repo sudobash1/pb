@@ -16,16 +16,26 @@ public class PbscCompiler {
         "setl", "sub", "subr", "to", "while", "write"
     };
 
-    public static final int SYSCALL_EXIT     = 0;    /* exit the current program */
-    public static final int SYSCALL_OUTPUT   = 1;    /* outputs a number */
-    public static final int SYSCALL_GETPID   = 2;    /* get current process id */
-    public static final int SYSCALL_OPEN     = 3;    /* access a device */
-    public static final int SYSCALL_CLOSE    = 4;    /* release a device */
-    public static final int SYSCALL_READ     = 5;    /* get input from device */
-    public static final int SYSCALL_WRITE    = 6;    /* send output to device */
-    public static final int SYSCALL_EXEC     = 7;    /* spawn a new process */
-    public static final int SYSCALL_YIELD    = 8;    /* yield the CPU to another process */
-    public static final int SYSCALL_COREDUMP = 9;    /* print process state and exit */
+    /**Constant to exit the current program */
+    public static final int SYSCALL_EXIT = 0;
+    /**Constant to output a number*/
+    public static final int SYSCALL_OUTPUT = 1;
+    /**Constant to get current process id*/
+    public static final int SYSCALL_GETPID = 2;
+    /**Constan to access a device*/
+    public static final int SYSCALL_OPEN = 3;
+    /**Constant to release a device*/
+    public static final int SYSCALL_CLOSE = 4;
+    /**Constant to get input from device*/
+    public static final int SYSCALL_READ = 5;
+    /**Constant to send output to device*/
+    public static final int SYSCALL_WRITE = 6;
+    /**Constant to spawn a new process*/
+    public static final int SYSCALL_EXEC = 7;
+    /**Constant to yield the CPU to another process*/
+    public static final int SYSCALL_YIELD = 8;
+    /**Constant to print process state and exit*/
+    public static final int SYSCALL_COREDUMP = 9;
 
     /**Size of each instruction in bytes.*/
     public static final int INSTSIZE = 4;
@@ -106,7 +116,8 @@ public class PbscCompiler {
         m_hasError = true;
         if (++m_errorCount >= MAX_ERROR) {
             System.err.println(
-                "Aborting compilation attempt. No more errors will be reported."
+                "Aborting compilation attempt. " +
+                "No more errors will be reported."
             );
             System.err.println("Compilation failed.");
             System.exit(2);
@@ -162,7 +173,9 @@ public class PbscCompiler {
      * @param line the line the const is being declaired.
      * @return False if constant already exists.
      */
-    public boolean registerNewConstant(String constName, Integer value, int line) {
+    public boolean registerNewConstant(
+        String constName, Integer value, int line
+    ) {
         //Check if constant exists in this scope.
         for (String id : allId(constName)) {
             if (m_definesTable.containsKey(id)) {
@@ -202,11 +215,16 @@ public class PbscCompiler {
      * @param line the line the variable is being declaired.
      * @return False if variable already exists.
      */
-    public boolean registerNewVariable(String varName, VariableDefinition varDefn, int line) {
+    public boolean registerNewVariable(
+        String varName, VariableDefinition varDefn, int line
+    ) {
         //Check if variable exists in this scope.
         for (String id : allId(varName)) {
             if (m_varTable.containsKey(id)) {
-                error(line, "Variable `" + varName + "' has already been declared.");
+                error(
+                    line,
+                    "Variable `" + varName + "' has already been declared."
+                );
                 return false;
             }
         }
@@ -260,11 +278,18 @@ public class PbscCompiler {
                 try {
                     return Integer.valueOf(constLit);
                 } catch (NumberFormatException e) {
-                    error(line, "Integer literal out of range, `" + constLit + "'.");
+                    error(
+                        line,
+                        "Integer literal out of range, `" + constLit + "'."
+                    );
                     return null;
                 }
             } else {
-                error(line, "Integer constant or literal expected. Found `" + constLit + "'");
+                error(
+                    line,
+                    "Integer constant or literal expected. "+
+                    "Found `" + constLit + "'"
+                );
                 return null;
             }
         }

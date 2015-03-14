@@ -114,7 +114,8 @@ public class Trapper {
             ret +=
                 //Branch to default if error code != 0
                 "SET R" + Command.tmpRegister2 + " 0" + endl() +
-                "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 + " " + m_defaultLabel +
+                "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
+                " " + m_defaultLabel +
                 endl();
             return ret;
         }
@@ -123,7 +124,8 @@ public class Trapper {
         ret +=
             //Branch to success if error code = 0
             "SET R" + Command.tmpRegister2 + " 0" + endl() +
-            "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 + " " + m_errorLabel +
+            "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
+            " " + m_errorLabel +
             endl() +
             "BRANCH " + m_successLabel + endl() +
             ":" + m_errorLabel + endl();
@@ -136,7 +138,8 @@ public class Trapper {
             ret +=
                 "SET R" + Command.tmpRegister2 + " " + error.getKey() + 
                 endl() +
-                "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 + " " + skipErrorLabel +
+                "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
+                " " + skipErrorLabel +
                 endl() +
                 "BRANCH " + error.getValue() + endl() +
                 ":" + skipErrorLabel + endl();

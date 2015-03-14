@@ -63,7 +63,9 @@ public class Setl extends Command {
             return;
         }
 
-        VariableDefinition vd = compiler.getVarableDefinition(name, line, true);
+        VariableDefinition vd =
+            compiler.getVarableDefinition(name, line, true);
+
         if (vd instanceof ListDefinition) {
             int size = ((ListDefinition)vd).getSize();
 
@@ -80,27 +82,27 @@ public class Setl extends Command {
 
     @Override
     public String generateCode() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(m_pointerExp.generateCode());
 
-        sb.append("SET R" + tmpRegister1 + " 1");
-        sb.append(endl());
+        String ret = super.generateCode();
+
+        ret += 
+            m_pointerExp.generateCode() +
+            "SET R" + tmpRegister1 + " 1" + endl();
 
         for (int x = 0; x < m_values.size() - 1; ++x) {
-            sb.append("SET R" + RRegister + " " + m_values.get(x));
-            sb.append(endl());
-            sb.append("SAVE R" + RRegister + " R" + LRegister);
-            sb.append(endl());
-            sb.append("ADD R" + LRegister + " R" + LRegister + " R" + tmpRegister1);
-            sb.append(endl());
+            ret +=
+                "SET R" + RRegister + " " + m_values.get(x) + endl();
+                "SAVE R" + RRegister + " R" + LRegister + endl();
+                "ADD R" + LRegister + " R" + LRegister + " R" + tmpRegister1 +
+                endl();
         }
 
-        sb.append("SET R" + RRegister + " " + m_values.get(m_values.size()-1));
-        sb.append(endl());
-        sb.append("SAVE R" + RRegister + " R" + LRegister);
-        sb.append(endl());
+        ret += 
+            "SET R" + RRegister + " " + m_values.get(m_values.size()-1) +
+            endl() +
+            "SAVE R" + RRegister + " R" + LRegister + endl();
 
-        return sb.toString();
+        return ret;
     }
 
     @Override
