@@ -19,7 +19,7 @@ public abstract class Command {
      * The line the command was found on.
      * (This is the line the ; is on.)
      */
-    protected int m_line;
+    protected final int m_line;
 
     /**The string the command was created from*/
     private String m_commandString = "";
@@ -39,6 +39,9 @@ public abstract class Command {
 
     /**The destination where the value of an while statement gets evaluated.*/
     public final static int whileRegister = 4;
+
+    /**Where expressions which are arguments for the Trapper get placed.*/
+    public final static int trapperRegister = 4;
 
     /**A temp register. Clobber at will.*/
     public final static int tmpRegister1 = 1;
