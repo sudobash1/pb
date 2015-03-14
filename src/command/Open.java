@@ -31,7 +31,12 @@ public class Open extends TrapCommand {
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to OPEN.");
+            compiler.error(
+                line,
+                "Malformed arguments to OPEN.\n" +
+                "Usage: OPEN <int var> " +
+                "{ON <errorNo> GOTO <label>} [DEFAULT GOTO <label>]"
+            );
             return;
         }
 

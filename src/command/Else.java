@@ -23,14 +23,25 @@ public class Else extends Command {
         ifLink = If.currentIf(false);
 
         if (ifLink == null) {
-            compiler.error(line, "`else' with no `if'");
+            compiler.error(line, "ELSE with no IF");
             blockID = "";
+            return;
+        }
+
+        blockID = ifLink.blockID + "ELSE";
+
+        if (ifLink.m_foundElse) {
+            if (! ifLink.m_foundMultElse) {
+                compiler.error(
+                    ifLink.m_line, "IF with multiple ELSE statements"
+                );
+            }
+            ifLink.m_foundMultElse = true;
             return;
         }
 
         ifLink.m_foundElse = true;
 
-        blockID = ifLink.blockID + "ELSE";
         compiler.popScope();
         compiler.pushScope(blockID);
     }

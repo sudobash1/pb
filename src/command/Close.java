@@ -31,7 +31,12 @@ public class Close extends TrapCommand {
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to CLOSE.");
+            compiler.error(
+                line,
+                "Malformed arguments to CLOSE.\n" +
+                "Usage: CLOSE <int var> " +
+                "{ON <errorNo> GOTO <label>} [DEFAULT GOTO <label>]"
+            );
             return;
         }
 

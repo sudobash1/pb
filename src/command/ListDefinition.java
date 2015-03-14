@@ -28,7 +28,12 @@ public class ListDefinition extends VariableDefinition {
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
-            compiler.error(line ,"Malformed argument to LIST.");
+            compiler.error(
+                line,
+                "Malformed argument to LIST.\n" +
+                "Usage: LIST <list var> [ <const or lit> ]\n"+
+                "(Brackets [ ] are literal and required in above usage.)"
+            );
             return;
         }
 

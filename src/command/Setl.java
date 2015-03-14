@@ -32,7 +32,11 @@ public class Setl extends Command {
         m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
-            compiler.error(line ,"Malformed arguments to SETL.");
+            compiler.error(
+                line,
+                "Malformed arguments to SETL.\n" +
+                "Usage: SETL <list var> = <item> {<item>}"
+            );
             return;
         }
 

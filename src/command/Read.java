@@ -25,7 +25,12 @@ public class Read extends Reader {
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to READ.");
+            compiler.error(
+                line,
+                "Malformed arguments to READ.\n" +
+                "Usage: READ <int var> FROM <int> " +
+                "{ON <errorNo> GOTO <label>} [DEFAULT GOTO <label>]"
+            );
             return;
         }
 

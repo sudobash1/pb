@@ -26,7 +26,12 @@ public class Print extends Writer {
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to PRINT.");
+            compiler.error(
+                line,
+                "Malformed arguments to PRINT.\n" +
+                "Usage: PRINT <int var> {ON <errorNo> GOTO <label>} "+
+                "[DEFAULT GOTO <label>]"
+            );
             return;
         }
 

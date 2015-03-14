@@ -25,7 +25,12 @@ public class Write extends Writer {
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to WRITE.");
+            compiler.error(
+                line,
+                "Malformed arguments to WRITE.\n" +
+                "Usage: WRITE <int var> TO <int> " +
+                "{ON <errorNo> GOTO <label>} [DEFAULT GOTO <label>]"
+            );
             return;
         }
 

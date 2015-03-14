@@ -21,7 +21,7 @@ public class Done extends Command {
         whileLink = While.currentWhile(true);
 
         if (whileLink == null) {
-            compiler.error(line, "`done' with no `while' or `for'");
+            compiler.error(line, "DONE with no WHILE or FOR");
             return;
         }
 

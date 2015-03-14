@@ -29,7 +29,17 @@ public class Define extends Command {
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
-            compiler.error(line ,"Malformed arguments to define.");
+
+            if (! arguments.contains("#")) {
+                compiler.error(line, "Constants must start with `#'");
+            } else {
+                compiler.error(
+                    line,
+                    "Malformed arguments to define.\n" +
+                    "Usage: DEFINE <#constant> = <const or lit>"
+                );
+            }
+
             return;
         }
 

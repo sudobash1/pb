@@ -25,7 +25,12 @@ public class For extends While {
 
         Matcher m = Pattern.compile(m_forReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Invalid arguments to FOR.");
+            compiler.error(
+                line,
+                "Invalid arguments to FOR.\n" +
+                "Usage: FOR <int var> [FROM <const or lit>] " +
+                "TO <const or lit> [STEP <const or lit>]"
+            );
         }
 
         String var = m.group(1);

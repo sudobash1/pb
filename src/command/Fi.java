@@ -21,7 +21,7 @@ public class Fi extends Command {
         ifLink = If.currentIf(true);
 
         if (ifLink == null) {
-            compiler.error(line, "`fi' with no `if'");
+            compiler.error(line, "FI with no IF");
             return;
         }
 

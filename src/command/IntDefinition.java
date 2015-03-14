@@ -24,7 +24,18 @@ public class IntDefinition extends VariableDefinition {
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
-            compiler.error(line ,"Malformed argument to Int.");
+            if (arguments.contains("=")) {
+                compiler.error(
+                    line,
+                    "Assignment durring variable declaration not supported."
+                );
+            } else {
+                compiler.error(
+                    line,
+                    "Malformed argument to Int.\n" +
+                    "Usage: INT <int var>"
+                );
+            }
             return;
         }
 

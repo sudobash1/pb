@@ -18,8 +18,11 @@ public class If extends Command {
     /**The expression to test*/
     private Expression m_exp = null;
 
-    /**Is there an associated ELSE for this if?*/
+    /**Is there an associated ELSE for this IF?*/
     protected boolean m_foundElse = false;
+
+    /**Are there multiple ELSE for this IF. An error condition.*/
+    protected boolean m_foundMultElse = false;
 
     protected final String blockID;
     protected final String thenLabel;
@@ -46,6 +49,14 @@ public class If extends Command {
 
         compiler.pushScope(blockID);
         ifBlocks.push(this);
+    }
+
+    @Override
+    public void checkLabels() {
+        while (! ifBlocks.empty()){
+            If ifBlock = ifBlocks.pop();
+            m_compiler.error( ifBlock.m_line, "Unterminated IF");
+        }
     }
 
     /**

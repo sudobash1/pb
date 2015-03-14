@@ -62,7 +62,13 @@ public class Set extends Command {
             return;
         }
 
-        compiler.error(line ,"Malformed arguments to set.");
+        compiler.error(
+            line,
+            "Malformed arguments to SET.\n" +
+            "Usage: SET <int var> = <int>\n" +
+            "       SET <list var> [ <int> ] = <int>\n" +
+            "(Brackets [ ] are literal and required in above usage.)"
+            );
         return;
     }
 

@@ -23,13 +23,26 @@ public class Goto extends Command {
      */
     public Goto(PbscCompiler compiler, int line, String label) {
         super(compiler, line);
-        m_label = label.trim();
+
+        label = label.trim();
         m_namespaceStack = compiler.copyNamespace();
+
+        if (! label.matches(idReStr)) {
+            m_compiler.error(
+                line, "Invalid label name `" + label + "'"
+            );
+            m_label = null;
+            return;
+        }
+
+        m_label = label;
     }
 
     @Override
     public void checkLabels() {
-        Label.checkExists(m_compiler, m_line, m_label);
+        if (m_label != null) {
+            Label.checkExists(m_compiler, m_line, m_label);
+        }
     }
 
     @Override

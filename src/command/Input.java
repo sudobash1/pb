@@ -25,7 +25,12 @@ public class Input extends Reader {
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to INPUT.");
+            compiler.error(
+                line,
+                "Malformed arguments to INPUT.\n" +
+                "Usage: INPUT <int var> {ON <errorNo> GOTO <label>} "+
+                "[DEFAULT GOTO <label>]"
+            );
             return;
         }
 
