@@ -91,8 +91,8 @@ public class Setl extends Command {
 
         for (int x = 0; x < m_values.size() - 1; ++x) {
             ret +=
-                "SET R" + RRegister + " " + m_values.get(x) + endl();
-                "SAVE R" + RRegister + " R" + LRegister + endl();
+                "SET R" + RRegister + " " + m_values.get(x) + endl() +
+                "SAVE R" + RRegister + " R" + LRegister + endl() +
                 "ADD R" + LRegister + " R" + LRegister + " R" + tmpRegister1 +
                 endl();
         }

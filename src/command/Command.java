@@ -189,6 +189,10 @@ public abstract class Command {
                 cmd = new If(compiler, line, commandArgs);
                 usedArgs = true;
                 break;
+            case "input":
+                cmd = new Input(compiler, line, commandArgs);
+                usedArgs = true;
+                break;
             case "int":
                 cmd = new IntDefinition(compiler, line, commandArgs);
                 usedArgs = true;

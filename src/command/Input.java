@@ -5,27 +5,27 @@ import pbsc.*;
 import expression.*;
 
 /**
- * A command to read a number from a device.
+ * A command to read a number from the keyboard.
+ * Assumes keyboard is dev 0 and reads from addr 0.
  */
-public class Read extends Reader {
+public class Input extends Reader {
 
     /**regex to extract and check arguments*/
     private final String m_argumentsReStr = 
-        "^(" + idReStr + ")\\sfrom\\s" + expressionReStr +
-        "(" + m_onReStr + "|" + m_defaultReStr + ")*$";
+        "^(" + idReStr + ")" + "(" + m_onReStr + "|" + m_defaultReStr + ")*$";
 
     /**
-     * Create a new Read instance. 
+     * Create a new Input instance. 
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on.
-     * @param arguments The arguments to the PRINT Command.
+     * @param arguments The arguments to the INPUT command.
      */
-    public Read(PbscCompiler compiler, int line, String arguments) {
+    public Input(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line, arguments);
 
         Matcher m = Pattern.compile(m_argumentsReStr).matcher(arguments);
         if (! m.find()) {
-            compiler.error(line, "Malformed arguments to READ.");
+            compiler.error(line, "Malformed arguments to INPUT.");
             return;
         }
 
@@ -33,15 +33,12 @@ public class Read extends Reader {
             compiler, line, LRegister, m.group(1)
         );
         m_deviceNum = Expression.create(
-            compiler, line, trapperRegister, m.group(2),
-            "The device number"
+            compiler, line, trapperRegister, "0",
+            "The keyboard device number"
         );
-        //TODO: make this customizable.
         m_deviceAddr = Expression.create(
             compiler, line, trapperRegister, "0",
-            "The address to read from"
+            "The address to input from"
         );
-
-        m_autoOpen = false;
     }
 }
