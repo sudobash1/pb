@@ -47,13 +47,15 @@ public abstract class Writer extends TrapCommand {
             //Generate the code to open the device.
             
             Trapper openTrapper = new Trapper(
-                m_compiler, "Open device for writing", m_defaultLabel, m_errorMap
+                m_compiler, "Open device for writing",
+                m_defaultLabel, m_errorMap
             );
 
             openTrapper.addArgument(m_deviceNum);
             openTrapper.addArgument(
                 Expression.create(
-                    m_compiler, m_line, trapperRegister, ""+m_compiler.SYSCALL_OPEN
+                    m_compiler, m_line, trapperRegister,
+                    ""+m_compiler.SYSCALL_OPEN, "The OPEN syscall number"
                 )
             );
 
@@ -71,7 +73,8 @@ public abstract class Writer extends TrapCommand {
         writeTrapper.addArgument(m_output);
         writeTrapper.addArgument(
             Expression.create(
-                m_compiler, m_line, trapperRegister, ""+m_compiler.SYSCALL_WRITE
+                m_compiler, m_line, trapperRegister,
+                ""+m_compiler.SYSCALL_WRITE, "The WRITE syscall number"
             )
         );
 
@@ -87,7 +90,8 @@ public abstract class Writer extends TrapCommand {
             closeTrapper.addArgument(m_deviceNum);
             closeTrapper.addArgument(
                 Expression.create(
-                    m_compiler, m_line, trapperRegister, ""+m_compiler.SYSCALL_CLOSE
+                    m_compiler, m_line, trapperRegister,
+                    ""+m_compiler.SYSCALL_CLOSE, "The CLOSE syscall number"
                 )
             );
             ret += closeTrapper.generateCode();

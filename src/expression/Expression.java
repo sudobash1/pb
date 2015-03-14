@@ -10,6 +10,9 @@ public abstract class Expression extends Command {
      * the register it will be placed in.
      * If it is negative, then it will be pushed to the stack.*/
     protected int m_register;
+
+    /**An optional comment describing the purpose of this expression*/
+    public String m_comment = null;
     
     public Expression(PbscCompiler compiler, int line, int register) {
         super(compiler, line);
@@ -59,6 +62,27 @@ public abstract class Expression extends Command {
 
         compiler.error(line ,"Malformed expression `" + expStr + "'.");
         return null;
+    }
+
+    /**Creates an Expression instance which will evaluate the passed in
+     * expression. An expression factory.
+     * The expression may contain nested expressions.
+     * If there is an error then it will be automatically reported.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the expression was found on.
+     * @param expStrin The expression strin.
+     * @param comment An optional comment for the Expression.
+     * @return The proper expression class or null if error.
+     */
+    public static Expression create(
+            PbscCompiler compiler, int line, int register, String expStr,
+            String comment
+    ) {
+        Expression expr = create(compiler, line, register, expStr);
+        if (expr != null) {
+            expr.m_comment = comment;
+        }
+        return expr;
     }
 
 }

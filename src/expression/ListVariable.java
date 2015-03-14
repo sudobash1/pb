@@ -32,6 +32,8 @@ public class ListVariable extends Expression {
 
         m_tmpRegister = (register == tmpRegister1) ? tmpRegister2 : tmpRegister1;
 
+        m_vd = compiler.getVarableDefinition(variable, line, true);
+
         if (m_vd == null) {
             return;
         }
@@ -40,7 +42,6 @@ public class ListVariable extends Expression {
             return;
         }
 
-        m_vd = compiler.getVarableDefinition(variable, line, true);
         m_indexExp = Expression.create(compiler, line, m_tmpRegister, indexExpr);
     }
 

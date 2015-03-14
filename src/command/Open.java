@@ -35,7 +35,10 @@ public class Open extends TrapCommand {
             return;
         }
 
-        m_deviceNum = Expression.create(compiler, line, trapperRegister, m.group(1));
+        m_deviceNum = Expression.create(
+            compiler, line, trapperRegister, m.group(1),
+            "The device number to OPEN"
+        );
     }
 
     @Override
@@ -52,7 +55,8 @@ public class Open extends TrapCommand {
         openTrapper.addArgument(m_deviceNum);
         openTrapper.addArgument(
             Expression.create(
-                m_compiler, m_line, trapperRegister, ""+m_compiler.SYSCALL_OPEN
+                m_compiler, m_line, trapperRegister,
+                ""+m_compiler.SYSCALL_OPEN, "The OPEN syscall number"
             )
         );
 

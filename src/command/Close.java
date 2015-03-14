@@ -35,7 +35,10 @@ public class Close extends TrapCommand {
             return;
         }
 
-        m_deviceNum = Expression.create(compiler, line, trapperRegister, m.group(1));
+        m_deviceNum = Expression.create(
+            compiler, line, trapperRegister, m.group(1),
+            "The device number to CLOSE"
+        );
     }
 
     @Override
@@ -52,7 +55,8 @@ public class Close extends TrapCommand {
         closeTrapper.addArgument(m_deviceNum);
         closeTrapper.addArgument(
             Expression.create(
-                m_compiler, m_line, trapperRegister, ""+m_compiler.SYSCALL_CLOSE
+                m_compiler, m_line, trapperRegister,
+                ""+m_compiler.SYSCALL_CLOSE, "The CLOSE syscall number"
             )
         );
 

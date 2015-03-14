@@ -29,9 +29,18 @@ public class Write extends Writer {
             return;
         }
 
-        m_output = Expression.create(compiler, line, trapperRegister, m.group(1));
-        m_deviceNum = Expression.create(compiler, line, trapperRegister, m.group(7));
-        m_deviceAddr = Expression.create(compiler, line, trapperRegister, "0");
+        m_output = Expression.create(
+            compiler, line, trapperRegister, m.group(1),
+            "The output to print"
+        );
+        m_deviceNum = Expression.create(
+            compiler, line, trapperRegister, m.group(7),
+            "The console device number"
+        );
+        m_deviceAddr = Expression.create(
+            compiler, line, trapperRegister, "0",
+            "The address to write to"
+        );
 
         m_autoOpen = false;
     }

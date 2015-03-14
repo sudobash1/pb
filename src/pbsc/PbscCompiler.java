@@ -27,8 +27,14 @@ public class PbscCompiler {
     public static final int SYSCALL_YIELD    = 8;    /* yield the CPU to another process */
     public static final int SYSCALL_COREDUMP = 9;    /* print process state and exit */
 
+    /**Size of each instruction in bytes.*/
+    public static final int INSTSIZE = 4;
+
     /**Turns on debugging output*/
     private final boolean m_debug = true;
+
+    /**Turns off debugging for precompiling stage*/
+    private boolean m_preCompiling = false;
 
     /**Maximum number of errors to report before aborting the compilation.*/
     private final int MAX_ERROR = 5;
@@ -82,7 +88,7 @@ public class PbscCompiler {
      * @return true if debugging is enabled.
      */
     public boolean debugging() {
-        return m_debug;
+        return m_debug && !m_preCompiling;
     }
 
     /**
@@ -333,6 +339,19 @@ public class PbscCompiler {
     }
 
     /**
+     * Find how many instructions there are in the passed string.
+     * @return The number of instructions counted
+     */
+    public static int countInstructions(String s) {
+        Matcher m = Pattern.compile(
+            "^\\s*[^#:\\s]", Pattern.MULTILINE
+        ).matcher(s);
+        int lines = 0;
+        while (m.find()) { ++lines; }
+        return lines;
+    }
+
+    /**
      * Reads the file and returns the contents. If there are errors reading the
      * file, then they are printed and System.exit(1) is called.
      *
@@ -393,28 +412,42 @@ public class PbscCompiler {
     /**
      * Generates a string containing the addresses variables bound to as
      * Pidgen comments. Used for debugging.
+     * @param textSize The size (in bytes) of the .text section of program
+     * @param progSize The size (in bytes) of the entire program (vars incl.)
      * @return A pidgen comment
      */
-    private String generateSymTabComment() {
+    private String generateSymTabComment(int textSize, int progSize) {
 
-        if (! m_debug) {
+        if (! debugging()) {
             return "";
         }
 
+
         StringBuilder sb = new StringBuilder();
+
+        sb.append("#MEMORY INFORMATION######################################");
+        sb.append(lineEnding());
+        sb.append("#");
+        sb.append(lineEnding());
+        sb.append("# size of command section: ");
+        sb.append(textSize);
+        sb.append(lineEnding());
+        sb.append("# size of entire program: ");
+        sb.append(progSize);
+        sb.append(lineEnding());
+        sb.append("#");
+        sb.append(lineEnding());
 
         sb.append("#VARIABLE TABLE##########################################");
         sb.append(lineEnding());
         sb.append("#");
         sb.append(lineEnding());
-        if (m_debug) {
-            for (String key : m_varTable.keySet()) {
-                sb.append("# ");
-                sb.append(key);
-                sb.append(" @ ");
-                sb.append(""+m_varTable.get(key).getAddress());
-                sb.append(lineEnding());
-            }
+        for (String key : m_varTable.keySet()) {
+            sb.append("# ");
+            sb.append(key);
+            sb.append(" @ ");
+            sb.append(""+m_varTable.get(key).getAddress());
+            sb.append(lineEnding());
         }
         sb.append("#");
         sb.append(lineEnding());
@@ -423,14 +456,12 @@ public class PbscCompiler {
         sb.append(lineEnding());
         sb.append("#");
         sb.append(lineEnding());
-        if (m_debug) {
-            for (String key : m_definesTable.keySet()) {
-                sb.append("# ");
-                sb.append(key);
-                sb.append(" = ");
-                sb.append(""+m_definesTable.get(key));
-                sb.append(lineEnding());
-            }
+        for (String key : m_definesTable.keySet()) {
+            sb.append("# ");
+            sb.append(key);
+            sb.append(" = ");
+            sb.append(""+m_definesTable.get(key));
+            sb.append(lineEnding());
         }
         sb.append("#");
         sb.append(lineEnding());
@@ -509,15 +540,17 @@ public class PbscCompiler {
          * twice, but it will work for now. It is quite fast enough because
          * compilation is simple.
          */
+        m_preCompiling = true;
         StringBuilder pidgenStringBuilder = new StringBuilder();
         for (Command c : program) {
             pidgenStringBuilder.append(c.generateCode());
         }
+        m_preCompiling = false;
 
         String pidgenString = pidgenStringBuilder.toString();
 
-        //The size taken up by program instructions. Assuming one a line.
-        final int programInstSize = countNewlines(pidgenString);
+        //The size taken up by program instructions.
+        final int programInstSize = countInstructions(pidgenString) * INSTSIZE;
 
         //Bind the variables to addresses.
         
@@ -542,8 +575,10 @@ public class PbscCompiler {
 
         pidgenString = pidgenStringBuilder.toString();
 
-        //Generate the symbole table comment string.
-        String symTabComment = generateSymTabComment();
+        //Generate the symbol table comment string.
+        String symTabComment = generateSymTabComment(
+            programInstSize, variableLocation - 1
+        );
 
         //Save the output to the output file.
         writeFile(args[1], symTabComment + pidgenString);

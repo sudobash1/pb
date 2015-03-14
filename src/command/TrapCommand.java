@@ -37,6 +37,7 @@ public abstract class TrapCommand extends Command {
      */
     public TrapCommand(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line);
+
         m_errorMap = new Hashtable<Integer, String>();;
 
         //Extract the on statements.

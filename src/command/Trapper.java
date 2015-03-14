@@ -88,10 +88,17 @@ public class Trapper {
 
         //Push the arguments
         for (Expression expr : m_params) {
+            if (m_compiler.debugging() && expr.m_comment != null) {
+                ret += "#" + expr.m_comment + m_compiler.lineEnding();
+            }
             ret +=
-                //Push the dev number
                 expr.generateCode() +
                 "PUSH R" + Command.trapperRegister + m_compiler.lineEnding();
+        }
+
+        if (m_compiler.debugging()) {
+            ret += "#Execute trap and examine return value" + 
+                   m_compiler.lineEnding();
         }
 
         ret +=
