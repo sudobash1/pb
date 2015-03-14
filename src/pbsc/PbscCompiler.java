@@ -30,6 +30,9 @@ public class PbscCompiler {
     /**Size of each instruction in bytes.*/
     public static final int INSTSIZE = 4;
 
+    /**Number of extra instructions OS will add to call syscall exit.*/
+    public static final int extraInstructions = 3;
+
     /**Turns on debugging output*/
     private final boolean m_debug = true;
 
@@ -558,7 +561,7 @@ public class PbscCompiler {
          * the program statements at the top of memory.
          */
         
-        int variableLocation = programInstSize + 1;
+        int variableLocation = programInstSize + extraInstructions * INSTSIZE;
         for (VariableDefinition vd : m_varTable.values()) {
             vd.setAddress(variableLocation);
             variableLocation += vd.getSize();

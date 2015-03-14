@@ -6,7 +6,7 @@ import pbsc.*;
 import expression.*;
 
 /**
- * A command to write an number to a device.
+ * A command to write a number to a device.
  */
 public abstract class Writer extends TrapCommand {
 
@@ -47,8 +47,7 @@ public abstract class Writer extends TrapCommand {
             //Generate the code to open the device.
             
             Trapper openTrapper = new Trapper(
-                m_compiler, "Open device for writing",
-                m_defaultLabel, m_errorMap
+                m_compiler, m_defaultLabel, m_errorMap
             );
 
             openTrapper.addArgument(m_deviceNum);
@@ -59,13 +58,14 @@ public abstract class Writer extends TrapCommand {
                 )
             );
 
+            ret += "#TRAP to open the device" + m_compiler.lineEnding();
             ret += openTrapper.generateCode();
         }
 
 
         //Generate the code to write to the device
         Trapper writeTrapper = new Trapper(
-            m_compiler, "Write to device", m_defaultLabel, m_errorMap
+            m_compiler, m_defaultLabel, m_errorMap
         );
 
         writeTrapper.addArgument(m_deviceNum);
@@ -78,13 +78,16 @@ public abstract class Writer extends TrapCommand {
             )
         );
 
+        if (m_autoOpen) {
+            ret += "#TRAP to write from the device" + m_compiler.lineEnding();
+        }
         ret += writeTrapper.generateCode();
 
         if (m_autoOpen) {
             //Generate the code to close the device
 
             Trapper closeTrapper = new Trapper(
-                m_compiler, "Close device", m_defaultLabel, m_errorMap
+                m_compiler, m_defaultLabel, m_errorMap
             );
 
             closeTrapper.addArgument(m_deviceNum);
@@ -94,6 +97,8 @@ public abstract class Writer extends TrapCommand {
                     ""+m_compiler.SYSCALL_CLOSE, "The CLOSE syscall number"
                 )
             );
+
+            ret += "#TRAP to close the device" + m_compiler.lineEnding();
             ret += closeTrapper.generateCode();
         }
 

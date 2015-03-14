@@ -6,7 +6,7 @@ import expression.*;
 
 /**
  * A helper class which generates code to push data, execute a trap, and 
- * examine the return value.
+ * examine the return status code.
  */
 public class Trapper {
 
@@ -21,9 +21,6 @@ public class Trapper {
 
     /**Expressions to generate values to push for trap*/
     private ArrayList<Expression> m_params;
-
-    /**A description of the purpose of this trap. For debug.*/
-    private final String m_purpose;
 
     /**Maps error integers to labels to jump to on error.*/
     private final Hashtable<Integer, String> m_errorMap;
@@ -40,18 +37,16 @@ public class Trapper {
     /**
      * Create a new Trapper instance.
      * @param compiler The main instance of the PbscCompiler.
-     * @param purpose A description of the purpose of this trap. For debug.
      * @param defaultLabel The default label to jump to on uncaught error.
      * Note: may be null.
      * @param errorMap Maps error integers to labels to jump to on error.
      * Note may be null.
      */
     public Trapper(
-        PbscCompiler compiler, String purpose, String defaultLabel,
+        PbscCompiler compiler, String defaultLabel,
         Hashtable<Integer, String> errorMap
     ) {
         m_compiler = compiler;
-        m_purpose = purpose;
         m_params = new ArrayList<Expression>();
         m_defaultLabel = defaultLabel;
         m_errorMap = errorMap;
@@ -82,28 +77,24 @@ public class Trapper {
     public String generateCode() {
         String ret = "";
 
-        if (m_compiler.debugging()) {
-           ret += "#Trapping for " + m_purpose + m_compiler.lineEnding();
-        }
-
         //Push the arguments
         for (Expression expr : m_params) {
-            if (m_compiler.debugging() && expr.m_comment != null) {
-                ret += "#" + expr.m_comment + m_compiler.lineEnding();
-            }
             ret +=
                 expr.generateCode() +
-                "PUSH R" + Command.trapperRegister + m_compiler.lineEnding();
+                "PUSH R" + Command.trapperRegister;
+            if (m_compiler.debugging() && expr.m_comment != null) {
+                ret += "   #" + expr.m_comment;
+            }
+            ret += m_compiler.lineEnding();
         }
 
+        //Execute and get error code
+        ret += "TRAP";
         if (m_compiler.debugging()) {
-            ret += "#Execute trap and examine return value" + 
-                   m_compiler.lineEnding();
+            ret += "   #Execute trap and examine return value";
         }
-
         ret +=
-            //Execute and get error code
-            "TRAP" + m_compiler.lineEnding() +
+            m_compiler.lineEnding() +
             "POP R" + Command.tmpRegister1 + m_compiler.lineEnding();
 
         //If we don't need to check the error code, then we are done.

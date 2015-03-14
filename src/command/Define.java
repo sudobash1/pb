@@ -25,7 +25,7 @@ public class Define extends Command {
             return;
         }
 
-        String reStr = "^(#" + idReStr + ")\\s*=\\s*([1-9][0-9]*)$";
+        String reStr = "^(#" + idReStr + ")\\s*=\\s*"+constLitReStr+"$";
         Matcher m = Pattern.compile(reStr).matcher(arguments);
 
         if (! m.find()) {
@@ -35,16 +35,8 @@ public class Define extends Command {
 
         String name = m.group(1);
         String intStr = m.group(2);
-        Integer i = null;
-
-        //Try to parse the argument into an integer.
-        try {
-            i = Integer.valueOf(intStr);
-        } catch (NumberFormatException e) {
-            compiler.error(
-                line,
-                "Integer literal out of range, `" + intStr + "'."
-            );
+        Integer i = m_compiler.constLit2Integer(intStr, line);
+        if (i == null) {
             return;
         }
 

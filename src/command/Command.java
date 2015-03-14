@@ -102,7 +102,7 @@ public abstract class Command {
      */
     public String generateCode() {
         if (m_compiler.debugging() && !m_commandString.equals("")) {
-            return "# " + m_commandString + m_compiler.lineEnding();
+            return "#> " + m_commandString + m_compiler.lineEnding();
         }
         return "";
     }
@@ -192,6 +192,9 @@ public abstract class Command {
                 break;
             case "print":
                 cmd = new Print(compiler, line, commandArgs);
+                break;
+            case "read":
+                cmd = new Read(compiler, line, commandArgs);
                 break;
             case "rem":
                 cmd = new Rem(compiler, line);

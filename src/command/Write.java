@@ -18,7 +18,7 @@ public class Write extends Writer {
      * Create a new Write instance. 
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on.
-     * @param arguments The arguments to the print command.
+     * @param arguments The arguments to the WRITE command.
      */
     public Write(PbscCompiler compiler, int line, String arguments) {
         super(compiler, line, arguments);
@@ -31,12 +31,13 @@ public class Write extends Writer {
 
         m_output = Expression.create(
             compiler, line, trapperRegister, m.group(1),
-            "The output to print"
+            "The output to write"
         );
         m_deviceNum = Expression.create(
             compiler, line, trapperRegister, m.group(7),
-            "The console device number"
+            "The device number"
         );
+        //TODO: make this customizable.
         m_deviceAddr = Expression.create(
             compiler, line, trapperRegister, "0",
             "The address to write to"

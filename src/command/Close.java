@@ -49,7 +49,7 @@ public class Close extends TrapCommand {
         //Generate the code to close the device.
         
         Trapper closeTrapper = new Trapper(
-            m_compiler, "Close device.", m_defaultLabel, m_errorMap
+            m_compiler, m_defaultLabel, m_errorMap
         );
 
         closeTrapper.addArgument(m_deviceNum);
