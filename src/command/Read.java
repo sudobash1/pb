@@ -38,6 +38,11 @@ public class Read extends Reader {
             m_pointerExp = new IntVariablePointer(
                 compiler, line, LRegister, m.group(1)
             );
+
+            m_deviceNum = Expression.create(
+                compiler, line, trapperRegister, m.group(2),
+                "The device number"
+            );
         }
 
         m = Pattern.compile(m_listArgumentsReStr).matcher(arguments);
@@ -46,6 +51,11 @@ public class Read extends Reader {
             
             m_pointerExp = new ListVariablePointer(
                 compiler, line, LRegister, m.group(1), m.group(2)
+            );
+
+            m_deviceNum = Expression.create(
+                compiler, line, trapperRegister, m.group(3),
+                "The device number"
             );
         }
 
@@ -63,10 +73,6 @@ public class Read extends Reader {
             return;
         }
 
-        m_deviceNum = Expression.create(
-            compiler, line, trapperRegister, m.group(2),
-            "The device number"
-        );
         //TODO: make this customizable.
         m_deviceAddr = Expression.create(
             compiler, line, trapperRegister, "0",
