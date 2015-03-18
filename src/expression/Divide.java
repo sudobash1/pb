@@ -34,9 +34,9 @@ public class Divide extends LispExpression {
     @Override
     public String generateCode() {
         return m_operands.get(0).generateCode() +
-               "COPY R" + tmpRegister1 + " R" + m_register +
-               endl() +
+               "PUSH R" + m_register + endl() +
                m_operands.get(1).generateCode() +
+               "POP R" + tmpRegister1 + endl() +
                "DIV R" + m_register + " R" + tmpRegister1  + " R" +
                m_register +
                endl();

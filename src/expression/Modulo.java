@@ -34,8 +34,9 @@ public class Modulo extends LispExpression {
     @Override
     public String generateCode() {
         return m_operands.get(0).generateCode() +
-               "COPY R" + tmpRegister0 + " R" + m_register + endl() +
+               "PUSH R" + m_register + endl() +
                m_operands.get(1).generateCode() +
+               "POP R" + tmpRegister0 + endl() +
                "DIV R" + tmpRegister1 + " R" + tmpRegister0 + " R" +
                m_register + endl() +
                "MUL R" + tmpRegister1 + " R" + tmpRegister1 + " R" +
