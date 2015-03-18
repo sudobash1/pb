@@ -49,6 +49,13 @@ public class ListDefinition extends VariableDefinition {
 
         Integer IntegerSize = compiler.constLit2Integer(size, line);
         if (IntegerSize == null) return;
+        if (IntegerSize <= 0) {
+            compiler.error(
+                line,
+                "Lists must have length at least 1." +
+                " Found `" + IntegerSize + "'."
+            );
+        }
 
         m_size = IntegerSize;
     }

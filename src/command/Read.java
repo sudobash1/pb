@@ -9,12 +9,12 @@ import expression.*;
  */
 public class Read extends Reader {
 
-    /**regex to extract and check arguments*/
+    /**regex to extract and check arguments in the case of int*/
     private final String m_intArgumentsReStr = 
         "^(" + idReStr + ")\\sfrom\\s" + expressionReStr +
         "(" + m_onReStr + "|" + m_defaultReStr + ")*$";
 
-    /**regex to extract and check arguments*/
+    /**regex to extract and check arguments in the case of list*/
     private final String m_listArgumentsReStr = 
         "^" + listVarReStr + "\\sfrom\\s" + expressionReStr +
         "(" + m_onReStr + "|" + m_defaultReStr + ")*$";
