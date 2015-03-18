@@ -28,7 +28,7 @@ public class Write extends Writer {
             compiler.error(
                 line,
                 "Malformed arguments to WRITE.\n" +
-                "Usage: WRITE <int var> TO <int> " +
+                "Usage: WRITE <int> TO <int> " +
                 "{ON <errorNo> GOTO <label>} [DEFAULT GOTO <label>]"
             );
             return;
