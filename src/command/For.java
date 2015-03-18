@@ -28,15 +28,17 @@ public class For extends While {
             compiler.error(
                 line,
                 "Invalid arguments to FOR.\n" +
-                "Usage: FOR <int var> [FROM <const or lit>] " +
-                "TO <const or lit> [STEP <const or lit>]"
+                "Usage: FOR <int var> [FROM <int>] " +
+                "TO <int> [STEP <const or lit>]"
             );
+            return;
         }
 
         String var = m.group(1);
         String from = m.group(3);
         String to = m.group(9);
         String step = m.group(16);
+        Integer stepInt = null;
 
         //Create the var if it does not exist.
         if (compiler.getVarableDefinition(var, line, false) == null) {
@@ -51,17 +53,32 @@ public class For extends While {
         }
 
         if (step == null) {
-            m_postCommand = new Set(
-                compiler, line, var + " = (+ 1 " +var + ")"
-            );
+            stepInt = new Integer(1);
         } else {
-            m_postCommand = new Set(
-                compiler, line, var + " = (+ " + step + " " + var + ")"
-            );
+            //Make sure that step is a constant or literal. We need to know
+            //its sign in advance and make sure it is not 0.
+            stepInt = compiler.constLit2Integer(step, line);
+            if (stepInt == null) {
+                return;
+            }
         }
 
-        m_exp = Expression.create(
-            compiler, line, whileRegister, "(<= " + var + " " + to + ")"
+        m_postCommand = new Set(
+            compiler, line, var + " = (+ " + var + " " + stepInt + ")"
         );
+
+        if (stepInt > 0) {
+            m_exp = Expression.create(
+                compiler, line, whileRegister,
+                "(<= " + var + " " + to + ")"
+            );
+        } else if (stepInt < 0) {
+            m_exp = Expression.create(
+                compiler, line, whileRegister,
+                "(>= " + var + " " + to + ")"
+            );
+        } else {
+            compiler.error( line, "FOR loop STEP cannot be 0.");
+        }
     }
 }
