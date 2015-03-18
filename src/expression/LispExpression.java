@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.*;
 import pbsc.*;
 
+/**A base class for all Lisp style expressions.*/
 public abstract class LispExpression extends Expression {
 
     /**A list of the operands this lisp expression operates on.*/
@@ -219,9 +220,13 @@ public abstract class LispExpression extends Expression {
             case "*": return new Times(compiler, line, register, exprs);
             case "/": return new Divide(compiler, line, register, exprs);
             case "!=": return new NotEquals(compiler, line, register, exprs);
+            case "=": return new Equals(compiler, line, register, exprs);
+            case "<": return new Less(compiler, line, register, exprs);
+            case "<=": return new LessEquals(compiler, line, register, exprs);
+            case ">": return new Greater(compiler, line, register, exprs);
+            case ">=": return new GreaterEquals(compiler, line, register, exprs);
             case "and": return new And(compiler, line, register, exprs);
             case "mod": return new Modulo(compiler, line, register, exprs);
-            case "or": return new Or(compiler, line, register, exprs);
         }
 
         compiler.error(

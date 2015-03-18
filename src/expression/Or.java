@@ -3,10 +3,11 @@ package expression;
 import java.util.*;
 import pbsc.*;
 
+/**
+ * A command which performs a logical OR opperation on two expressions.
+ * negative numbers evaluate to false. 0 and positive numbers are true.
+ */
 public class Or extends LispExpression {
-
-    /**The register the first value to add stored.*/
-    private final int m_tmpRegister;
 
     /**The number of ORs found so far.*/
     private static int orNumber = 0;
@@ -29,8 +30,6 @@ public class Or extends LispExpression {
 
         super(compiler, line, register, operands);
 
-        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
-        
         if (operands.size() != 2) {
             compiler.error(
                 line,
@@ -47,8 +46,8 @@ public class Or extends LispExpression {
     public String generateCode() {
         return
             m_operands.get(0).generateCode() +
-            "SET R" + m_tmpRegister + " 0" + endl() +
-            "BNE R" + m_register + " R" + m_tmpRegister + " " +
+            "SET R" + tmpRegister1 + " -1" + endl() +
+            "BLT R" + tmpRegister1 + " R" + m_register + " " +
             m_successLabel + endl() +
             m_operands.get(1).generateCode() +
             ":" + m_successLabel + endl();

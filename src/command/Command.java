@@ -33,16 +33,16 @@ public abstract class Command {
     public final static int LRegister = 3;
     /**The destination register for the RValue*/
     public final static int RRegister = 4;
-
     /**The destination where the value of an if statement gets evaluated.*/
     public final static int ifRegister = 4;
-
     /**The destination where the value of an while statement gets evaluated.*/
     public final static int whileRegister = 4;
-
     /**Where expressions which are arguments for the Trapper get placed.*/
     public final static int trapperRegister = 4;
 
+    /* The below are tmp registers. Expressions will not evaluate to them.*/
+    /**A temp register. Clobber at will.*/
+    public final static int tmpRegister0 = 0;
     /**A temp register. Clobber at will.*/
     public final static int tmpRegister1 = 1;
     /**A temp register. Clobber at will.*/
@@ -58,14 +58,16 @@ public abstract class Command {
      * Only group is entire match.
      */
     public final static String operatorReStr =
-        "(and\\s|or\\s|=|<|>|<=|>=|!=|\\+|-|\\*|/|^|mod\\s)";
+        "(and\\s|or\\s|<=?|>=?|!?=|\\+|-|\\*|/|^|mod\\s)";
 
     /**Matches any valid lisp-style expression.
      * May match lisp-style expressions with invalid operands expressions.
      * Two groups are 1) the operator and 2) the operands.
      */
     public final static String lispExpReStr =
-        "\\(\\s*"+operatorReStr+"\\s*(.*)\\)";
+        "\\(\\s*"+operatorReStr+"\\s*([^=].*)\\)";
+    // There is a [^=] in the above regex so that <= cannot be matched to <
+    // with malformed arguments
 
     /**Matches any valid list expression.
      * May match list expressions with invalid index expressions.

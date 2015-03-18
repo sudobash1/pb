@@ -11,9 +11,6 @@ public class ListVariablePointer extends Expression {
     /**The expression to generate the index from.*/
     private Expression m_indexExp;
 
-    /**The register the index expression gets evaluated to.*/
-    private final int m_tmpRegister;
-
     /**
      * Create a list variable pointer expression instance.
      * @param compiler The main instance of the PbscCompiler.
@@ -30,8 +27,6 @@ public class ListVariablePointer extends Expression {
     ) {
         super(compiler, line, register);
 
-        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
-
         m_vd = compiler.getVarableDefinition(variable, line, true);
 
         if (m_vd == null) {
@@ -43,16 +38,17 @@ public class ListVariablePointer extends Expression {
         }
 
         m_indexExp = Expression.create(
-            compiler, line, m_tmpRegister, indexExpr
+            compiler, line, register, indexExpr
         );
     }
 
     @Override
     public String generateCode() {
         return m_indexExp.generateCode() +
+               "COPY R"+tmpRegister1+" R"+m_register + endl() +
                "SET R" +m_register + " " + m_vd.getAddress() +
                endl() +
-               "ADD R" + m_register + " R" +m_register + " R" + m_tmpRegister +
+               "ADD R" + m_register + " R" +m_register + " R" + tmpRegister1 +
                endl();
     }
 

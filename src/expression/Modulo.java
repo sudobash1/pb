@@ -3,10 +3,8 @@ package expression;
 import java.util.*;
 import pbsc.*;
 
+/**An expression which computes the remainder of two numbers.*/
 public class Modulo extends LispExpression {
-
-    /**The register the first value to add stored.*/
-    private final int m_tmpRegister;
 
     /**
      * Create a Modulo LispExpression instance.
@@ -24,8 +22,6 @@ public class Modulo extends LispExpression {
 
         super(compiler, line, register, operands);
 
-        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
-        
         if (operands.size() != 2) {
             compiler.error(
                 line,
@@ -38,21 +34,19 @@ public class Modulo extends LispExpression {
     @Override
     public String generateCode() {
         return m_operands.get(0).generateCode() +
-               "COPY R" + m_tmpRegister + " R" + m_register + endl() +
+               "COPY R" + tmpRegister0 + " R" + m_register + endl() +
                m_operands.get(1).generateCode() +
-               "PUSH R" + m_tmpRegister + endl() +
-               "DIV R" + m_tmpRegister + " R" + m_tmpRegister  + " R" +
+               "DIV R" + tmpRegister1 + " R" + tmpRegister0 + " R" +
                m_register + endl() +
-               "MUL R" + m_tmpRegister + " R" + m_tmpRegister  + " R" +
+               "MUL R" + tmpRegister1 + " R" + tmpRegister1 + " R" +
                m_register + endl() +
-               "POP R" + m_register + endl() +
-               "SUB R" + m_register + " R" + m_register  + " R" +
-               m_tmpRegister + endl();
+               "SUB R" + m_register + " R" + tmpRegister0 + " R" +
+               tmpRegister1 + endl();
     }
 
     @Override
     public int stackReq() {
-        return 1;
+        return 0;
     }
 
 }

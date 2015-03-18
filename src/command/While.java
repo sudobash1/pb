@@ -99,9 +99,9 @@ public class While extends Command {
         ret += 
             ":" + testLabel + endl() +
             m_exp.generateCode() +
-            "SET R" + tmpRegister1 + " 0" +
+            "SET R" + tmpRegister1 + " -1" +
             endl() +
-            "BNE R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
+            "BLT R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
             endl() +
             "BRANCH " + doneLabel +
             endl() +

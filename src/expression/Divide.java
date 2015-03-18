@@ -3,10 +3,8 @@ package expression;
 import java.util.*;
 import pbsc.*;
 
+/**An expression which divides two numbers.*/
 public class Divide extends LispExpression {
-
-    /**The register the first value to add stored.*/
-    private final int m_tmpRegister;
 
     /**
      * Create a Divide LispExpression instance.
@@ -24,8 +22,6 @@ public class Divide extends LispExpression {
 
         super(compiler, line, register, operands);
 
-        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
-        
         if (operands.size() != 2) {
             compiler.error(
                 line,
@@ -38,10 +34,10 @@ public class Divide extends LispExpression {
     @Override
     public String generateCode() {
         return m_operands.get(0).generateCode() +
-               "COPY R" + m_tmpRegister + " R" + m_register +
+               "COPY R" + tmpRegister1 + " R" + m_register +
                endl() +
                m_operands.get(1).generateCode() +
-               "DIV R" + m_register + " R" + m_tmpRegister  + " R" +
+               "DIV R" + m_register + " R" + tmpRegister1  + " R" +
                m_register +
                endl();
     }

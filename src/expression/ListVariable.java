@@ -11,9 +11,6 @@ public class ListVariable extends Expression {
     /**The expression to generate the index from.*/
     private Expression m_indexExp;
 
-    /**The register the index expression gets evaluated to.*/
-    private final int m_tmpRegister;
-
     /**
      * Create a list variable expression instance.
      * @param compiler The main instance of the PbscCompiler.
@@ -30,8 +27,6 @@ public class ListVariable extends Expression {
     ) {
         super(compiler, line, register);
 
-        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
-
         m_vd = compiler.getVarableDefinition(variable, line, true);
 
         if (m_vd == null) {
@@ -43,19 +38,18 @@ public class ListVariable extends Expression {
         }
 
         m_indexExp = Expression.create(
-            compiler, line, m_tmpRegister, indexExpr
+            compiler, line, register, indexExpr
         );
     }
 
     @Override
     public String generateCode() {
         return m_indexExp.generateCode() +
-               "SET R" +m_register + " " + m_vd.getAddress() +
+               "COPY R" + tmpRegister0  + " R" + m_register + endl() +
+               "SET R" + m_register + " " + m_vd.getAddress() + endl() +
+               "ADD R" + m_register + " R" +m_register + " R" + tmpRegister0 +
                endl() +
-               "ADD R" + m_register + " R" +m_register + " R" + m_tmpRegister +
-               endl() +
-               "LOAD R" +m_register + " R" +m_register +
-               endl();
+               "LOAD R" +m_register + " R" +m_register + endl();
     }
 
     @Override

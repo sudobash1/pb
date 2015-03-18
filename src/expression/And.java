@@ -3,10 +3,11 @@ package expression;
 import java.util.*;
 import pbsc.*;
 
+/**
+ * A command which performs a logical AND opperation on two expressions.
+ * negative numbers evaluate to false. 0 and positive numbers are true.
+ */
 public class And extends LispExpression {
-
-    /**The register the first value to add stored.*/
-    private final int m_tmpRegister;
 
     /**The number of ANDs found so far.*/
     private static int andNumber = 0;
@@ -30,8 +31,6 @@ public class And extends LispExpression {
 
         super(compiler, line, register, operands);
 
-        m_tmpRegister = (register == tmpRegister1)? tmpRegister2: tmpRegister1;
-        
         if (operands.size() != 2) {
             compiler.error(
                 line,
@@ -49,14 +48,14 @@ public class And extends LispExpression {
     public String generateCode() {
         return
             m_operands.get(0).generateCode() +
-            "SET R" + m_tmpRegister + " 0" + endl() +
-            "BNE R" + m_register + " R" + m_tmpRegister + " " +
-            m_successLabel + endl() +
-            "SET R" + m_register + " 0" + endl() +
-            "BRANCH " + m_failLabel + endl() +
-            ":" + m_successLabel + endl() +
+            "SET R" + tmpRegister1 + " 0" + endl() +
+            "BLT R" + m_register + " R" + tmpRegister1 + " " + m_failLabel +
+            endl() +
             m_operands.get(1).generateCode() +
-            ":" + m_failLabel + endl();
+            "BRANCH " + m_successLabel + endl() +
+            ":" + m_failLabel + endl() +
+            "SET R" + m_register + " -1" + endl() +
+            ":" + m_successLabel + endl();
     }
 
     @Override
