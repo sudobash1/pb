@@ -61,7 +61,7 @@ public class For extends While {
         }
 
         m_exp = Expression.create(
-            compiler, line, whileRegister, "(!= " + var + " " + to + ")"
+            compiler, line, whileRegister, "(<= " + var + " " + to + ")"
         );
     }
 }
