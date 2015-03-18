@@ -24,6 +24,17 @@ public abstract class Command {
     /**The string the command was created from*/
     private String m_commandString = "";
 
+    /**If we are currently within a subroutine, then this is a reference
+     * to the Sub instance. Null otherwise.
+     */
+    protected static Sub currentSub = null;
+
+    /**The program counter register. This is a hack based on the fact that
+     * Pidgen implementations do not check that it is not used. Assuming that
+     * the PC register is #5.
+     */
+    public final static int pcRegister = 5;
+
     /* The below registers must not be clobbered by any expression evaluation.
      * They may only be modified if the expression is initialized to save to
      * on of them.
@@ -163,6 +174,9 @@ public abstract class Command {
             case "break":
                 cmd = new Break(compiler, line);
                 break;
+            case "bus":
+                cmd = new Bus(compiler, line);
+                break;
             case "close":
                 cmd = new Close(compiler, line, commandArgs);
                 usedArgs = true;
@@ -201,6 +215,10 @@ public abstract class Command {
                 cmd = new Goto(compiler, line, commandArgs);
                 usedArgs = true;
                 break;
+            case "gosub":
+                cmd = new Gosub(compiler, line, commandArgs);
+                usedArgs = true;
+                break;
             case "if":
                 cmd = new If(compiler, line, commandArgs);
                 usedArgs = true;
@@ -233,12 +251,17 @@ public abstract class Command {
                 cmd = new Print(compiler, line, commandArgs);
                 usedArgs = true;
                 break;
+            case "sub":
+                cmd = new Sub(compiler, line, commandArgs);
+                usedArgs = true;
+                break;
             case "read":
                 cmd = new Read(compiler, line, commandArgs);
                 usedArgs = true;
                 break;
             case "rem":
                 cmd = new Rem(compiler, line);
+                usedArgs = true; //Rem ignores its args
                 break;
             case "set":
                 cmd = new Set(compiler, line, commandArgs);

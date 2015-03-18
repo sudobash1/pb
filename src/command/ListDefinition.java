@@ -62,4 +62,29 @@ public class ListDefinition extends VariableDefinition {
     public int stackReq() {
         return 0;
     }
+
+    @Override
+    public String pushVar() {
+        String ret = "";
+        for (int i = 0; i < m_size; ++i) {
+            ret += 
+                "SET R" + tmpRegister0 + " " + (getAddress() + i) + endl() +
+                "LOAD R" + tmpRegister0 + " R" + tmpRegister0 + endl() +
+                "PUSH R" + tmpRegister0 + endl();
+        }
+        return ret;
+    }
+
+    @Override
+    public String popVar() {
+        String ret = "";
+        for (int i = 0; i < m_size; ++i) {
+            ret += 
+                "POP R" + tmpRegister1 + endl() +
+                "SET R" + tmpRegister0 + " " + (getAddress() + i) + endl() +
+                "SAVE R" + tmpRegister1 + " R" + tmpRegister0 + endl();
+        }
+        return ret;
+    }
+
 }

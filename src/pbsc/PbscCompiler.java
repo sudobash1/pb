@@ -78,6 +78,12 @@ public class PbscCompiler {
     private Hashtable<String, VariableDefinition> m_varTable = null;
 
     /**
+     * Maps subroutines to their definition class.
+     * The String is the subroutine name.
+     */
+    private Hashtable<String, Sub> m_subTable = null;
+
+    /**
      * Contains all defined labels.
      * The String is the label name with scope mangling.
      */
@@ -91,6 +97,7 @@ public class PbscCompiler {
 
     public PbscCompiler() {
         m_varTable = new Hashtable<String, VariableDefinition>();
+        m_subTable = new Hashtable<String, Sub>();
         m_definesTable = new Hashtable<String,Integer>();
         m_namespaceStack = new ArrayList<String>();
         m_labels  = new ArrayList<String>();
@@ -252,6 +259,43 @@ public class PbscCompiler {
             }
         }
         if (vital) { error(line, "Undefined varable `" + varName + "'"); }
+        return null;
+    }
+
+    /**
+     * Register a new subroutine. Checks if subroutine exists before adding.
+     * If the subroutine already exists, prints out an error.
+     * @param subName the subroutine name.
+     * @param sub the Sub instance.
+     * @param line the line the subroutine is being declaired.
+     * @return False if subroutine with that name already exists.
+     */
+    public boolean registerNewSub(String subName, Sub sub, int line) {
+        //Check if sub with this name exists
+        if (m_subTable.containsKey(subName)) {
+            error(
+                line,
+                "A subroutine with the name `" + subName +
+                "' has already been declared."
+            );
+            return false;
+        }
+        m_subTable.put(subName, sub);
+        return true;
+    }
+
+    /**
+     * Gets the Sub instance of a subroutine.
+     * If the subroutine doesn't exist prints out an error.
+     * @param subName the name of the subroutine
+     * @param line the line the subroutine is being referenced from.
+     * @return the VariableDefinition if it exists else null.
+     */
+    public Sub getSub(String subName, int line) {
+        if (m_subTable.containsKey(subName)) {
+            return m_subTable.get(subName);
+        }
+        error(line, "Undefined subroutine `" + subName + "'");
         return null;
     }
 

@@ -32,7 +32,7 @@ public class IntDefinition extends VariableDefinition {
             } else {
                 compiler.error(
                     line,
-                    "Malformed argument to Int.\n" +
+                    "Malformed argument to INT.\n" +
                     "Usage: INT <int var>"
                 );
             }
@@ -57,5 +57,21 @@ public class IntDefinition extends VariableDefinition {
     @Override
     public int getSize() {
         return 1; //Ints take one byte
+    }
+
+    @Override
+    public String pushVar() {
+        return 
+            "SET R" + tmpRegister0 + " " + getAddress() + endl() +
+            "LOAD R" + tmpRegister0 + " R" + tmpRegister0 + endl() +
+            "PUSH R" + tmpRegister0 + endl();
+    }
+
+    @Override
+    public String popVar() {
+        return 
+            "POP R" + tmpRegister1 + endl() +
+            "SET R" + tmpRegister0 + " " + getAddress() + endl() +
+            "SAVE R" + tmpRegister1 + " R" + tmpRegister0 + endl();
     }
 }

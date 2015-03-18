@@ -23,6 +23,10 @@ public abstract class VariableDefinition extends Command {
      */
     public VariableDefinition(PbscCompiler compiler, int line) {
         super(compiler, line);
+
+        if (currentSub != null) {
+            currentSub.localVars.add(this);
+        }
     }
 
     /**
@@ -43,7 +47,21 @@ public abstract class VariableDefinition extends Command {
         m_address = address;
     }
 
-    //Get the number of bytes needed to store this Variable.
+    /**
+     * Get the number of bytes needed to store this variable.
+     * @return the number of bytes needed to store this variable.
+     */
     public abstract int getSize();
 
+    /**
+     * Generates the code to store this variable to the stack.
+     * @return The pidgen code to store this variable to the stack.
+     */
+    public abstract String pushVar();
+
+    /**
+     * Generates the code to restore this variable from the stack.
+     * @return The pidgen code to restore this variable from the stack.
+     */
+    public abstract String popVar();
 }
