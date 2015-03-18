@@ -174,8 +174,21 @@ public abstract class Command {
             case "done":
                 cmd = new Done(compiler, line);
                 break;
+            case "dump":
+                cmd = new Dump(compiler, line);
+                break;
             case "else":
                 cmd = new Else(compiler, line);
+                break;
+            case "exec":
+                cmd = new Exec(compiler, line);
+                break;
+            case "exit":
+                cmd = new Exit(compiler, line);
+                break;
+            case "getpid":
+                cmd = new GetPid(compiler, line, commandArgs);
+                usedArgs = true;
                 break;
             case "fi":
                 cmd = new Fi(compiler, line);
@@ -242,6 +255,9 @@ public abstract class Command {
             case "write":
                 cmd = new Write(compiler, line, commandArgs);
                 usedArgs = true;
+                break;
+            case "yield":
+                cmd = new Yield(compiler, line);
                 break;
             default: 
                 compiler.error(line, "Invalid command `" + commandName + "'");

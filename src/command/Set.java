@@ -68,7 +68,7 @@ public class Set extends Command {
             "Usage: SET <int var> = <int>\n" +
             "       SET <list var> [ <int> ] = <int>\n" +
             "(Brackets [ ] are literal and required in above usage.)"
-            );
+        );
         return;
     }
 
