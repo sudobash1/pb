@@ -1,0 +1,132 @@
+
+REM Constants for IO;
+
+DEFINE #KEYBOARD = 0;
+DEFINE #CONSOLE = 1;
+
+DEFINE #LEN = 10;
+
+REM Global vars and parameters;
+
+LIST A[#LEN];
+
+INT print_lo;
+INT print_hi;
+
+INT read_lo;
+INT read_hi;
+
+INT qsort_lo;
+INT qsort_hi;
+
+REM =============================================
+SUBROUTINE qsrt: Run quicksort on array A
+
+USES PARAMETERS:
+qsort_lo: The start address to sort.
+qsort_hi: The end address to sort.
+
+RETURN PARAMETERS:
+None
+=================================================;
+SUB qsrt;
+
+    REM Copy parameters to local variables for recursion;
+    INT lo;
+    INT hi;
+    INT storeIndex;
+    INT tmp;
+    SET lo = qsort_lo;
+    SET hi = qsort_hi;
+    SET storeIndex = lo;
+
+    REM hi will be our pivot index;
+
+    IF (< lo hi);
+        FOR i FROM lo TO (- hi 1);
+            IF (< A[i] A[hi]);
+                SET tmp = A[i];                
+                SET A[i] = A[storeIndex];
+                SET A[storeIndex] = tmp;
+                SET storeIndex = (+ storeIndex 1);
+            FI;
+        DONE;
+
+        SET tmp = A[hi];                
+        SET A[hi] = A[storeIndex];
+        SET A[storeIndex] = tmp;
+
+        REM Recurse qsrt;
+
+        SET qsort_hi = (- storeIndex 1);
+        GOSUB qsrt;
+
+        SET qsort_hi = hi;
+        SET qsort_lo = (+ storeIndex 1);
+        GOSUB qsrt;
+    FI;
+
+BUS;
+
+REM =============================================
+SUBROUTINE printA: Print out array A
+
+USES PARAMETERS:
+print_lo: The start address to print.
+print_hi: The end address to print.
+
+RETURN PARAMETERS:
+None
+=================================================;
+SUB printA;
+    OPEN #CONSOLE DEFAULT GOTO err;
+        FOR i FROM print_lo TO print_hi;
+            WRITE A[i] TO #CONSOLE DEFAULT GOTO err;
+        DONE;
+    CLOSE #CONSOLE DEFAULT GOTO err;
+BUS;
+
+
+
+REM =============================================
+SUBROUTINE readA: Read input to array A.
+
+USES PARAMETERS:
+read_lo: The start address to begin reading.
+read_hi: The end address stop reading.
+
+RETURN PARAMETERS:
+None
+=================================================;
+SUB readA;
+    OPEN #KEYBOARD DEFAULT GOTO err;
+        FOR i FROM read_lo TO read_hi;
+            READ A[i] FROM #KEYBOARD DEFAULT GOTO err;
+        DONE;
+    CLOSE #KEYBOARD DEFAULT GOTO err;
+BUS;
+
+
+REM Program body;
+
+SET read_lo = 0;
+SET read_hi = (- #LEN 1);
+GOSUB readA;
+
+SET print_lo = 0;
+SET print_hi = (- #LEN 1);
+GOSUB printA;
+
+SET qsort_lo = 0;
+SET qsort_hi = (- #LEN 1);
+GOSUB qsrt;
+
+FOR i FROM 0 to 9; print 0; DONE;
+
+SET print_lo = 0;
+SET print_hi = (- #LEN 1);
+GOSUB printA;
+
+EXIT;
+LABEL err;
+DUMP;
