@@ -259,6 +259,9 @@ public abstract class Command {
                 cmd = new Read(compiler, line, commandArgs);
                 usedArgs = true;
                 break;
+            case "return":
+                cmd = new Return(compiler, line);
+                break;
             case "rem":
                 cmd = new Rem(compiler, line);
                 usedArgs = true; //Rem ignores its args
