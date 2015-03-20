@@ -7,7 +7,7 @@ CLASSES = $(SRCS:.java=.class)
 all: $(CLASSES)
 
 run: all
-	CLASSPATH=${CLASSPATH} java pbsc.PbscCompiler ${FILE}
+	CLASSPATH=${CLASSPATH} java pbsc.PbscCompiler ${FILE} out.asm
 
 clean :
 	rm -f src/*/*.class
