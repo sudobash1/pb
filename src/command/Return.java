@@ -33,7 +33,7 @@ public class Return extends Command {
             "POP R" + tmpRegister0 + endl() +
             "SET R" + tmpRegister1 + " " + m_compiler.INSTSIZE + endl() +
             "ADD R" + pcRegister + " R" + tmpRegister0 + " R" + tmpRegister1 +
-            endl() +
+            endl();
     }
 
     @Override
