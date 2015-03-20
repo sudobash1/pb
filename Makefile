@@ -4,10 +4,13 @@ JAVAC=javac
 SRCS = $(wildcard src/*/*.java)
 CLASSES = $(SRCS:.java=.class)
 
-all: $(CLASSES)
+all: $(CLASSES) sos
 
 run: all
 	CLASSPATH=${CLASSPATH} java pbsc.PbscCompiler ${FILE} out.asm
+
+sos:
+	make -C pbasic-sos
 
 clean :
 	rm -f src/*/*.class
@@ -20,3 +23,5 @@ clean :
 	echo "Skipping file" $<; \
 	touch $@; \
 	fi
+
+.PHONY: clean sos all run
