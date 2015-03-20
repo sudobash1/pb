@@ -1,0 +1,3 @@
+[submodule "pbasic-sos"]
+	path = pbasic-sos
+	url = git@github.com:sudobash1/pbasic-sos.git
