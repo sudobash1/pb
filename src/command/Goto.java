@@ -10,10 +10,10 @@ import expression.*;
 public class Goto extends Command {
 
     /**The label to jump to.*/
-    private final String m_label;
+    private String m_label;
 
-    /**The scope this was declared in.*/
-    private final ArrayList<String> m_namespaceStack;
+    /**The subroutine this goto was found in. May be null.*/
+    private Sub m_withinSub;
 
     /**
      * jump to a label
@@ -24,31 +24,40 @@ public class Goto extends Command {
     public Goto(PbscCompiler compiler, int line, String label) {
         super(compiler, line);
 
-        label = label.trim();
-        m_namespaceStack = compiler.copyNamespace();
+        m_label = label.trim();
 
         if (! label.matches(idReStr)) {
             m_compiler.error(
                 line, "Invalid label name `" + label + "'"
             );
-            m_label = null;
             return;
         }
 
-        m_label = label;
+        m_withinSub = currentSub;
     }
 
     @Override
     public void checkLabels() {
-        if (m_label != null) {
-            Label.checkExists(m_compiler, m_line, m_label);
-        }
+        Label.retriveLabel(m_compiler, m_line, m_label, m_withinSub);
     }
 
     @Override
     public String generateCode() {
-        return super.generateCode() +
-               "BRANCH " + m_label + endl();
+        String ret = super.generateCode();
+
+        Label label = 
+            Label.retriveLabel(m_compiler, m_line, m_label, m_withinSub);
+
+        //Clear the stack if leaving a subroutine.
+        if (m_withinSub != null && !label.inSub()) {
+            ret += m_compiler.callRuntimeMethod(
+                PbscCompiler.RunTimeLibrary.CLEAR_STACK
+            );
+        }
+
+        ret += "BRANCH " + label.text() + endl();
+
+        return ret;
     }
 
     @Override

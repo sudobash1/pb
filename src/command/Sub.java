@@ -10,6 +10,7 @@ import expression.*;
  */
 public class Sub extends Command {
 
+    public final String name;
     public final String label;
     public final String endLabel;
 
@@ -25,6 +26,7 @@ public class Sub extends Command {
         super(compiler, line);
 
         localVars = new ArrayList<VariableDefinition>();
+        Label.createLocalLabelTable(this);
 
         String reStr = "^(" + idReStr + ")$";
         Matcher m = Pattern.compile(reStr).matcher(arguments);
@@ -37,10 +39,11 @@ public class Sub extends Command {
             );
             label = "";
             endLabel = "";
+            name = "";
             return;
         }
 
-        String name = m.group(1);
+        name = m.group(1);
 
         if (compiler.isReservedWord(name)) {
             compiler.error(line, "Illegal name for subroutine `"+name+"'.");
@@ -75,7 +78,7 @@ public class Sub extends Command {
         }
 
         ret +=
-            "PUSH R" + pcRegister + endl() +
+            "PUSH R" + PbscCompiler.pcRegister + endl() +
             "BRANCH " + label + endl();
 
         if (fromWithinSub != null) {

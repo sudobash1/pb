@@ -4,7 +4,7 @@ import java.util.*;
 import pbsc.*;
 
 /**
- * A command which tests if two numbers are not equal.
+ * An expression which tests if two numbers are not equal.
  * Evaluates to a negative number for to false.
  * 0 or a positive numbers means true.
  */

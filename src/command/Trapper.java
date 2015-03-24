@@ -34,22 +34,28 @@ public class Trapper {
     /**The label to jump to to check non-success code.*/
     private String m_errorLabel;
 
+    /**The subroutine this goto was found in. May be null.*/
+    private Sub m_withinSub;
+
     /**
      * Create a new Trapper instance.
      * @param compiler The main instance of the PbscCompiler.
      * @param defaultLabel The default label to jump to on uncaught error.
      * Note: may be null.
      * @param errorMap Maps error integers to labels to jump to on error.
-     * Note may be null.
+     * May be null.
+     * @param currentSub The sub this Trapper was created in. May be null.
      */
     public Trapper(
         PbscCompiler compiler, String defaultLabel,
-        Hashtable<Integer, String> errorMap
+        Hashtable<Integer, String> errorMap, 
+        Sub currentSub
     ) {
         m_compiler = compiler;
         m_params = new ArrayList<Expression>();
         m_defaultLabel = defaultLabel;
         m_errorMap = errorMap;
+        m_withinSub = currentSub;
 
         m_trapperNumber = trapperNumber;
         ++trapperNumber;
@@ -109,17 +115,6 @@ public class Trapper {
             return ret;
         }
 
-        //We just have the default handler
-        if (m_errorMap.size() == 0) {
-            ret +=
-                //Branch to default if error code != 0
-                "SET R" + Command.tmpRegister2 + " 0" + endl() +
-                "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
-                " " + m_defaultLabel +
-                endl();
-            return ret;
-        }
-
         //Check the error code
         ret +=
             //Branch to success if error code = 0
@@ -130,23 +125,49 @@ public class Trapper {
             "BRANCH " + m_successLabel + endl() +
             ":" + m_errorLabel + endl();
 
-        //Check all the errors.
+        //Check for all the errors.
         for (Map.Entry<Integer, String> error : m_errorMap.entrySet()) {
+
+            Label label = Label.retriveLabel(
+                m_compiler, -1, error.getValue(), m_withinSub
+            );
+
             String skipErrorLabel = m_compiler.applyMagic(
                 "TRAPPER" + trapperNumber  + "SKIP" + error.getKey()
             );
+
             ret +=
                 "SET R" + Command.tmpRegister2 + " " + error.getKey() + 
                 endl() +
                 "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
-                " " + skipErrorLabel +
-                endl() +
-                "BRANCH " + error.getValue() + endl() +
+                " " + skipErrorLabel + endl();
+
+            //Clear the stack if leaving a subroutine.
+            if (m_withinSub != null && !label.inSub()) {
+                ret += m_compiler.callRuntimeMethod(
+                    PbscCompiler.RunTimeLibrary.CLEAR_STACK
+                );
+            }
+
+            ret +=
+                "BRANCH " + label.text() + endl() +
                 ":" + skipErrorLabel + endl();
         }
 
-        //Jump to the default label if there is on.
+        //Jump to the default label if there is one.
         if (m_defaultLabel != null) {
+
+            Label label = Label.retriveLabel(
+                m_compiler, -1, m_defaultLabel, m_withinSub
+            );
+
+            //Clear the stack if leaving a subroutine.
+            if (m_withinSub != null && !label.inSub()) {
+                ret += m_compiler.callRuntimeMethod(
+                    PbscCompiler.RunTimeLibrary.CLEAR_STACK
+                );
+            }
+
             ret += "BRANCH " + m_defaultLabel + endl();
         }
 

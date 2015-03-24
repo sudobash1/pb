@@ -30,6 +30,9 @@ public abstract class TrapCommand extends Command {
     protected final String m_defaultReStr =
         "\\s+default\\s+goto\\s+(" + idReStr + ")";
 
+    /**The subroutine this goto was found in. May be null.*/
+    protected Sub m_withinSub;
+
     /**
      * Create a new TrapCommand instance. 
      * @param compiler The main instance of the PbscCompiler.
@@ -67,12 +70,14 @@ public abstract class TrapCommand extends Command {
         } else {
             m_defaultLabel = null;
         }
+
+        m_withinSub = currentSub;
     }
 
     @Override
     public void checkLabels() {
         for (String label : m_errorMap.values()) {
-            Label.checkExists(m_compiler, m_line, label);
+            Label.retriveLabel(m_compiler, m_line, label, m_withinSub);
         }
     }
 

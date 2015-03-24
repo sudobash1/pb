@@ -32,6 +32,21 @@ public class IntVariablePointer extends Expression {
         }
     }
 
+    /**
+     * Create a integer variable pointer expression instance.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the expression was found on.
+     * @param register The register to save the value to when the expression
+     * is evaluated at runtime.
+     * @param var The VariableDefinition of the integer variable.
+     */
+    public IntVariablePointer(
+        PbscCompiler compiler, int line, int register, VariableDefinition var
+    ) {
+        super(compiler, line, register);
+        m_vd = var;
+    }
+
     @Override
     public String generateCode() {
         return "SET R" + m_register + " " + m_vd.getAddress() + endl();

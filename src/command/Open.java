@@ -54,7 +54,7 @@ public class Open extends TrapCommand {
         //Generate the code to open the device.
         
         Trapper openTrapper = new Trapper(
-            m_compiler, m_defaultLabel, m_errorMap
+            m_compiler, m_defaultLabel, m_errorMap, m_withinSub
         );
 
         openTrapper.addArgument(m_deviceNum);

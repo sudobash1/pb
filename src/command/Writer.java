@@ -47,7 +47,7 @@ public abstract class Writer extends TrapCommand {
             //Generate the code to open the device.
             
             Trapper openTrapper = new Trapper(
-                m_compiler, m_defaultLabel, m_errorMap
+                m_compiler, m_defaultLabel, m_errorMap, m_withinSub
             );
 
             openTrapper.addArgument(m_deviceNum);
@@ -65,7 +65,7 @@ public abstract class Writer extends TrapCommand {
 
         //Generate the code to write to the device
         Trapper writeTrapper = new Trapper(
-            m_compiler, m_defaultLabel, m_errorMap
+            m_compiler, m_defaultLabel, m_errorMap, m_withinSub
         );
 
         writeTrapper.addArgument(m_deviceNum);
@@ -87,7 +87,7 @@ public abstract class Writer extends TrapCommand {
             //Generate the code to close the device
 
             Trapper closeTrapper = new Trapper(
-                m_compiler, m_defaultLabel, m_errorMap
+                m_compiler, m_defaultLabel, m_errorMap, m_withinSub
             );
 
             closeTrapper.addArgument(m_deviceNum);

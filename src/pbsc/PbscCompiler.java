@@ -8,6 +8,11 @@ import command.*;
 
 public class PbscCompiler {
 
+    /**These are the methods in the Run Time Library.*/
+    public enum RunTimeLibrary {
+        CLEAR_STACK
+    };
+
     /**These words may not be used as labels or variables.*/
     private static final String[] reservedWords = {
         "and", "break", "case", "define", "default", "done", "else", "end",
@@ -39,6 +44,18 @@ public class PbscCompiler {
 
     /**Size of each instruction in bytes.*/
     public static final int INSTSIZE = 4;
+
+    /*The below registers are hacks based on the fact that the CPU simulator
+     *does not check that the register being accessed is a general register.
+     */
+    /**The program counter register.*/
+    public static final int pcRegister = 5;
+    /**The stack pointer register.*/
+    public static final int spRegister = 6;
+    /**The register denoting the bottom of currently accessable RAM.*/
+    public static final int baseRegister = 7;
+    /**The register denoting the top of currently accessable RAM.*/
+    public static final int limRegister = 8;
 
     /**Number of extra instructions OS will add to call syscall exit.*/
     public static final int extraInstructions = 3;
@@ -72,10 +89,17 @@ public class PbscCompiler {
     private Hashtable<String, Integer> m_definesTable = null;
 
     /**
-     * Maps integers to their definition class.
+     * Maps variables to their definition class.
      * The String is the variable name with scope mangling.
      */
     private Hashtable<String, VariableDefinition> m_varTable = null;
+
+    /**
+     * Maps run-time library variables to their definition class.
+     * The String is the variable name without any magic or mangling.
+     */
+    private Hashtable<String, VariableDefinition> m_runTimeVarTable = null;
+
 
     /**
      * Maps subroutines to their definition class.
@@ -95,8 +119,15 @@ public class PbscCompiler {
      */
     private ArrayList<String> m_namespaceStack = null;
 
+    /**
+     * The runTimeLib instance
+     */
+    private RunTimeLib m_runTimeLib = null;
+
     public PbscCompiler() {
         m_varTable = new Hashtable<String, VariableDefinition>();
+        m_runTimeLib = new RunTimeLib(this);
+        m_runTimeVarTable = new Hashtable<String, VariableDefinition>();
         m_subTable = new Hashtable<String, Sub>();
         m_definesTable = new Hashtable<String,Integer>();
         m_namespaceStack = new ArrayList<String>();
@@ -150,6 +181,15 @@ public class PbscCompiler {
     public String lineEnding() { return "\n"; };
 
     /**
+     * Return code to call specified runtime library method.
+     * @param method The runtime library method call
+     * @return The Pidgen code to call the runtime library method.
+     */
+    public String callRuntimeMethod(PbscCompiler.RunTimeLibrary method) {
+        return m_runTimeLib.callRuntimeMethod(method);
+    }
+
+    /**
      * Return a copy of the namespace stack
      * @return the copy of the namespace stack.
      */
@@ -169,6 +209,22 @@ public class PbscCompiler {
             }
         }
         return false;
+    }
+
+    /**
+     * Get a variable for the run time library. If no such variable yet exists
+     * then create it.
+     * @param varName The unique name of the variable. No need for magic.
+     * @return The VariableDefinition.
+     */
+    protected VariableDefinition runTimeLibIntVariable(String varName) {
+        if (m_runTimeVarTable.containsKey(varName)) {
+            return m_runTimeVarTable.get(varName);
+        } else {
+            VariableDefinition vd = new IntDefinition(this, -1);
+            m_runTimeVarTable.put(varName, vd);
+            return vd;
+        }
     }
 
     /**
@@ -514,6 +570,19 @@ public class PbscCompiler {
         sb.append(lineEnding());
         sb.append("#");
         sb.append(lineEnding());
+        sb.append("# RunTime Library Variables:");
+        sb.append(lineEnding());
+        for (String key : m_runTimeVarTable.keySet()) {
+            sb.append("# ");
+            sb.append(key);
+            sb.append(" @ ");
+            sb.append(""+m_runTimeVarTable.get(key).getAddress());
+            sb.append(lineEnding());
+        }
+        sb.append("#");
+        sb.append(lineEnding());
+        sb.append("# User Variables:");
+        sb.append(lineEnding());
         for (String key : m_varTable.keySet()) {
             sb.append("# ");
             sb.append(key);
@@ -617,6 +686,7 @@ public class PbscCompiler {
         for (Command c : program) {
             pidgenStringBuilder.append(c.generateCode());
         }
+        pidgenStringBuilder.insert(0, m_runTimeLib.generateCode());
         m_preCompiling = false;
 
         String pidgenString = pidgenStringBuilder.toString();
@@ -631,6 +701,10 @@ public class PbscCompiler {
          */
         
         int variableLocation = programInstSize + extraInstructions * INSTSIZE;
+        for (VariableDefinition vd : m_runTimeVarTable.values()) {
+            vd.setAddress(variableLocation);
+            variableLocation += vd.getSize();
+        }
         for (VariableDefinition vd : m_varTable.values()) {
             vd.setAddress(variableLocation);
             variableLocation += vd.getSize();
@@ -641,6 +715,7 @@ public class PbscCompiler {
 
         //Recompile with bound variables
         pidgenStringBuilder = new StringBuilder();
+        pidgenStringBuilder.append(m_runTimeLib.generateCode());
         for (Command c : program) {
             pidgenStringBuilder.append(c.generateCode());
         }

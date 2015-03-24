@@ -29,12 +29,6 @@ public abstract class Command {
      */
     protected static Sub currentSub = null;
 
-    /**The program counter register. This is a hack based on the fact that
-     * Pidgen implementations do not check that it is not used. Assuming that
-     * the PC register is #5.
-     */
-    public final static int pcRegister = 5;
-
     /* The below registers must not be clobbered by any expression evaluation.
      * They may only be modified if the expression is initialized to save to
      * on of them.
@@ -69,7 +63,7 @@ public abstract class Command {
      * Only group is entire match.
      */
     public final static String operatorReStr =
-        "(and\\s|or\\s|<=?|>=?|!?=|\\+|-|\\*|/|^|mod\\s)";
+        "(and\\s|or\\s|not\\s|<=?|>=?|!?=|\\+|-|\\*|/|^|mod\\s)";
 
     /**Matches any valid lisp-style expression.
      * May match lisp-style expressions with invalid operands expressions.
@@ -113,7 +107,7 @@ public abstract class Command {
     /**
      * Return the line ending.
      */
-    public final String endl() {
+    protected final String endl() {
         return m_compiler.lineEnding();
     }
 

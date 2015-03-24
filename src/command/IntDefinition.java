@@ -12,6 +12,15 @@ import pbsc.*;
 public class IntDefinition extends VariableDefinition {
 
     /**
+     * Create the integer without registering.
+     * @param compiler The main instance of the PbscCompiler.
+     * @param line The line the command was found on.
+     */
+    public IntDefinition(PbscCompiler compiler, int line) {
+        super(compiler, line);
+    }
+
+    /**
      * Register the integer.
      * @param compiler The main instance of the PbscCompiler.
      * @param line The line the command was found on.

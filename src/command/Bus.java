@@ -35,8 +35,8 @@ public class Bus extends Command {
             super.generateCode() +
             "POP R" + tmpRegister0 + endl() +
             "SET R" + tmpRegister1 + " " + m_compiler.INSTSIZE + endl() +
-            "ADD R" + pcRegister + " R" + tmpRegister0 + " R" + tmpRegister1 +
-            endl() +
+            "ADD R" + PbscCompiler.pcRegister  + " R" + tmpRegister0 + " R" +
+            tmpRegister1 + endl() +
             ":" + subLink.endLabel + endl();
     }
 

@@ -1,0 +1,31 @@
+DEFINE #sp_register = 6;
+
+REM Get the initial size of the stack;
+INT init_stack;
+P SET R0 @init_stack;
+P SAVE R#sp_register R0;
+
+PRINT init_stack;
+
+INT count;
+SET count = 0;
+
+SUB foobar;
+    SET count = (+ count 1);
+    IF (> count 10);
+        GOTO cut;
+    FI;
+    GOSUB foobar;
+BUS;
+
+GOSUB foobar;
+
+LABEL cut;
+
+REM Get the final size of the stack;
+
+INT final_stack;
+P SET R0 @final_stack;
+P SAVE R#sp_register R0;
+PRINT final_stack;
+

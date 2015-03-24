@@ -47,7 +47,7 @@ public abstract class Reader extends TrapCommand {
             //Generate the code to open the device.
             
             Trapper openTrapper = new Trapper(
-                m_compiler, m_defaultLabel, m_errorMap
+                m_compiler, m_defaultLabel, m_errorMap, m_withinSub
             );
 
             openTrapper.addArgument(m_deviceNum);
@@ -64,7 +64,7 @@ public abstract class Reader extends TrapCommand {
 
         //Generate the code to read from the device
         Trapper readTrapper = new Trapper(
-            m_compiler, m_defaultLabel, m_errorMap
+            m_compiler, m_defaultLabel, m_errorMap, m_withinSub
         );
 
         readTrapper.addArgument(m_deviceNum);
@@ -85,7 +85,7 @@ public abstract class Reader extends TrapCommand {
             //Generate the code to close the device
 
             Trapper closeTrapper = new Trapper(
-                m_compiler, m_defaultLabel, m_errorMap
+                m_compiler, m_defaultLabel, m_errorMap, m_withinSub
             );
 
             closeTrapper.addArgument(m_deviceNum);
