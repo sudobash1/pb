@@ -39,9 +39,9 @@ public abstract class Writer extends TrapCommand {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
 
-        String ret = super.generateCode();
+        super.generateCode();
         
         if (m_autoOpen) {
             //Generate the code to open the device.
@@ -58,8 +58,8 @@ public abstract class Writer extends TrapCommand {
                 )
             );
 
-            ret += "#TRAP to open the device" + endl();
-            ret += openTrapper.generateCode();
+            write("#TRAP to open the device");
+            openTrapper.generateCode();
         }
 
 
@@ -79,9 +79,9 @@ public abstract class Writer extends TrapCommand {
         );
 
         if (m_autoOpen) {
-            ret += "#TRAP to write from the device" + endl();
+            write("#TRAP to write to the device");
         }
-        ret += writeTrapper.generateCode();
+        writeTrapper.generateCode();
 
         if (m_autoOpen) {
             //Generate the code to close the device
@@ -98,11 +98,9 @@ public abstract class Writer extends TrapCommand {
                 )
             );
 
-            ret += "#TRAP to close the device" + endl();
-            ret += closeTrapper.generateCode();
+            write("#TRAP to close the device");
+            closeTrapper.generateCode();
         }
-
-        return ret;
     }
 
     @Override

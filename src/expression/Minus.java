@@ -16,7 +16,7 @@ public class Minus extends LispExpression {
      * subtract.
      */
     public Minus(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -32,14 +32,12 @@ public class Minus extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return m_operands.get(0).generateCode() +
-               "PUSH R" + m_register + endl() +
-               m_operands.get(1).generateCode() +
-               "POP R" + tmpRegister1 + endl() +
-               "SUB R" + m_register + " R" + tmpRegister1  + " R" +
-               m_register +
-               endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("PUSH", m_register);
+        m_operands.get(1).generateCode();
+        write("POP", tmpRegister1);
+        write("SUB", m_register, tmpRegister1 , m_register);
     }
 
     @Override

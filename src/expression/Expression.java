@@ -9,12 +9,12 @@ public abstract class Expression extends Command {
     /**If this expression can place the result in a register, then this is
      * the register it will be placed in.
      * If it is negative, then it will be pushed to the stack.*/
-    protected int m_register;
+    protected String m_register;
 
     /**An optional comment describing the purpose of this expression*/
     public String m_comment = null;
     
-    public Expression(PbscCompiler compiler, int line, int register) {
+    public Expression(PbscCompiler compiler, int line, String register) {
         super(compiler, line);
         m_register = register;
     }
@@ -29,7 +29,7 @@ public abstract class Expression extends Command {
      * @return The proper expression class or null if error.
      */
     public static Expression create(
-            PbscCompiler compiler, int line, int register, String expStr
+            PbscCompiler compiler, int line, String register, String expStr
     ) {
 
         expStr = expStr.trim();
@@ -75,7 +75,7 @@ public abstract class Expression extends Command {
      * @return The proper expression class or null if error.
      */
     public static Expression create(
-            PbscCompiler compiler, int line, int register, String expStr,
+            PbscCompiler compiler, int line, String register, String expStr,
             String comment
     ) {
         Expression expr = create(compiler, line, register, expStr);

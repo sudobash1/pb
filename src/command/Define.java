@@ -54,10 +54,10 @@ public class Define extends Command {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
         //No code needs to be executed in actual Pidgin.
         //The constant is replaced at compile time.
-        return super.generateCode();
+        super.generateCode();
     }
 
     @Override

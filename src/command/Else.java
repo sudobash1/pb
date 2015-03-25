@@ -47,10 +47,10 @@ public class Else extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return super.generateCode() +
-               "BRANCH " + ifLink.endLabel + endl() +
-               ":" + ifLink.elseLabel + endl();
+    public void generateCode() {
+        super.generateCode();
+        write("BRANCH", ifLink.endLabel);
+        write(":" + ifLink.elseLabel);
     }
 
     @Override

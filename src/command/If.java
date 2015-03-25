@@ -72,19 +72,17 @@ public class If extends Command {
     }
 
     @Override
-    public String generateCode() {
-        String ret = super.generateCode() + 
-                     m_exp.generateCode() +
-                     "SET R" + tmpRegister1 + " -1" + endl() +
-                     "BLT R" + tmpRegister1 + " R" + ifRegister + " " +
-                     thenLabel + endl();
+    public void generateCode() {
+        super.generateCode();
+        m_exp.generateCode();
+        write("SET", tmpRegister1, "-1");
+        write("BLT", tmpRegister1, ifRegister, thenLabel);
         if (m_foundElse) {
-            ret += "BRANCH " + elseLabel + endl();
+            write("BRANCH", elseLabel);
         } else {
-            ret += "BRANCH " + endLabel + endl();
+            write("BRANCH", endLabel);
         }
-        ret += ":" + thenLabel + endl();
-        return ret;
+        write(":" + thenLabel);
     }
 
     @Override

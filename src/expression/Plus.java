@@ -16,7 +16,7 @@ public class Plus extends LispExpression {
      * add.
      */
     public Plus(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -32,13 +32,12 @@ public class Plus extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return m_operands.get(0).generateCode() +
-               "PUSH R" + m_register + endl() +
-               m_operands.get(1).generateCode() +
-               "POP R" + tmpRegister1 + endl() +
-               "ADD R" + m_register + " R" + m_register + " R" + tmpRegister1 +
-               endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("PUSH", m_register);
+        m_operands.get(1).generateCode();
+        write("POP", tmpRegister1);
+        write("ADD", m_register, m_register, tmpRegister1);
     }
 
     @Override

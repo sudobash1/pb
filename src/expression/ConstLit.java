@@ -18,9 +18,9 @@ public class ConstLit extends Expression {
      * is evaluated at runtime.
      * @param constLitStr The string containing the constant or literal.
      */
-    public ConstLit(PbscCompiler compiler, int line, int register, 
-                    String constLitStr) {
-
+    public ConstLit(
+        PbscCompiler compiler, int line, String register, String constLitStr
+    ) {
         super(compiler, line, register);
 
         Integer val = compiler.constLit2Integer(constLitStr, line);
@@ -31,18 +31,13 @@ public class ConstLit extends Expression {
     }
 
     @Override
-    public String generateCode() {
-        if (m_register >= 0) {
-            return "SET R" + m_register + " " + m_value + endl();
-        } else {
-            return "SET R1 " + m_value + endl() +
-                   "PUSH R1 " + endl();
-        }
+    public void generateCode() {
+        write("SET", m_register, ""+m_value);
     }
 
     @Override
     public int stackReq() {
-        return m_register >= 0 ? 0 : 1;
+        return 0;
     }
 
 }

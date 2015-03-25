@@ -66,27 +66,21 @@ public class Sub extends Command {
      * If it is being called from within a subroutine (including itself), set
      * fromWithinSub to the instance of the calling Sub
      * @param fromWithinSub The instance of the calling Sub (or null).
-     * @return The pidgen code to call the subroutine.
      */
-    public String execute(Sub fromWithinSub) {
-        String ret = "";
-
+    public void execute(Sub fromWithinSub) {
         if (fromWithinSub != null) {
             //We are being called from within a sub so we must store it's
             //local varables to the stack.
-            ret += fromWithinSub.storeVariables();
+            fromWithinSub.storeVariables();
         }
 
-        ret +=
-            "PUSH R" + PbscCompiler.pcRegister + endl() +
-            "BRANCH " + label + endl();
+        write("PUSH", PbscCompiler.pcRegister);
+        write("BRANCH", label);
 
         if (fromWithinSub != null) {
             //restore local varables from the stack.
-            ret += fromWithinSub.restoreVariables();
+            fromWithinSub.restoreVariables();
         }
-
-        return ret;
     }
 
     /**
@@ -94,12 +88,11 @@ public class Sub extends Command {
      * @return The pidgen code to store this subroutine's variables to the
      * stack.
      */
-    private String storeVariables() {
-        String ret = "# Saving local variables:" + endl();
+    private void storeVariables() {
+        write("# Saving local variables:");
         for (VariableDefinition vd : localVars) {
-            ret += vd.pushVar();
+            vd.pushVar();
         }
-        return ret;
     }
 
     /**
@@ -108,19 +101,18 @@ public class Sub extends Command {
      * @return The pidgen code to restore this subroutine's variables from the
      * stack.
      */
-    private String restoreVariables() {
-        String ret = "# Restoring local variables:" + endl();
+    private void restoreVariables() {
+        write("# Restoring local variables:");
         for (int i = localVars.size() - 1; i >= 0; --i) {
-            ret += localVars.get(i).popVar();
+            localVars.get(i).popVar();
         }
-        return ret;
     }
 
     @Override
-    public String generateCode() {
-        return super.generateCode() +
-               "BRANCH " + endLabel + endl() +
-               ":" + label + endl();
+    public void generateCode() {
+        super.generateCode();
+        write("BRANCH", endLabel);
+        write(":" + label);
     }
 
     @Override

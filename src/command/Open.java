@@ -47,9 +47,9 @@ public class Open extends TrapCommand {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
 
-        String ret = super.generateCode();
+        super.generateCode();
         
         //Generate the code to open the device.
         
@@ -65,9 +65,7 @@ public class Open extends TrapCommand {
             )
         );
 
-        ret += openTrapper.generateCode();
-
-        return ret;
+        openTrapper.generateCode();
     }
 
     @Override

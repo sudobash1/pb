@@ -25,7 +25,7 @@ public class And extends LispExpression {
      * logical AND.
      */
     public And(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -45,17 +45,15 @@ public class And extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return
-            m_operands.get(0).generateCode() +
-            "SET R" + tmpRegister1 + " 0" + endl() +
-            "BLT R" + m_register + " R" + tmpRegister1 + " " + m_failLabel +
-            endl() +
-            m_operands.get(1).generateCode() +
-            "BRANCH " + m_successLabel + endl() +
-            ":" + m_failLabel + endl() +
-            "SET R" + m_register + " -1" + endl() +
-            ":" + m_successLabel + endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("SET", tmpRegister1, "0");
+        write("BLT", m_register, tmpRegister1, m_failLabel);
+        m_operands.get(1).generateCode();
+        write("BRANCH", m_successLabel);
+        write(":" + m_failLabel);
+        write("SET", m_register, "-1");
+        write(":", m_successLabel);
     }
 
     @Override

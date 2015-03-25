@@ -71,27 +71,21 @@ public class ListDefinition extends VariableDefinition {
     }
 
     @Override
-    public String pushVar() {
-        String ret = "";
+    public void pushVar() {
         for (int i = 0; i < m_size; ++i) {
-            ret += 
-                "SET R" + tmpRegister0 + " " + (getAddress() + i) + endl() +
-                "LOAD R" + tmpRegister0 + " R" + tmpRegister0 + endl() +
-                "PUSH R" + tmpRegister0 + endl();
+            write("SET", tmpRegister0, ""+(getAddress() + i));
+            write("LOAD", tmpRegister0, tmpRegister0);
+            write("PUSH", tmpRegister0);
         }
-        return ret;
     }
 
     @Override
-    public String popVar() {
-        String ret = "";
+    public void popVar() {
         for (int i = 0; i < m_size; ++i) {
-            ret += 
-                "POP R" + tmpRegister1 + endl() +
-                "SET R" + tmpRegister0 + " " + (getAddress() + i) + endl() +
-                "SAVE R" + tmpRegister1 + " R" + tmpRegister0 + endl();
+            write("POP", tmpRegister1);
+            write("SET", tmpRegister0, ""+(getAddress() + i));
+            write("SAVE", tmpRegister1, tmpRegister0);
         }
-        return ret;
     }
 
 }

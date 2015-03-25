@@ -18,13 +18,11 @@ public class Dump extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return
-            super.generateCode() +
-            "SET R" + tmpRegister0 + " " + m_compiler.SYSCALL_COREDUMP +
-            endl() +
-            "PUSH R" + tmpRegister0 + endl() +
-            "TRAP" + endl();
+    public void generateCode() {
+        super.generateCode();
+        write("SET", tmpRegister0, m_compiler.SYSCALL_COREDUMP);
+        write("PUSH", tmpRegister0);
+        write("TRAP");
     }
 
     @Override

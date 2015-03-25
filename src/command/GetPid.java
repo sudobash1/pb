@@ -42,16 +42,14 @@ public class GetPid extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return
-            super.generateCode() +
-            m_pointerExp.generateCode() +
-            "SET R" + tmpRegister0 + " " + m_compiler.SYSCALL_GETPID +
-            endl() +
-            "PUSH R" + tmpRegister0 + endl() +
-            "TRAP" + endl() +
-            "POP R" + tmpRegister0 + endl() +
-            "SAVE R" + tmpRegister0 + " R" + LRegister + endl();
+    public void generateCode() {
+        super.generateCode();
+        m_pointerExp.generateCode();
+        write("SET", tmpRegister0, m_compiler.SYSCALL_GETPID);
+        write("PUSH R", tmpRegister0);
+        write("TRAP");
+        write("POP", tmpRegister0);
+        write("SAVE", tmpRegister0, LRegister);
     }
 
     @Override

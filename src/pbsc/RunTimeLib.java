@@ -41,22 +41,19 @@ public class RunTimeLib {
     }
 
     /**
-     * Return code to call specified runtime library method.
+     * Generate code to call specified runtime library method.
      * @param method The runtime library method call
-     * @return The Pidgen code to call the runtime library method.
      */
-    protected String callRuntimeMethod(PbscCompiler.RunTimeLibrary method) {
+    protected void callRuntimeMethod(PbscCompiler.RunTimeLibrary method) {
         m_enabledSubroutines.add(method);
 
-        String ret = "PUSH R" + PbscCompiler.pcRegister + endl();
+        write("PUSH", PbscCompiler.pcRegister);
 
         switch (method) {
             case CLEAR_STACK:
-                ret += "BRANCH " + clearStackLabel + endl();
+                write("BRANCH", clearStackLabel);
                 break;
         }
-
-        return ret;
     }
 
     /**
@@ -67,24 +64,59 @@ public class RunTimeLib {
     }
 
     /**The destination register for the LValue*/
-    public final static int LRegister = 3;
+    public final static String LRegister = "R3";
     /**The destination register for the RValue*/
-    public final static int RRegister = 4;
+    public final static String RRegister = "R4";
 
     /**A temp register. Clobber at will.*/
-    public final static int tmpRegister0 = 0;
+    public final static String tmpRegister0 = "R0";
     /**A temp register. Clobber at will.*/
-    public final static int tmpRegister1 = 1;
+    public final static String tmpRegister1 = "R1";
     /**A temp register. Clobber at will.*/
-    public final static int tmpRegister2 = 2;
+    public final static String tmpRegister2 = "R2";
     
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1) {
+        m_compiler.write(s1);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1, String s2) {
+        m_compiler.write(s1, s2);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1, String s2, String s3) {
+        m_compiler.write(s1, s2, s3);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1, String s2, String s3, String s4) {
+        m_compiler.write(s1, s2, s3, s4);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(
+        String s1, String s2, String s3, String s4, String s5
+    ) {
+        m_compiler.write(s1, s2, s3, s4, s5);
+    }
+
     /**
      * Generate the pidgen code for the Run Time Library to be included at
      * the top of the output piden code.
      */
-    protected String generateCode() {
-        String ret = "";
-
+    protected void generateCode() {
         if (m_enabledSubroutines.size() > 0) {
 
             if (m_enabledSubroutines.contains(
@@ -99,40 +131,35 @@ public class RunTimeLib {
                 );
                     
                 //This will need to be changed depending on how the stack grows
-                ret += 
-                    stackVariable.generateCode() +
-                    "SAVE R" + m_compiler.spRegister + " R" + LRegister +
-                    endl() +
-                    "BRANCH " + clearStackEndLabel + endl() +
+                stackVariable.generateCode();
+                write("SAVE", m_compiler.spRegister, LRegister);
+                write("BRANCH", clearStackEndLabel);
+                write(":" + clearStackLabel);
 
-                    ":" + clearStackLabel + endl() +
-                    //Grap the return address
-                    "POP R" + tmpRegister2 + endl() +
+                //Grab the return address
+                write("POP", tmpRegister2);
 
-                    //Find where the stack begins
-                    stackVariable.generateCode() +
-                    "LOAD R" + tmpRegister0 + " R" + LRegister + endl() +
-                    "SET R" + tmpRegister1 + " 1" + endl() +
-                    "SUB R" + tmpRegister0 + " R" + tmpRegister0 + " R" +
-                    tmpRegister1 + endl() +
+                //Find where the stack begins
+                stackVariable.generateCode();
+                write("LOAD", tmpRegister0, LRegister);
+                write("SET", tmpRegister1, "1");
+                write("SUB", tmpRegister0, tmpRegister0, tmpRegister1);
+                write(":" + clearStackLoopLabel);
+                write(
+                    "BLT", tmpRegister0, m_compiler.spRegister,
+                    clearStackExitLabel
+                );
+                write("POP", tmpRegister1);
+                write("BRANCH", clearStackLoopLabel);
+                write(":" + clearStackExitLabel);
 
-                    ":" + clearStackLoopLabel + endl() +
-                    
-                    "BLT R" + tmpRegister0 + " R" + m_compiler.spRegister +
-                    " " + clearStackExitLabel + endl() +
-                    "POP R" + tmpRegister1 + endl() +
-                    "BRANCH " + clearStackLoopLabel + endl() +
+                write("SET", tmpRegister1, ""+m_compiler.INSTSIZE);
+                write(
+                    "ADD", m_compiler.pcRegister, tmpRegister2, tmpRegister1
+                );
 
-                    ":" + clearStackExitLabel + endl() +
-
-                    "SET R" + tmpRegister1 + " " + m_compiler.INSTSIZE +
-                    endl() +
-                    "ADD R" + m_compiler.pcRegister  + " R" + tmpRegister2 +
-                    " R" + tmpRegister1 + endl()+
-
-                    ":" + clearStackEndLabel + endl();
+                write(":" + clearStackEndLabel);
             }
         }
-        return ret;
     }
 }

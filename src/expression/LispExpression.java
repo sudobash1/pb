@@ -33,7 +33,7 @@ public abstract class LispExpression extends Expression {
      * which the LispExpression will operate on.
      */
     public LispExpression(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
         super(compiler, line, register);
@@ -51,7 +51,7 @@ public abstract class LispExpression extends Expression {
      * is left of the expression string. Returns null on error or empty string.
      */
     private static ExpressionStringTuple expressionPop(
-        PbscCompiler compiler, int line, int register, String operands
+        PbscCompiler compiler, int line, String register, String operands
     ) {
 
         operands = operands.trim();
@@ -199,7 +199,7 @@ public abstract class LispExpression extends Expression {
      * which the LispExpression will operate on.
      */
     public static LispExpression create(
-        PbscCompiler compiler, int line, int register, String op,
+        PbscCompiler compiler, int line, String register, String op,
         String operands
     ) {
 

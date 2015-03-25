@@ -30,7 +30,7 @@ public class P extends Command {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
 
         StringBuffer sb = new StringBuffer();
         Matcher m = Pattern.compile(m_constVarReStr).matcher(m_command);
@@ -57,9 +57,8 @@ public class P extends Command {
         }
         m.appendTail(sb);
 
-        return super.generateCode() +
-               sb.toString() +
-               endl();
+        super.generateCode();
+        write(sb.toString());
     }
 
     @Override

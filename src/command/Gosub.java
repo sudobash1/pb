@@ -52,10 +52,9 @@ public class Gosub extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return
-            super.generateCode() +
-            m_sub.execute(m_currentSub);
+    public void generateCode() {
+        super.generateCode();
+        m_sub.execute(m_currentSub);
     }
 
     @Override

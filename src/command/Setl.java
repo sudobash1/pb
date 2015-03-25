@@ -85,28 +85,21 @@ public class Setl extends Command {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
 
-        String ret = super.generateCode();
+        super.generateCode();
 
-        ret += 
-            m_pointerExp.generateCode() +
-            "SET R" + tmpRegister1 + " 1" + endl();
+        m_pointerExp.generateCode();
+        write("SET", tmpRegister1, "1");
 
         for (int x = 0; x < m_values.size() - 1; ++x) {
-            ret +=
-                "SET R" + RRegister + " " + m_values.get(x) + endl() +
-                "SAVE R" + RRegister + " R" + LRegister + endl() +
-                "ADD R" + LRegister + " R" + LRegister + " R" + tmpRegister1 +
-                endl();
+            write("SET", RRegister, ""+m_values.get(x));
+            write("SAVE", RRegister, LRegister);
+            write("ADD", LRegister, LRegister, tmpRegister1);
         }
 
-        ret += 
-            "SET R" + RRegister + " " + m_values.get(m_values.size()-1) +
-            endl() +
-            "SAVE R" + RRegister + " R" + LRegister + endl();
-
-        return ret;
+        write("SET", RRegister, ""+m_values.get(m_values.size()-1));
+        write("SAVE", RRegister, LRegister);
     }
 
     @Override

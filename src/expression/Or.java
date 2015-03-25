@@ -24,7 +24,7 @@ public class Or extends LispExpression {
      * logical OR.
      */
     public Or(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -43,14 +43,12 @@ public class Or extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return
-            m_operands.get(0).generateCode() +
-            "SET R" + tmpRegister1 + " -1" + endl() +
-            "BLT R" + tmpRegister1 + " R" + m_register + " " +
-            m_successLabel + endl() +
-            m_operands.get(1).generateCode() +
-            ":" + m_successLabel + endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("SET", tmpRegister1, "-1");
+        write("BLT", tmpRegister1, m_register, m_successLabel);
+        m_operands.get(1).generateCode();
+        write(":" + m_successLabel);
     }
 
     @Override

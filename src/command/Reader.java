@@ -39,9 +39,9 @@ public abstract class Reader extends TrapCommand {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
 
-        String ret = super.generateCode();
+        super.generateCode();
         
         if (m_autoOpen) {
             //Generate the code to open the device.
@@ -58,8 +58,8 @@ public abstract class Reader extends TrapCommand {
                 )
             );
 
-            ret += "#TRAP to open the device" + m_compiler.lineEnding();
-            ret += openTrapper.generateCode();
+            write("#TRAP to open the device");
+            openTrapper.generateCode();
         }
 
         //Generate the code to read from the device
@@ -77,9 +77,9 @@ public abstract class Reader extends TrapCommand {
         );
 
         if (m_autoOpen) {
-            ret += "#TRAP to read from the device" + m_compiler.lineEnding();
+            write("#TRAP to read from the device");
         }
-        ret += readTrapper.generateCode();
+        readTrapper.generateCode();
 
         if (m_autoOpen) {
             //Generate the code to close the device
@@ -96,23 +96,19 @@ public abstract class Reader extends TrapCommand {
                 )
             );
 
-            ret += "#TRAP to open the device" + m_compiler.lineEnding();
-            ret += closeTrapper.generateCode();
+            write("#TRAP to open the device");
+            closeTrapper.generateCode();
         }
 
         //Save the read value to variable
 
         if (m_compiler.debugging()) {
-            ret += "#Save the READ value" + m_compiler.lineEnding();
+            write("#Save the READ value");
         }
 
-        ret +=
-            m_pointerExp.generateCode() +
-            "POP R" + RRegister + m_compiler.lineEnding() +
-            "SAVE R" + RRegister + " R" + LRegister + 
-            endl();
-
-        return ret;
+        m_pointerExp.generateCode();
+        write("POP", RRegister);
+        write("SAVE", RRegister, LRegister);
     }
 
     @Override

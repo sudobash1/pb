@@ -22,25 +22,25 @@ public class PbscCompiler {
     };
 
     /**Constant to exit the current program */
-    public static final int SYSCALL_EXIT = 0;
+    public static final String SYSCALL_EXIT = "0";
     /**Constant to output a number*/
-    public static final int SYSCALL_OUTPUT = 1;
+    public static final String SYSCALL_OUTPUT = "1";
     /**Constant to get current process id*/
-    public static final int SYSCALL_GETPID = 2;
+    public static final String SYSCALL_GETPID = "2";
     /**Constan to access a device*/
-    public static final int SYSCALL_OPEN = 3;
+    public static final String SYSCALL_OPEN = "3";
     /**Constant to release a device*/
-    public static final int SYSCALL_CLOSE = 4;
+    public static final String SYSCALL_CLOSE = "4";
     /**Constant to get input from device*/
-    public static final int SYSCALL_READ = 5;
+    public static final String SYSCALL_READ = "5";
     /**Constant to send output to device*/
-    public static final int SYSCALL_WRITE = 6;
+    public static final String SYSCALL_WRITE = "6";
     /**Constant to spawn a new process*/
-    public static final int SYSCALL_EXEC = 7;
+    public static final String SYSCALL_EXEC = "7";
     /**Constant to yield the CPU to another process*/
-    public static final int SYSCALL_YIELD = 8;
+    public static final String SYSCALL_YIELD = "8";
     /**Constant to print process state and exit*/
-    public static final int SYSCALL_COREDUMP = 9;
+    public static final String SYSCALL_COREDUMP = "9";
 
     /**Size of each instruction in bytes.*/
     public static final int INSTSIZE = 4;
@@ -49,13 +49,13 @@ public class PbscCompiler {
      *does not check that the register being accessed is a general register.
      */
     /**The program counter register.*/
-    public static final int pcRegister = 5;
+    public static final String pcRegister = "R5";
     /**The stack pointer register.*/
-    public static final int spRegister = 6;
+    public static final String spRegister = "R6";
     /**The register denoting the bottom of currently accessable RAM.*/
-    public static final int baseRegister = 7;
+    public static final String baseRegister = "R7";
     /**The register denoting the top of currently accessable RAM.*/
-    public static final int limRegister = 8;
+    public static final String limRegister = "R8";
 
     /**Number of extra instructions OS will add to call syscall exit.*/
     public static final int extraInstructions = 3;
@@ -124,6 +124,15 @@ public class PbscCompiler {
      */
     private RunTimeLib m_runTimeLib = null;
 
+    /** The StringBuffer for the main body of the program. */
+    private StringBuffer m_mainBuffer = null;
+
+    /** The StringBuffer for the header of the program. */
+    private StringBuffer m_headerBuffer = null;
+
+    /** If this is true then we are writing to the header, else body. */
+    private boolean m_header = false;
+
     public PbscCompiler() {
         m_varTable = new Hashtable<String, VariableDefinition>();
         m_runTimeLib = new RunTimeLib(this);
@@ -132,6 +141,8 @@ public class PbscCompiler {
         m_definesTable = new Hashtable<String,Integer>();
         m_namespaceStack = new ArrayList<String>();
         m_labels  = new ArrayList<String>();
+        m_mainBuffer = new StringBuffer();
+        m_headerBuffer = new StringBuffer();
     }
 
     /**
@@ -174,6 +185,73 @@ public class PbscCompiler {
     }
 
     /**
+     * Writes a line to the output file.
+     */
+    public void write(String s1) {
+        StringBuffer sb = m_header ? m_headerBuffer : m_mainBuffer;
+        sb.append(s1);
+        sb.append(lineEnding());
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    public void write(String s1, String s2) {
+        StringBuffer sb = m_header ? m_headerBuffer : m_mainBuffer;
+        sb.append(s1);
+        sb.append(" ");
+        sb.append(s2);
+        sb.append(lineEnding());
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    public void write(String s1, String s2, String s3) {
+        StringBuffer sb = m_header ? m_headerBuffer : m_mainBuffer;
+        sb.append(s1);
+        sb.append(" ");
+        sb.append(s2);
+        sb.append(" ");
+        sb.append(s3);
+        sb.append(lineEnding());
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    public void write(String s1, String s2, String s3, String s4) {
+        StringBuffer sb = m_header ? m_headerBuffer : m_mainBuffer;
+        sb.append(s1);
+        sb.append(" ");
+        sb.append(s2);
+        sb.append(" ");
+        sb.append(s3);
+        sb.append(" ");
+        sb.append(s4);
+        sb.append(lineEnding());
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    public void write(
+        String s1, String s2, String s3, String s4, String s5
+    ) {
+        StringBuffer sb = m_header ? m_headerBuffer : m_mainBuffer;
+        sb.append(s1);
+        sb.append(" ");
+        sb.append(s2);
+        sb.append(" ");
+        sb.append(s3);
+        sb.append(" ");
+        sb.append(s4);
+        sb.append(" ");
+        sb.append(s4);
+        sb.append(lineEnding());
+    }
+
+    /**
      * Returns the line ending used for the generated pidgen file. For now
      * it is just hardcoded to "\n".
      * @return the line ending string.
@@ -183,10 +261,9 @@ public class PbscCompiler {
     /**
      * Return code to call specified runtime library method.
      * @param method The runtime library method call
-     * @return The Pidgen code to call the runtime library method.
      */
-    public String callRuntimeMethod(PbscCompiler.RunTimeLibrary method) {
-        return m_runTimeLib.callRuntimeMethod(method);
+    public void callRuntimeMethod(PbscCompiler.RunTimeLibrary method) {
+        m_runTimeLib.callRuntimeMethod(method);
     }
 
     /**
@@ -550,7 +627,6 @@ public class PbscCompiler {
             return "";
         }
 
-
         StringBuilder sb = new StringBuilder();
 
         sb.append("#MEMORY INFORMATION######################################");
@@ -682,14 +758,21 @@ public class PbscCompiler {
          * compilation is simple.
          */
         m_preCompiling = true;
-        StringBuilder pidgenStringBuilder = new StringBuilder();
+        m_header = false;
+        //StringBuilder pidgenStringBuilder = new StringBuilder();
         for (Command c : program) {
-            pidgenStringBuilder.append(c.generateCode());
+            c.generateCode();
         }
-        pidgenStringBuilder.insert(0, m_runTimeLib.generateCode());
-        m_preCompiling = false;
+        //pidgenStringBuilder.insert(0, m_runTimeLib.generateCode());
+        m_header = true;
+        m_runTimeLib.generateCode();
 
-        String pidgenString = pidgenStringBuilder.toString();
+        String pidgenString =
+            m_headerBuffer.toString() + m_mainBuffer.toString();
+
+        //Clear the buffers
+        m_headerBuffer = new StringBuffer();
+        m_mainBuffer = new StringBuffer();
 
         //The size taken up by program instructions.
         final int programInstSize = countInstructions(pidgenString) * INSTSIZE;
@@ -714,13 +797,17 @@ public class PbscCompiler {
         final int endOfStaticMem = variableLocation;
 
         //Recompile with bound variables
-        pidgenStringBuilder = new StringBuilder();
-        pidgenStringBuilder.append(m_runTimeLib.generateCode());
+        m_preCompiling = false;
+        m_header = false;
+        //StringBuilder pidgenStringBuilder = new StringBuilder();
         for (Command c : program) {
-            pidgenStringBuilder.append(c.generateCode());
+            c.generateCode();
         }
+        //pidgenStringBuilder.insert(0, m_runTimeLib.generateCode());
+        m_header = true;
+        m_runTimeLib.generateCode();
 
-        pidgenString = pidgenStringBuilder.toString();
+        pidgenString = m_headerBuffer.toString() + m_mainBuffer.toString();
 
         //Generate the symbol table comment string.
         String symTabComment = generateSymTabComment(

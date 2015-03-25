@@ -16,7 +16,7 @@ public class Modulo extends LispExpression {
      * compute the modulo of.
      */
     public Modulo(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -32,17 +32,14 @@ public class Modulo extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return m_operands.get(0).generateCode() +
-               "PUSH R" + m_register + endl() +
-               m_operands.get(1).generateCode() +
-               "POP R" + tmpRegister0 + endl() +
-               "DIV R" + tmpRegister1 + " R" + tmpRegister0 + " R" +
-               m_register + endl() +
-               "MUL R" + tmpRegister1 + " R" + tmpRegister1 + " R" +
-               m_register + endl() +
-               "SUB R" + m_register + " R" + tmpRegister0 + " R" +
-               tmpRegister1 + endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("PUSH", m_register);
+        m_operands.get(1).generateCode();
+        write("POP", tmpRegister0);
+        write("DIV", tmpRegister1, tmpRegister0, m_register);
+        write("MUL", tmpRegister1, tmpRegister1, m_register);
+        write("SUB", m_register, tmpRegister0, tmpRegister1);
     }
 
     @Override

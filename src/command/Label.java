@@ -125,8 +125,9 @@ public class Label extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return super.generateCode() + ":" + text() + endl();
+    public void generateCode() {
+        super.generateCode();
+        write(":" + text());
     }
 
     @Override

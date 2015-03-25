@@ -57,11 +57,11 @@ public abstract class VariableDefinition extends Command {
      * Generates the code to store this variable to the stack.
      * @return The pidgen code to store this variable to the stack.
      */
-    public abstract String pushVar();
+    public abstract void pushVar();
 
     /**
      * Generates the code to restore this variable from the stack.
      * @return The pidgen code to restore this variable from the stack.
      */
-    public abstract String popVar();
+    public abstract void popVar();
 }

@@ -22,7 +22,7 @@ public class ListVariablePointer extends Expression {
      * point to.
      */
     public ListVariablePointer(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         String variable, String indexExpr
     ) {
         super(compiler, line, register);
@@ -43,13 +43,11 @@ public class ListVariablePointer extends Expression {
     }
 
     @Override
-    public String generateCode() {
-        return m_indexExp.generateCode() +
-               "COPY R"+tmpRegister1+" R"+m_register + endl() +
-               "SET R" +m_register + " " + m_vd.getAddress() +
-               endl() +
-               "ADD R" + m_register + " R" +m_register + " R" + tmpRegister1 +
-               endl();
+    public void generateCode() {
+        m_indexExp.generateCode();
+        write("COPYR", tmpRegister1, m_register);
+        write("SET", m_register, ""+m_vd.getAddress());
+        write("ADD", m_register, m_register, tmpRegister1);
     }
 
     @Override

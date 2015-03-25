@@ -22,7 +22,7 @@ public class ListVariable extends Expression {
      * evaluate to.
      */
     public ListVariable(
-        PbscCompiler compiler, int line, int register, String variable,
+        PbscCompiler compiler, int line, String register, String variable,
         String indexExpr
     ) {
         super(compiler, line, register);
@@ -43,13 +43,12 @@ public class ListVariable extends Expression {
     }
 
     @Override
-    public String generateCode() {
-        return m_indexExp.generateCode() +
-               "COPY R" + tmpRegister0  + " R" + m_register + endl() +
-               "SET R" + m_register + " " + m_vd.getAddress() + endl() +
-               "ADD R" + m_register + " R" +m_register + " R" + tmpRegister0 +
-               endl() +
-               "LOAD R" +m_register + " R" +m_register + endl();
+    public void generateCode() {
+        m_indexExp.generateCode();
+        write("COPY", tmpRegister0, m_register);
+        write("SET", m_register,  ""+m_vd.getAddress());
+        write("ADD", m_register, m_register, tmpRegister0);
+        write("LOAD", m_register, m_register);
     }
 
     @Override

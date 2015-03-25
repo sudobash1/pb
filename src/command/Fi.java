@@ -29,9 +29,9 @@ public class Fi extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return super.generateCode() +
-               ":" + ifLink.endLabel + endl();
+    public void generateCode() {
+        super.generateCode();
+        write(":" + ifLink.endLabel);
     }
 
     @Override

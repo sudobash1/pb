@@ -35,23 +35,23 @@ public abstract class Command {
      */
 
     /**The destination register for the LValue*/
-    public final static int LRegister = 3;
+    public final static String LRegister = "R3";
     /**The destination register for the RValue*/
-    public final static int RRegister = 4;
+    public final static String RRegister = "R4";
     /**The destination where the value of an if statement gets evaluated.*/
-    public final static int ifRegister = 4;
+    public final static String ifRegister = "R4";
     /**The destination where the value of an while statement gets evaluated.*/
-    public final static int whileRegister = 4;
+    public final static String whileRegister = "R4";
     /**Where expressions which are arguments for the Trapper get placed.*/
-    public final static int trapperRegister = 4;
+    public final static String trapperRegister = "R4";
 
     /* The below are tmp registers. Expressions will not evaluate to them.*/
     /**A temp register. Clobber at will.*/
-    public final static int tmpRegister0 = 0;
+    public final static String tmpRegister0 = "R0";
     /**A temp register. Clobber at will.*/
-    public final static int tmpRegister1 = 1;
+    public final static String tmpRegister1 = "R1";
     /**A temp register. Clobber at will.*/
-    public final static int tmpRegister2 = 2;
+    public final static String tmpRegister2 = "R2";
 
     /**Extract the command name and arguments from a string*/
     private final static String m_commandArgsReStr = "^([a-zA-Z]+)\\s*(.*)$";
@@ -105,21 +105,49 @@ public abstract class Command {
     }
 
     /**
-     * Return the line ending.
+     * Writes a line to the output file.
      */
-    protected final String endl() {
-        return m_compiler.lineEnding();
+    protected final void write(String s1) {
+        m_compiler.write(s1);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1, String s2) {
+        m_compiler.write(s1, s2);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1, String s2, String s3) {
+        m_compiler.write(s1, s2, s3);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(String s1, String s2, String s3, String s4) {
+        m_compiler.write(s1, s2, s3, s4);
+    }
+
+    /**
+     * Writes a line to the output file.
+     */
+    protected final void write(
+        String s1, String s2, String s3, String s4, String s5
+    ) {
+        m_compiler.write(s1, s2, s3, s4, s5);
     }
 
     /**
      * Generate the pidgen code for this command.
-     * @return Returns the pidgen code as a String.
      */
-    public String generateCode() {
+    public void generateCode() {
         if (m_compiler.debugging() && !m_commandString.equals("")) {
-            return "#> " + m_commandString + endl();
+            write("#>",  m_commandString);
         }
-        return "";
     }
 
     /**

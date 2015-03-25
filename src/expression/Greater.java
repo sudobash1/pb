@@ -20,7 +20,7 @@ public class Greater extends LispExpression {
      * compare.
      */
     public Greater(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -36,18 +36,15 @@ public class Greater extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return m_operands.get(0).generateCode() +
-               "PUSH R" + m_register + endl() +
-               m_operands.get(1).generateCode() +
-               "POP R" + tmpRegister1 + endl() +
-               "# Testing R" + tmpRegister1 + " > " + " R" + m_register +
-               endl() +
-               "SUB R" + m_register + " R" + tmpRegister1 + " R" +
-               m_register  + endl() +
-               "SET R" + tmpRegister1 + " 1" + endl() + 
-               "SUB R" + m_register + " R" + m_register + " R" +
-               tmpRegister1 + endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("PUSH", m_register);
+        m_operands.get(1).generateCode();
+        write("POP", tmpRegister1);
+        write("# Testing", tmpRegister1, " > ", m_register);
+        write("SUB", m_register, tmpRegister1, m_register);
+        write("SET", tmpRegister1, "1");
+        write("SUB", m_register, m_register, tmpRegister1);
     }
 
     @Override

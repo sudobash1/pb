@@ -42,22 +42,20 @@ public class Goto extends Command {
     }
 
     @Override
-    public String generateCode() {
-        String ret = super.generateCode();
+    public void generateCode() {
+        super.generateCode();
 
         Label label = 
             Label.retriveLabel(m_compiler, m_line, m_label, m_withinSub);
 
         //Clear the stack if leaving a subroutine.
         if (m_withinSub != null && !label.inSub()) {
-            ret += m_compiler.callRuntimeMethod(
+            m_compiler.callRuntimeMethod(
                 PbscCompiler.RunTimeLibrary.CLEAR_STACK
             );
         }
 
-        ret += "BRANCH " + label.text() + endl();
-
-        return ret;
+        write("BRANCH", label.text());
     }
 
     @Override

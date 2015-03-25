@@ -47,9 +47,9 @@ public class Close extends TrapCommand {
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode() {
 
-        String ret = super.generateCode();
+        super.generateCode();
         
         //Generate the code to close the device.
         
@@ -65,9 +65,7 @@ public class Close extends TrapCommand {
             )
         );
 
-        ret += closeTrapper.generateCode();
-
-        return ret;
+        closeTrapper.generateCode();
     }
 
     @Override

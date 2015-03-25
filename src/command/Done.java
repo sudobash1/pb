@@ -29,21 +29,22 @@ public class Done extends Command {
     }
 
     @Override
-    public String generateCode() {
-        String ret = super.generateCode();
+    public void generateCode() {
+
+        super.generateCode();
+
         if (whileLink.postCommand() != null) {
             if (m_compiler.debugging()) {
-                ret += "#Incrementing loop" + endl();
+                write("#Incrementing loop");
             }
-            ret += whileLink.postCommand().generateCode();
+            whileLink.postCommand().generateCode();
         }
-        ret += "BRANCH " + whileLink.testLabel;
         if (m_compiler.debugging()) {
-            ret += "   #Go back to start of loop";
+            write(
+                "BRANCH ", whileLink.testLabel, "  #Go back to start of loop"
+            );
         }
-        ret += endl();
-        ret += ":" + whileLink.doneLabel + endl();
-        return ret;
+        write(":" + whileLink.doneLabel);
     }
 
     @Override

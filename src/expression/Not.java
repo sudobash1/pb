@@ -20,7 +20,7 @@ public class Not extends LispExpression {
      * @param operands A string containing one value to invert.
      */
     public Not(
-        PbscCompiler compiler, int line, int register,
+        PbscCompiler compiler, int line, String register,
         ArrayList<Expression> operands
     ) {
 
@@ -36,13 +36,11 @@ public class Not extends LispExpression {
     }
 
     @Override
-    public String generateCode() {
-        return m_operands.get(0).generateCode() +
-               "SET R" + tmpRegister1 + " -1" + endl() +
-               "SUB R" + m_register + " R" + m_register + " R" +
-               tmpRegister1 + endl() +
-               "MUL R" + m_register + " R" + m_register + " R" +
-               tmpRegister1 + endl();
+    public void generateCode() {
+        m_operands.get(0).generateCode();
+        write("SET", tmpRegister1, "-1");
+        write("SUB", m_register, m_register, tmpRegister1);
+        write("MUL", m_register, m_register, tmpRegister1);
     }
 
     @Override

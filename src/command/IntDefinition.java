@@ -69,18 +69,16 @@ public class IntDefinition extends VariableDefinition {
     }
 
     @Override
-    public String pushVar() {
-        return 
-            "SET R" + tmpRegister0 + " " + getAddress() + endl() +
-            "LOAD R" + tmpRegister0 + " R" + tmpRegister0 + endl() +
-            "PUSH R" + tmpRegister0 + endl();
+    public void pushVar() {
+        write("SET", tmpRegister0, ""+getAddress());
+        write("LOAD", tmpRegister0, tmpRegister0);
+        write("PUSH", tmpRegister0);
     }
 
     @Override
-    public String popVar() {
-        return 
-            "POP R" + tmpRegister1 + endl() +
-            "SET R" + tmpRegister0 + " " + getAddress() + endl() +
-            "SAVE R" + tmpRegister1 + " R" + tmpRegister0 + endl();
+    public void popVar() {
+        write("POP", tmpRegister1);
+        write("SET", tmpRegister0, ""+getAddress());
+        write("SAVE", tmpRegister1, tmpRegister0);
     }
 }

@@ -87,43 +87,45 @@ public class Trapper {
     /**
      * Generate the pidgen code for this trapper.
      */
-    public String generateCode() {
-        String ret = "";
-
+    public void generateCode() {
         //Push the arguments
         for (Expression expr : m_params) {
-            ret +=
-                expr.generateCode() +
-                "PUSH R" + Command.trapperRegister;
+            expr.generateCode();
             if (m_compiler.debugging() && expr.m_comment != null) {
-                ret += "   #" + expr.m_comment;
+                m_compiler.write(
+                    "PUSH", Command.trapperRegister, "   #", expr.m_comment
+                );
+            } else {
+                m_compiler.write("PUSH", Command.trapperRegister);
             }
-            ret += endl();
+
         }
 
         //Execute and get error code
-        ret += "TRAP";
         if (m_compiler.debugging()) {
-            ret += "   #Execute trap and examine return value";
+            m_compiler.write(
+                "TRAP", "   #Execute trap and examine return value"
+            );
+        } else {
+            m_compiler.write("TRAP");
         }
-        ret +=
-            endl() +
-            "POP R" + Command.tmpRegister1 + endl();
+
+        m_compiler.write("POP", Command.tmpRegister1);
 
         //If we don't need to check the error code, then we are done.
         if (m_errorMap.size() == 0 && m_defaultLabel == null) {
-            return ret;
+            return;
         }
 
         //Check the error code
-        ret +=
-            //Branch to success if error code = 0
-            "SET R" + Command.tmpRegister2 + " 0" + endl() +
-            "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
-            " " + m_errorLabel +
-            endl() +
-            "BRANCH " + m_successLabel + endl() +
-            ":" + m_errorLabel + endl();
+        
+        //Branch to success if error code = 0
+        m_compiler.write("SET", Command.tmpRegister2, "0");
+        m_compiler.write(
+            "BNE", Command.tmpRegister1, Command.tmpRegister2, m_errorLabel
+        );
+        m_compiler.write("BRANCH", m_successLabel);
+        m_compiler.write(":" + m_errorLabel);
 
         //Check for all the errors.
         for (Map.Entry<Integer, String> error : m_errorMap.entrySet()) {
@@ -136,22 +138,23 @@ public class Trapper {
                 "TRAPPER" + trapperNumber  + "SKIP" + error.getKey()
             );
 
-            ret +=
-                "SET R" + Command.tmpRegister2 + " " + error.getKey() + 
-                endl() +
-                "BNE R" + Command.tmpRegister1 + " R" + Command.tmpRegister2 +
-                " " + skipErrorLabel + endl();
+            m_compiler.write(
+                "SET", Command.tmpRegister2, error.getKey().toString()
+            );
+            m_compiler.write(
+                "BNE", Command.tmpRegister1, Command.tmpRegister2,
+                skipErrorLabel
+            );
 
             //Clear the stack if leaving a subroutine.
             if (m_withinSub != null && !label.inSub()) {
-                ret += m_compiler.callRuntimeMethod(
+                m_compiler.callRuntimeMethod(
                     PbscCompiler.RunTimeLibrary.CLEAR_STACK
                 );
             }
 
-            ret +=
-                "BRANCH " + label.text() + endl() +
-                ":" + skipErrorLabel + endl();
+            m_compiler.write("BRANCH", label.text());
+            m_compiler.write(":" + skipErrorLabel);
         }
 
         //Jump to the default label if there is one.
@@ -163,18 +166,16 @@ public class Trapper {
 
             //Clear the stack if leaving a subroutine.
             if (m_withinSub != null && !label.inSub()) {
-                ret += m_compiler.callRuntimeMethod(
+                m_compiler.callRuntimeMethod(
                     PbscCompiler.RunTimeLibrary.CLEAR_STACK
                 );
             }
 
-            ret += "BRANCH " + m_defaultLabel + endl();
+            m_compiler.write("BRANCH", m_defaultLabel);
         }
 
         //Jump here if there was no error.
-        ret += ":" + m_successLabel + endl();
-        
-        return ret;
+        m_compiler.write(":" + m_successLabel);
     }
 
     public int stackReq() {

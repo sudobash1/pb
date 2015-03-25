@@ -77,42 +77,35 @@ public class While extends Command {
     }
 
     @Override
-    public String generateCode() {
-        String ret = super.generateCode();
+    public void generateCode() {
+        super.generateCode();
 
         //Initialize the loop
         if (m_preCommand != null) {
             if (m_compiler.debugging()) {
-                ret += "# Initializing loop" + endl();
+                write("# Initializing loop");
             }
-            ret += m_preCommand.generateCode();
+            m_preCommand.generateCode();
             if (m_compiler.debugging()) {
-                ret += "# Start of loop" + endl();
+                write("# Start of loop");
             }
         }
 
         if (m_compiler.debugging()) {
-            ret += "# Test if loop is finished" + endl();
+            write("# Test if loop is finished");
         }
 
         //Label for start of loop
-        ret += 
-            ":" + testLabel + endl() +
-            m_exp.generateCode() +
-            "SET R" + tmpRegister1 + " -1" +
-            endl() +
-            "BLT R" + tmpRegister1 + " R" + whileRegister + " " + startLabel +
-            endl() +
-            "BRANCH " + doneLabel +
-            endl() +
-            ":" + startLabel +
-            endl();
+        write(":" + testLabel);
+        m_exp.generateCode();
+        write("SET", tmpRegister1, " -1");
+        write("BLT", tmpRegister1, whileRegister, startLabel);
+        write("BRANCH", doneLabel);
+        write(":" + startLabel);
 
         if (m_compiler.debugging()) {
-            ret += "# Loop body" + endl();
+            write("# Loop body");
         }
-
-        return ret;
     }
 
     @Override

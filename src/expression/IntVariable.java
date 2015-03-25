@@ -17,7 +17,7 @@ public class IntVariable extends Expression {
      * @param variable The name of the integer variable.
      */
     public IntVariable(
-        PbscCompiler compiler, int line, int register, String variable
+        PbscCompiler compiler, int line, String register, String variable
     ) {
         super(compiler, line, register);
 
@@ -34,9 +34,9 @@ public class IntVariable extends Expression {
     }
 
     @Override
-    public String generateCode() {
-        return "SET R" +m_register + " " + m_vd.getAddress() + endl() +
-               "LOAD R" +m_register + " R" +m_register + endl();
+    public void generateCode() {
+        write("SET", m_register, ""+m_vd.getAddress());
+        write("LOAD", m_register, m_register);
     }
 
     @Override

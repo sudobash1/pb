@@ -27,13 +27,11 @@ public class Return extends Command {
     }
 
     @Override
-    public String generateCode() {
-        return
-            super.generateCode() +
-            "POP R" + tmpRegister0 + endl() +
-            "SET R" + tmpRegister1 + " " + m_compiler.INSTSIZE + endl() +
-            "ADD R" + PbscCompiler.pcRegister  + " R" + tmpRegister0 + " R" +
-            tmpRegister1 + endl();
+    public void generateCode() {
+        super.generateCode();
+        write("POP", tmpRegister0);
+        write("SET", tmpRegister1, ""+m_compiler.INSTSIZE);
+        write("ADD", PbscCompiler.pcRegister, tmpRegister0, tmpRegister1);
     }
 
     @Override
