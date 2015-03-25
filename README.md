@@ -73,6 +73,8 @@ The **pbasic-sos** program also has several command line arguments. To see them:
 java sos.Sim -h
 ```
 
+To run the example programs, go to the `test` directory and run one of the shell scripts there.
+
 ### Language Documentation
 
 ####Overview
